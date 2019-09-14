@@ -957,7 +957,7 @@ public enum LikesAddonPlaceholderType
 	 */
 	LikesAddonPlaceholderType(String placeholder, LikesAddonPlaceholderReplacer replacer)
 	{
-		this.placeholder = placeholder;
+		this.placeholder = "likes_addon_" + placeholder;
 		this.replacer = replacer;
 	}
 
