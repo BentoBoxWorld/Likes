@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>world.bentobox</groupId>
+    <artifactId>likes</artifactId>
+    <version>${revision}</version>
+
+    <name>Likes</name>
+    <description>Likes addon allows to like and dislike other player islands.</description>
+    <url>https://github.com/BentoBoxWorld/Likes</url>
+
+    <inceptionYear>2019</inceptionYear>
+
+    <!--  SCM is a GitHub link to your project  -->
+    <!--  Can be removed   -->
+    <scm>
+        <connection>scm:git:https://github.com/BentoBoxWorld/Likes.git</connection>
+        <developerConnection>scm:git:git@github.com:BentoBoxWorld/Likes.git</developerConnection>
+        <url>https://github.com/BentoBoxWorld/Likes</url>
+    </scm>
+
+    <!--  ciManagement is a build server that runs builds for your project  -->
+    <!--  Can be removed   -->
+    <ciManagement>
+        <system>jenkins</system>
+        <url>http://ci.codemc.org/job/BentoBoxWorld/job/Likes</url>
+    </ciManagement>
+
+    <!--  issueManagement is a link to issues page.   -->
+    <!--  Can be removed   -->
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/BentoBoxWorld/Likes/issues</url>
+    </issueManagement>
+
+    <!--  distributionManagement contains public maven repositories for your addon  -->
+    <!--  Can be removed   -->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.org/repository/maven-snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.org/repository/maven-releases</url>
+        </repository>
+    </distributionManagement>
+
+    <!--  Properties contains all variables that can offten change, f.e. BentoBox API version -->
+    <properties>
+        <!--    Some JAVA encoding settings    -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+
+        <!-- SPIGOT API version -->
+        <spigot.version>1.14.4-R0.1-SNAPSHOT</spigot.version>
+        <!-- Vault API version -->
+        <vault.version>1.7</vault.version>
+
+        <!-- BentoBox API version -->
+        <bentobox.version>1.7.0</bentobox.version>
+        <!-- Warps addon version -->
+        <warps.version>1.7.0</warps.version>
+
+        <!-- Revision variable removes warning about dynamic version -->
+        <revision>${build.version}-SNAPSHOT</revision>
+        <!-- This allows to change between versions and snapshots. -->
+        <build.version>1.7.0</build.version>
+        <build.number>-LOCAL</build.number>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>ci</id>
+            <activation>
+                <property>
+                    <name>env.BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- Override only if necessary -->
+                <build.number>-#${env.BUILD_NUMBER}</build.number>
+                <!-- GIT_BRANCH -->
+            </properties>
+        </profile>
+        <profile>
+            <id>master</id>
+            <activation>
+                <property>
+                    <name>env.GIT_BRANCH</name>
+                    <value>origin/master</value>
+                </property>
+            </activation>
+            <properties>
+                <!-- Override only if necessary -->
+                <revision>${build.version}</revision>
+                <!-- Empties build number variable.-->
+                <build.number></build.number>
+            </properties>
+        </profile>
+    </profiles>
+
+    <!--  Repositories contains links from were dependencies will be searched  -->
+    <repositories>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
+        </repository>
+        <repository>
+            <id>spigotmc-public</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
+    </repositories>
+
+    <!--  Your addon must contain Spigot and BentoBox APIs dependencies.  -->
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${spigot.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>${vault.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>world.bentobox</groupId>
+            <artifactId>bentobox</artifactId>
+            <version>${bentobox.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>world.bentobox</groupId>
+            <artifactId>warps</artifactId>
+            <version>${warps.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <!--  Build contains information for maven. It allows to create correct jar file.  -->
+    <build>
+        <finalName>${project.name}-${revision}${build.number}</finalName>
+
+        <defaultGoal>clean package</defaultGoal>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources/locales</directory>
+                <targetPath>./locales</targetPath>
+                <filtering>false</filtering>
+                <includes>
+                    <include>*.yml</include>
+                    <include>*.json</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <show>public</show>
+                    <failOnError>false</failOnError>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <minimizeJar>true</minimizeJar>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
