@@ -327,7 +327,7 @@ public class LikesViewPanel
 
 		if ((this.likeOffset + 1) * 7 < this.likesObject.getLikes())
 		{
-			panelBuilder.item(18, this.createButton(Button.NEXT_LIKE));
+			panelBuilder.item(26, this.createButton(Button.NEXT_LIKE));
 		}
 
 		final int startIndex = this.likeOffset * 7;
@@ -352,12 +352,12 @@ public class LikesViewPanel
 	{
 		if (this.dislikeOffset > 0)
 		{
-			panelBuilder.item(28, this.createButton(Button.PREVIOUS_DISLIKE));
+			panelBuilder.item(36, this.createButton(Button.PREVIOUS_DISLIKE));
 		}
 
 		if ((this.dislikeOffset + 1) * 7 < this.likesObject.getDislikes())
 		{
-			panelBuilder.item(29, this.createButton(Button.NEXT_DISLIKE));
+			panelBuilder.item(44, this.createButton(Button.NEXT_DISLIKE));
 		}
 
 		final int startIndex = this.dislikeOffset * 7;
@@ -366,7 +366,7 @@ public class LikesViewPanel
 		{
 			String userName = this.dislikedByUsers.get(startIndex + index);
 
-			panelBuilder.item(19 + index, new PanelItemBuilder().
+			panelBuilder.item(37 + index, new PanelItemBuilder().
 				icon(userName).
 				glow(false).
 				build());

@@ -10,7 +10,7 @@ likes:
     buttons:
       cancel: "&cCancel"
       accept: "&aAccept"
-      previus: "Previous"
+      previous: "Previous"
       next: "Next"
       return: "&aReturn"
 
