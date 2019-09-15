@@ -10,6 +10,7 @@ package world.bentobox.likes.panels.user;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
+import org.eclipse.jdt.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,11 @@ public class LikesViewPanel
 	 * @param permissionPrefix Permission Prefix
 	 * @param likesObject LikeObject that will be viewed.
 	 */
-	private LikesViewPanel(LikesAddon addon, User user, World world, String permissionPrefix, LikesObject likesObject)
+	private LikesViewPanel(@NonNull LikesAddon addon,
+		@NonNull User user,
+		@NonNull World world,
+		String permissionPrefix,
+		@NonNull LikesObject likesObject)
 	{
 		this.addon = addon;
 		this.user = user;
@@ -59,9 +64,18 @@ public class LikesViewPanel
 			sorted(String::compareToIgnoreCase).
 			collect(Collectors.toList());
 
-		this.likeRank = this.addon.getManager().getSortedLikes(world).entryIndex(likesObject) + 1;
-		this.dislikeRank = this.addon.getManager().getSortedDislikes(world).entryIndex(likesObject) + 1;
-		this.overallRank = this.addon.getManager().getSortedRank(world).entryIndex(likesObject) + 1;
+		if (this.addon.getManager().getSortedLikes(world).contains(likesObject))
+		{
+			this.likeRank = this.addon.getManager().getSortedLikes(world).entryIndex(likesObject) + 1;
+			this.dislikeRank = this.addon.getManager().getSortedDislikes(world).entryIndex(likesObject) + 1;
+			this.overallRank = this.addon.getManager().getSortedRank(world).entryIndex(likesObject) + 1;
+		}
+		else
+		{
+			this.likeRank = -1;
+			this.dislikeRank = -1;
+			this.overallRank = -1;
+		}
 	}
 
 
@@ -74,8 +88,19 @@ public class LikesViewPanel
 	 * @param permissionPrefix Permission Prefix
 	 * @param likesObject LikeObject that will be viewed.
 	 */
-	public static void openPanel(LikesAddon addon, User user, World world, String permissionPrefix, LikesObject likesObject)
+	public static void openPanel(@NonNull LikesAddon addon,
+		@NonNull User user,
+		@NonNull World world,
+		String permissionPrefix,
+		@NonNull LikesObject likesObject)
 	{
+		if (likesObject == null)
+		{
+			// This should not happen, but if ever, then do not crash.
+			user.sendMessage(user.getTranslation(Constants.ERRORS + "database-error"));
+			return;
+		}
+
 		new LikesViewPanel(addon, user, world, permissionPrefix, likesObject).build();
 	}
 
