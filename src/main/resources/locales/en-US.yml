@@ -8,6 +8,8 @@ likes:
       settings: "&dEdit Settings"
       admin: "&dAdmin Panel"
       select-island: "&dSelect an Island"
+      select-player: "&dSelect a Player"
+      edit-view: "&dEdit Island Likes"
     buttons:
       cancel: "&cCancel"
       accept: "&aAccept"
@@ -38,9 +40,14 @@ likes:
       reset-likes: "Reset likes on Reset"
 
       manage-likes: "Manage Island Likes/Dislikes"
-      view-likes: "View Island Likes/Dislikes"
+      likes-icon: "Change Island Icon"
       wipe-data: "Wipe Data"
       edit-settings: "Edit Settings"
+
+      add-dislike-user: "Add Dislike"
+      add-like-user: "Add Like"
+      remove-dislike-user: "Remove Dislike"
+      remove-like-user: "Remove Like"
     descriptions:
       selected: "&dSelected"
 
@@ -79,7 +86,7 @@ likes:
       reset-likes: "Allows to toggle if|resetting island should|reset island likes."
 
       manage-likes: "Allows to add/remove|players who liked or|disliked selected island."
-      view-likes: "Allows to view selected|Island Likes and Dislikes."
+      likes-icon: "Allows to change an island icon in top menu."
       wipe-data: "Allows to completely|remove all stored data|from current GameMode."
       edit-settings: "Allows to edit addon|settings via GUI."
   types:

@@ -28,6 +28,7 @@ import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.config.Settings;
+import world.bentobox.likes.panels.CommonPanel;
 import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.panels.util.SelectBlocksGUI;
 import world.bentobox.likes.utils.Constants;
@@ -36,7 +37,7 @@ import world.bentobox.likes.utils.Constants;
 /**
  * This class allows to edit all addon settings via GUI.
  */
-public class EditSettingsPanel
+public class EditSettingsPanel extends CommonPanel
 {
 	/**
 	 * This is internal constructor. It is used internally in current class to avoid
@@ -48,13 +49,20 @@ public class EditSettingsPanel
 	 */
 	private EditSettingsPanel(LikesAddon addon, User user, World world, String permissionPrefix)
 	{
-		this.addon = addon;
-		this.user = user;
-		this.world = world;
+		super(addon, user, world, permissionPrefix);
+		this.settings = this.addon.getSettings();
+	}
 
-		this.permissionPrefix = permissionPrefix;
 
-		this.settings = addon.getSettings();
+	/**
+	 * This is internal constructor. It is used internally in current class to avoid
+	 * creating objects everywhere.
+	 * @param parent Parent Panel
+	 */
+	private EditSettingsPanel(CommonPanel parent)
+	{
+		super(parent);
+		this.settings = this.addon.getSettings();
 	}
 
 
@@ -72,12 +80,24 @@ public class EditSettingsPanel
 	}
 
 
+	/**
+	 * This method is used to open UserPanel outside this class. It will be much easier
+	 * to open panel with single method call then initializing new object.
+	 * @param parent Parent Panel
+	 */
+	public static void openPanel(@NonNull CommonPanel parent)
+	{
+		new EditSettingsPanel(parent).build();
+	}
+
+
 // ---------------------------------------------------------------------
 // Section: Methods
 // ---------------------------------------------------------------------
 
 
-	private void build()
+	@Override
+	public void build()
 	{
 		PanelBuilder panelBuilder = new PanelBuilder().
 			user(this.user).
@@ -102,8 +122,8 @@ public class EditSettingsPanel
 		// Reset likes on restart
 		panelBuilder.item(25, this.createButton(Button.RESET_LIKES));
 
-		// Open admin Panel
-		panelBuilder.item(44, this.createButton(Button.RETURN));
+		// Add Return Button
+		panelBuilder.item(44, this.returnButton);
 
 		panelBuilder.build();
 	}
@@ -247,18 +267,6 @@ public class EditSettingsPanel
 					return true;
 				};
 				glow = this.settings.isResetLikes();
-
-				break;
-			}
-			case RETURN:
-			{
-				name = this.user.getTranslation(Constants.BUTTON + "return");
-				icon = new ItemStack(Material.OAK_DOOR);
-				clickHandler = (panel, user, clickType, slot) -> {
-					AdminPanel.openPanel(this.addon, this.user, this.world, this.permissionPrefix);
-					return true;
-				};
-				glow = false;
 
 				break;
 			}
@@ -406,7 +414,6 @@ public class EditSettingsPanel
 		INFORM_PLAYERS,
 		LOG_HISTORY,
 		RESET_LIKES,
-		RETURN,
 	}
 
 
@@ -414,28 +421,9 @@ public class EditSettingsPanel
 // Section: Variables
 // ---------------------------------------------------------------------
 
-	/**
-	 * This variable allows to access addon object.
-	 */
-	private final LikesAddon addon;
 
 	/**
 	 * This variable stores settings for current addon.
 	 */
 	private final Settings settings;
-
-	/**
-	 * This variable holds user who opens panel. Without it panel cannot be opened.
-	 */
-	private final User user;
-
-	/**
-	 * This variable holds a world to which gui referee.
-	 */
-	private final World world;
-
-	/**
-	 * Permission prefix
-	 */
-	private final String permissionPrefix;
 }

@@ -16,6 +16,7 @@ import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.likes.LikesAddon;
+import world.bentobox.likes.panels.CommonPanel;
 import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.utils.Constants;
 
@@ -23,7 +24,7 @@ import world.bentobox.likes.utils.Constants;
 /**
  * This class allows to manage all admin operations from GUI.
  */
-public class AdminPanel
+public class AdminPanel extends CommonPanel
 {
 	/**
 	 * This is internal constructor. It is used internally in current class to avoid
@@ -35,11 +36,7 @@ public class AdminPanel
 	 */
 	private AdminPanel(LikesAddon addon, User user, World world, String permissionPrefix)
 	{
-		this.addon = addon;
-		this.user = user;
-		this.world = world;
-
-		this.permissionPrefix = permissionPrefix;
+		super(addon, user, world, permissionPrefix);
 	}
 
 
@@ -62,7 +59,8 @@ public class AdminPanel
 // ---------------------------------------------------------------------
 
 
-	private void build()
+	@Override
+	protected void build()
 	{
 		PanelBuilder panelBuilder = new PanelBuilder().
 			user(this.user).
@@ -70,14 +68,17 @@ public class AdminPanel
 
 		GuiUtils.fillBorder(panelBuilder);
 
-		panelBuilder.item(10, this.createButton(Button.ADD_REMOVE_LIKE));
-		panelBuilder.item(19, this.createButton(Button.VIEW_LIKES));
+		panelBuilder.item(19, this.createButton(Button.ADD_REMOVE_LIKE));
+		panelBuilder.item(22, this.createButton(Button.LIKES_ICON));
 
 		// Add All Player Data removal.
 		panelBuilder.item(28, this.createButton(Button.WIPE_DATA));
 
 		// Edit Addon Settings
 		panelBuilder.item(16, this.createButton(Button.EDIT_SETTINGS));
+
+		// Add Return Button
+		panelBuilder.item(44, this.returnButton);
 
 		panelBuilder.build();
 	}
@@ -104,23 +105,20 @@ public class AdminPanel
 				description = this.user.getTranslation(Constants.DESCRIPTION + "manage-likes");
 				icon = new ItemStack(Material.WRITABLE_BOOK);
 				clickHandler = (panel, user, clickType, slot) -> {
-					// TODO: Need an Island select panel where selected island opens a gui with users
-					// that added likes and dislikes.
-					// This GUI need an ability to remove users who like or dislike only.
+					ListIslandsPanel.open(this, ListIslandsPanel.Type.MANAGE);
 					return true;
 				};
 				glow = false;
 
 				break;
 			}
-			case VIEW_LIKES:
+			case LIKES_ICON:
 			{
-				name = this.user.getTranslation(Constants.BUTTON + "view-likes");
-				description = this.user.getTranslation(Constants.DESCRIPTION + "view-likes");
-				icon = new ItemStack(Material.WRITTEN_BOOK);
+				name = this.user.getTranslation(Constants.BUTTON + "likes-icon");
+				description = this.user.getTranslation(Constants.DESCRIPTION + "likes-icon");
+				icon = new ItemStack(Material.ENCHANTING_TABLE);
 				clickHandler = (panel, user, clickType, slot) -> {
-					// TODO: Need an Island select panel where selected island opens a gui where
-					// Admin can add like or dislike without being on island.
+					ListIslandsPanel.open(this, ListIslandsPanel.Type.ICON);
 					return true;
 				};
 				glow = false;
@@ -177,34 +175,9 @@ public class AdminPanel
 	 */
 	private enum Button
 	{
-		VIEW_LIKES,
+		LIKES_ICON,
 		WIPE_DATA,
 		EDIT_SETTINGS,
 		ADD_REMOVE_LIKE
 	}
-
-
-// ---------------------------------------------------------------------
-// Section: Variables
-// ---------------------------------------------------------------------
-
-	/**
-	 * This variable allows to access addon object.
-	 */
-	private final LikesAddon addon;
-
-	/**
-	 * This variable holds user who opens panel. Without it panel cannot be opened.
-	 */
-	private final User user;
-
-	/**
-	 * This variable holds a world to which gui referee.
-	 */
-	private final World world;
-
-	/**
-	 * Permission prefix
-	 */
-	private final String permissionPrefix;
 }
