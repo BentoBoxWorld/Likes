@@ -20,6 +20,7 @@ import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.database.objects.LikesObject;
 import world.bentobox.likes.panels.GuiUtils;
@@ -86,18 +87,28 @@ public class LikesViewPanel
 	 * @param user User who opens panel
 	 * @param world World where gui is opened
 	 * @param permissionPrefix Permission Prefix
-	 * @param likesObject LikeObject that will be viewed.
+	 * @param island Island which View panel must be opened.
 	 */
 	public static void openPanel(@NonNull LikesAddon addon,
 		@NonNull User user,
 		@NonNull World world,
 		String permissionPrefix,
-		@NonNull LikesObject likesObject)
+		@NonNull Island island)
 	{
+		LikesObject likesObject = addon.getManager().getExistingIslandLikes(island.getUniqueId());
+
 		if (likesObject == null)
 		{
-			// This should not happen, but if ever, then do not crash.
-			user.sendMessage(user.getTranslation(Constants.ERRORS + "database-error"));
+			if (island.getMemberSet().contains(user.getUniqueId()))
+			{
+				user.sendMessage(user.getTranslation(Constants.MESSAGE + "no-data-about-your-island"));
+			}
+			else
+			{
+				user.sendMessage(user.getTranslation(Constants.MESSAGE + "no-data-about-island"));
+			}
+
+			// Do not open gui if there is no data.
 			return;
 		}
 

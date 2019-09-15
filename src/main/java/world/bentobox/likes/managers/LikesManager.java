@@ -188,6 +188,17 @@ public class LikesManager
 	}
 
 
+	/**
+	 * This method skips creating new island objects and return existing ones.
+	 * @param uniqueId Island Unique ID.
+	 * @return Likes Object for current island or null.
+	 */
+	public LikesObject getExistingIslandLikes(String uniqueId)
+	{
+		return this.likesCache.getOrDefault(uniqueId, null);
+	}
+
+
 // ---------------------------------------------------------------------
 // Section: Save methods
 // ---------------------------------------------------------------------

@@ -100,7 +100,7 @@ public class PlayerCommand extends CompositeCommand
 				user,
 				this.getWorld(),
 				this.getPermissionPrefix(),
-				((LikesAddon) this.getAddon()).getManager().getIslandLikes(island.getUniqueId(), this.getWorld()));
+				island);
 		}
 		else
 		{

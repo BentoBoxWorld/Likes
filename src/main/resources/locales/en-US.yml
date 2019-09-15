@@ -7,6 +7,7 @@ likes:
       manage: "&dAdd Like or Dislike"
       settings: "&dEdit Settings"
       admin: "&dAdmin Panel"
+      select-island: "&dSelect an Island"
     buttons:
       cancel: "&cCancel"
       accept: "&aAccept"
@@ -49,7 +50,7 @@ likes:
         likes: "&6[rank]. island by likes|&6with [value] likes."
         dislikes: "&6[rank]. island by dislikes|&6with [value] dislikes."
         rank: "&6[rank]. island by rank|&6with [value] rank points."
-      values: "Island has [likes] likes|[dislikes] dislikes|[rank] rank points."
+      values: "Island has:|[likes] likes|[dislikes] dislikes|[rank] rank points."
       unknown: "&cunknown player"
 
       current-value: "Current value: [value]."
@@ -95,6 +96,8 @@ likes:
     player-add-dislike: "&c[user] disliked your island."
     remove-dislike: "&aYou remove your dislike [island]'s island."
     player-remove-dislike: "&a[user] removed his dislike from your island."
+    no-data-about-island: "There is no data about this island."
+    no-data-about-your-island: "There is no data about your island."
   errors:
     not-on-island: "&cYou must be on the island to run this command!"
     your-island: "&cYou cannot add like or dislike to your own island!"
