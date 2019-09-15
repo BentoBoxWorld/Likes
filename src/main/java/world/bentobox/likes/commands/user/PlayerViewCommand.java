@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import world.bentobox.bentobox.api.commands.CompositeCommand;
+import world.bentobox.bentobox.api.localization.TextVariables;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.util.Util;
@@ -83,8 +84,15 @@ public class PlayerViewCommand extends CompositeCommand
 		}
 		else
 		{
-			// ToDo check this?
-			island = this.getAddon().getIslands().getIsland(this.getWorld(), UUID.fromString(args.get(0)));
+			final UUID playerUUID = this.getAddon().getPlayers().getUUID(args.get(0));
+
+			if (playerUUID == null)
+			{
+				user.sendMessage("general.errors.unknown-player", TextVariables.NAME, args.get(0));
+				return false;
+			}
+
+			island = this.getAddon().getIslands().getIsland(this.getWorld(), playerUUID);
 		}
 
 		if (island == null)
@@ -117,8 +125,8 @@ public class PlayerViewCommand extends CompositeCommand
 		}
 		else
 		{
-			// ToDo check this?
-			island = this.getAddon().getIslands().getIsland(this.getWorld(), UUID.fromString(args.get(0)));
+			island = this.getAddon().getIslands().getIsland(this.getWorld(),
+				this.getAddon().getPlayers().getUUID(args.get(0)));
 		}
 
 		LikesViewPanel.openPanel((LikesAddon) this.getAddon(),
