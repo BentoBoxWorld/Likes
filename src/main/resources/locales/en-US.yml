@@ -100,6 +100,7 @@ likes:
     your-island: "&cYou cannot add like or dislike to your own island!"
     numeric-only: "&cInput should be only numbers!"
     not-valid-value: "&cNumber should be larger than [min] and smaller than [max], but input is [value]!"
+    top-is-empty: "&cSorry, there is no one in the top!"
   questions:
     prefix: "&c[SERVER]&r: "
     like-cost: "&5Please input cost per like."

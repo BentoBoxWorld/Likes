@@ -54,6 +54,8 @@ public class TopLikesPanel
 
 		this.iconPermission = this.permissionPrefix + "likes.icon";
 		this.viewMode = mode;
+
+		this.topPlayerList = new ArrayList<>(10);
 	}
 
 
@@ -91,18 +93,59 @@ public class TopLikesPanel
 			// Each panel must have target user who opens it.
 			user(this.user);
 
+		// Clear list each build time.
+		this.topPlayerList.clear();
+		Material mainMaterial;
+
 		switch (this.viewMode)
 		{
 			case LIKES:
-				GuiUtils.fillBorder(panelBuilder, 6, Material.GREEN_STAINED_GLASS_PANE);
+				this.topPlayerList.addAll(this.addon.getManager().getTopByLikes(this.world));
+				mainMaterial = Material.GREEN_STAINED_GLASS_PANE;
 				break;
 			case DISLIKES:
-				GuiUtils.fillBorder(panelBuilder, 6, Material.RED_STAINED_GLASS_PANE);
+				this.topPlayerList.addAll(this.addon.getManager().getTopByDislikes(this.world));
+				mainMaterial = Material.RED_STAINED_GLASS_PANE;
 				break;
 			case RANK:
-				GuiUtils.fillBorder(panelBuilder, 6, Material.MAGENTA_STAINED_GLASS_PANE);
+				this.topPlayerList.addAll(this.addon.getManager().getTopByRank(this.world));
+				mainMaterial = Material.MAGENTA_STAINED_GLASS_PANE;
 				break;
+			default:
+				// This should never happen!
+				this.user.closeInventory();
+				return;
 		}
+
+		final int topPlayerCount = this.topPlayerList.size();
+		int rowCount;
+
+		// Fill only rows that can be used.
+
+		if (topPlayerCount == 0)
+		{
+			this.user.sendMessage(this.user.getTranslation(Constants.ERRORS + "top-is-empty"));
+			this.user.closeInventory();
+			return;
+		}
+		else if (topPlayerCount == 1)
+		{
+			rowCount = 3;
+		}
+		else if (topPlayerCount < 4)
+		{
+			rowCount = 4;
+		}
+		else if (topPlayerCount < 7)
+		{
+			rowCount = 5;
+		}
+		else
+		{
+			rowCount = 6;
+		}
+
+		GuiUtils.fillBorder(panelBuilder, rowCount, mainMaterial);
 
 		panelBuilder.item(8, this.createViewModeButton());
 
@@ -184,33 +227,11 @@ public class TopLikesPanel
 	 */
 	private void populatePlayerButtons(PanelBuilder panelBuilder)
 	{
-		List<LikesObject> topTenPlayers;
-
-		switch (this.viewMode)
-		{
-			case LIKES:
-				topTenPlayers = this.addon.getManager().getTopByLikes(this.world);
-				break;
-			case DISLIKES:
-				topTenPlayers = this.addon.getManager().getTopByDislikes(this.world);
-				break;
-			case RANK:
-				topTenPlayers = this.addon.getManager().getTopByRank(this.world);
-				break;
-			default:
-				topTenPlayers = Collections.emptyList();
-		}
-
-		if (topTenPlayers.size() > 10)
-		{
-			topTenPlayers = topTenPlayers.subList(0, 9);
-		}
-
 		// Assuming that top 10 always will contain 10 elements.
 
-		for (int index = 0, size = topTenPlayers.size(); index < size; index++)
+		for (int index = 0, size = this.topPlayerList.size(); index < size; index++)
 		{
-			panelBuilder.item(PLACEMENTS[index], this.createPlayerButton(topTenPlayers.get(index), index + 1));
+			panelBuilder.item(PLACEMENTS[index], this.createPlayerButton(this.topPlayerList.get(index), index + 1));
 		}
 	}
 
@@ -361,6 +382,11 @@ public class TopLikesPanel
 	 * This variable holds which top should be showed.
 	 */
 	private VIEW_MODE viewMode;
+
+	/**
+	 * This list contains all currently displayed top players.
+	 */
+	private List<LikesObject> topPlayerList;
 
 // ---------------------------------------------------------------------
 // Section: Instance Constants
