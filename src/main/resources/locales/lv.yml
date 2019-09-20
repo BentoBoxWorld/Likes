@@ -38,6 +38,11 @@ likes:
       wipe-data: Notīrīt Datus
       edit-settings: Labot Iestatījumus
       add-dislike-user: Pievienot Nepatīk
+      previous: Iepriekšējais
+      next: Nākamais
+      add-like-user: Pievienot Patīk
+      remove-dislike-user: Noņemt Nepatīk
+      remove-like-user: Noņemt Patīk
     descriptions:
       selected: "&dIzvēlēts"
       view-mode: "&fĻauj izvēlēties, kurš|&flaboāko saraksts|&ftiks rādīts."
@@ -78,6 +83,8 @@ likes:
       edit-settings: Ļauj labot papildinājuma|iestatījumus caur spēli.
   types:
     rank: Rangs
+    likes: Patīk
+    dislikes: Nepatīk
   messages:
     add-like: "&aTu uzliki Patīk [island] salai."
     player-add-like: "&a[user] uzlika patīk tavai salai."
@@ -88,6 +95,7 @@ likes:
     remove-dislike: "&aTu uzliki Nepatīk [island] salai."
     player-remove-dislike: "&a[user] noņēma Nepatīk no tavas salas."
     no-data-about-your-island: Nav datu par tavu salu.
+    no-data-about-island: Nav datu par šo salu.
   errors:
     not-on-island: "&cTev ir jābūt uz kādas salas, lai izmantotu šo komandu!"
     your-island: "&cTu nevari pielikt Patīk vai Nepatīk savai salai!"
