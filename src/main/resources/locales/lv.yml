@@ -1,0 +1,119 @@
+---
+likes:
+  gui:
+    titles:
+      select-block: "&dIzvēlies Bloku"
+      top: "&dLabākās salas pēc [tips]"
+      view: "&dSkatīs salas rādītājus"
+      manage: "&dPievieno Patīk vai Nepatīk"
+      settings: "&dLabot Iestatījumus"
+      admin: "&dAdministratora Panelis"
+      select-island: "&dIzvēlies Salu"
+      select-player: "&dIzvēlies Spēlētāju"
+      edit-view: "&dLabot Salas Rādītājus"
+    buttons:
+      cancel: "&cAtcelt"
+      accept: "&aApstiprināt"
+      return: "&aAtpakaļ"
+      view-mode: "&6Labāko Tips"
+      name: "[name]"
+      like: "&6Patīk daudzums"
+      like-rank: "&6Vieta pēc Patīk"
+      dislike: "&cNepatīk daudzums"
+      dislike-rank: "&cVieta pēc Nepatīk"
+      overall: "&aRanga numurs"
+      overall-rank: "&aVieta pēc Ranga"
+      add-like: "&6Pievienot/Noņemt Patīk"
+      add-dislike: "&cPievienot/Noņemt Nepatīk"
+      like-cost: Uzlikt Patīk maksa
+      like-remove-cost: Noņemt Patīk maksa
+      dislike-cost: Uzlikt Nepatīk maksa
+      dislike-remove-cost: Noņemt Nepatīk maksa
+      default-icon: Sākotnējā ikona
+      inform-players: Informēt salas komandu
+      log-history: Izmaiņu Vēsture
+      reset-likes: Noņemt rādītājus pēc atsākšanas
+      manage-likes: Pārvaldīt Salas Patīk/Nepatīk
+      likes-icon: Mainīt Salas Ikonu
+      wipe-data: Notīrīt Datus
+      edit-settings: Labot Iestatījumus
+      add-dislike-user: Pievienot Nepatīk
+    descriptions:
+      selected: "&dIzvēlēts"
+      view-mode: "&fĻauj izvēlēties, kurš|&flaboāko saraksts|&ftiks rādīts."
+      mode: Rāda labākās 10|salas pēc [type].
+      top-value:
+        likes: "&6[rank]. sala pēc Patīk|&6ar [value] Patīk."
+        dislikes: "&6[rank]. sala pēc Nepatīk|&6ar [value] Nepatīk."
+        rank: "&6[rank]. sala pēc ranga|&6a [varlue] ranga punktiem."
+      values: Salai ir:|[likes] Patīk|[dislikes] Nepatīk|[rank] ranga punkti.
+      unknown: "&cnezināms spēlētājs"
+      current-value: 'Esošā vērtība: [value].'
+      like: Atzīmēts ar patīk |no spēlētājiem.
+      dislike: Atzīmēts ar nepatīk |no spēlētājiem.
+      overall: Aprēķinātā Ranga vērtība|(patīk - nepatīk).
+      like-rank: Vieta sarakstā kārtojot|pēc Patīk daudzuma.
+      dislike-rank: Vieta sarakstā kārtojot|pēc Nepatīk daudzuma.
+      overall-rank: Vieta sarakstā kārtojot|pēc Ranga.
+      like-next: Rādīt nākošos spēlētāju,|kas uzlikuši patīk|tavai salai.
+      dislike-next: Rādīt nākošos spēlētāju,|kas uzlikuši nepatīk|tavai salai.
+      like-previous: Rādīt iepriekšējos spēlētāju,|kas uzlikuši patīk|tavai salai.
+      dislike-previous: Rādīt iepriekšējos spēlētāju,|kas uzlikuši nepatīk|tavai salai.
+      add-like: Ļauj pievienot vai|noņemt patīk šai salai.
+      add-dislike: Ļauj pievienot vai|noņemt nepatīk šai salai.
+      cost: Esošā operācija maksā $[value].
+      like-cost: Ļauj mainīt cik daudz|jāmaksā par Patīk|uzlikšanu.
+      like-remove-cost: Ļauj mainīt cik daudz|jāmaksā par Patīk|noņemšanu.
+      dislike-cost: Ļauj mainīt cik daudz|jāmaksā par Nepatīk|uzlikšanu.
+      dislike-remove-cost: Ļauj mainīt cik daudz|jāmaksā par Nepatīk|noņemšanu.
+      default-icon: Ļauj mainīt sākuma|ikonu, kas rādās labāko|spēlētāju sarakstos.
+      inform-players: Ļauj pārslēgt vai salas|komandas biedrus būtu|jāinformē par
+        to,|ka kāds uzliek patīk|vai nepatīk viņu salai.
+      log-history: Ļauj pārslēgt vai|vēstures dati ir jāsaglabā.
+      reset-likes: Ļauj pārslēgt iespēju|noņemt datus par salu|pēc salas atsākšanas.
+      manage-likes: Ļauj pievienot/noņemt|spēlētājus, kas likuši patīk|vai nepatīk
+        izvēlētajai|salai.
+      likes-icon: Ļauj mainīt salas ikonu,|kura rādās labāko|salu sarakstā.
+      wipe-data: Ļauj dzēst visu|datus, kas saglabāti|priekš šī spēles režīma.
+      edit-settings: Ļauj labot papildinājuma|iestatījumus caur spēli.
+  types:
+    rank: Rangs
+  messages:
+    add-like: "&aTu uzliki Patīk [island] salai."
+    player-add-like: "&a[user] uzlika patīk tavai salai."
+    remove-like: "&cTu noņēmi patīk no [island] salas."
+    player-remove-like: "&c[user] noņēma patīk no tavas salas."
+    add-dislike: "&cTu uzliki Nepatīk [island] salai."
+    player-add-dislike: "&c[user] uzlika Nepatīk tavai salai."
+    remove-dislike: "&aTu uzliki Nepatīk [island] salai."
+    player-remove-dislike: "&a[user] noņēma Nepatīk no tavas salas."
+    no-data-about-your-island: Nav datu par tavu salu.
+  errors:
+    not-on-island: "&cTev ir jābūt uz kādas salas, lai izmantotu šo komandu!"
+    your-island: "&cTu nevari pielikt Patīk vai Nepatīk savai salai!"
+    numeric-only: "&cIevade atļauj tikai ciparus!"
+    not-valid-value: "&cSkaitlim jābūt lielākam par [min] un mazākam par [max], bet
+      tava vērtība ir  [value]!"
+    top-is-empty: "&cAtvaino, neviena sala vēl nav labāko sarakstā!"
+    database-error: "&cAtvaino, radās problēmas ar datubāzi. Nevarēja atrast tavas
+      salas datus."
+  questions:
+    prefix: "&c[SERVERIS]&r:"
+    like-cost: "&5Lūdzu ievadi maksu par Patīk uzlikšanu."
+    like-remove-cost: "&5Lūdzu ievadi maksu par Patīk noņemšanu."
+    dislike-cost: "&5Lūdzu ievadi maksu par Nepatīk uzlikšanu."
+    dislike-remove-cost: "&5Lūdzu ievadi maksu par Nepatīk noņemšanu."
+  commands:
+    admin:
+      help:
+        description: atver administratora paneli
+      settings:
+        description: atver administratora iestatījumu paneli
+    help:
+      description: atver patīk rādītāju paneli
+    top:
+      parameters: "<tips>"
+      description: atver labāko 10 paneli
+    view:
+      parameters: "<spēlētājs>"
+      description: atver paneli, kurā rāda tavas salas Patīk rādītājus
