@@ -1,0 +1,123 @@
+---
+likes:
+  gui:
+    titles:
+      select-block: "＆dブロックを選択"
+      top: "[タイプ]による＆dTop島"
+      admin: "＆dAdminパネル"
+      select-island: 島を選択
+      select-player: "＆dプレーヤーを選択"
+      edit-view: "＆dEdit Island Likes"
+      view: "＆d島のいいね！を見る"
+      manage: いいね・やだねを追加
+      settings: "＆d設定"
+    buttons:
+      cancel: "＆cCancel"
+      accept: "＆aAccept"
+      previous: 前
+      next: 次
+      return: "＆リターン"
+      view-mode: "＆6トップタイプ"
+      name: "[name]"
+      like: "＆6いいねカウント"
+      dislike: "＆cやだねカウント"
+      overall: "＆aランク番号"
+      overall-rank: "&aランクで並べ替え"
+      add-like: "＆6いいねを追加/削除"
+      add-dislike: "＆6やだねを追加/削除"
+      like-cost: いいねコスト
+      dislike-remove-cost: やだねの削除コスト
+      default-icon: デフォルトのアイコン
+      inform-players: 島のメンバーに知らせる
+      log-history: ログ履歴
+      reset-likes: リセット時にいいねをリセット
+      likes-icon: 島のアイコンを変更
+      wipe-data: データを消す
+      edit-settings: 編集の設定
+      add-dislike-user: 嫌いなものを追加
+      add-like-user: いいねを追加
+      remove-dislike-user: やだねを削除
+      remove-like-user: いいねを削除
+      like-rank: "＆6いいね順"
+      dislike-rank: "＆cやだね順"
+      like-remove-cost: いいねの削除コスト
+      dislike-cost: やだねコスト
+      manage-likes: 島のいいね・やだねの管理
+    descriptions:
+      selected: "＆d選んだ"
+      mode: "[type]ごとに上位10の島を表示します。"
+      unknown: "&c不明なプレーヤー"
+      current-value: 現在の値：[value]。
+      like: 他のプレイヤーによって|追加されたいいね！
+      dislike: 他のプレイヤーによって|追加されたいやだね！
+      overall: 計算されたランク値|（いいねーいやだね）。
+      like-rank: トップバイへの配置|いいねカウント。
+      dislike-rank: トップバイへの配置|いやだねカウント。
+      overall-rank: 上位の順位|ランク。
+      like-next: あなたの島が好きな次の|プレイヤーを表示します。
+      dislike-previous: あなたの島を嫌った前の|プレイヤーを表示します。
+      add-dislike: この島への|嫌悪感の|追加または|削除を|許可します。
+      cost: 現在の操作コストは$ [value]です。
+      like-cost: 新しいいいねの|コストを変更できます。
+      dislike-cost: 新しいいやだねの|コストを変更できます。
+      dislike-remove-cost: いやだねを削除するためのコストを変更できます。
+      default-icon: トップ10の|デフォルトアイコンを|変更できます。
+      inform-players: 島のメンバーへの|いいね/いやだね通知を|切り替える
+      log-history: 履歴データの|保存を|切り替える
+      reset-likes: 島のリセットで|島のいいねを|リセットするかどうか|を切り替えます。
+      manage-likes: 選択した島が|好きまたは|嫌いなプレイヤーを|追加/削除できます。
+      likes-icon: トップメニューの|島のアイコンを|変更できます。
+      wipe-data: 現在のGameModeから|すべての保存された|データを完全に|削除することができます。
+      edit-settings: GUI経由でアドオン|設定を編集できます。
+      view-mode: "&f表示するトップ10を|&f選択できます。"
+      top-value:
+        likes: "＆6 [rank]: 島には[value]の|&6いいねがあります。"
+        dislikes: "＆6 [rank]: 島には[value]の|&6いやだねがあります。"
+        rank: "＆6 [rank]: 島には|＆6[value]ランクポイント。"
+      values: 島には：| [likes] いいね | [dislikes] いやだね | [rank] ランクポイント。
+      dislike-next: あなたの島が嫌いな次の|プレイヤーを表示します。
+      like-previous: あなたの島が好きだった以前の|プレイヤーを表示します。
+      add-like: この島に|いいねを|追加または|削除できます。
+      like-remove-cost: いいねを削除するための|コストを変更できます。
+  types:
+    likes: いいね
+    rank: ランク
+    dislikes: やだね
+  messages:
+    add-like: "＆aあなたは[island]の島が好きでした。"
+    player-add-like: "＆a [user]はあなたの島が好きでした。"
+    remove-like: "＆cあなたの好きな[island]の島を削除します。"
+    player-remove-like: "＆c [user]は彼の同類をあなたの島から削除しました。"
+    add-dislike: "＆cあなたは[island]の島が嫌いだった。"
+    player-add-dislike: "＆c [user]はあなたの島を嫌いました。"
+    player-remove-dislike: "＆a [user]は彼の嫌悪をあなたの島から削除しました。"
+    no-data-about-island: この島に関するデータはありません。
+    no-data-about-your-island: あなたの島に関するデータはありません。
+    remove-dislike: "＆a嫌いな[island]の島を削除します。"
+  errors:
+    not-on-island: "＆cこのコマンドを実行するには、島にいる必要があります！"
+    your-island: "＆c自分の島に好き嫌いを追加することはできません！"
+    numeric-only: "＆c入力は数字のみである必要があります！"
+    not-valid-value: "＆c数値は[min]より大きく[max]より小さい必要がありますが、入力は[value]です！"
+    top-is-empty: "＆c申し訳ありませんが、トップに誰もいません！"
+    database-error: "＆c申し訳ありませんが、データベースに何らかのエラーがありました。アイランドデータが見つかりません。"
+  commands:
+    admin:
+      help:
+        description: 管理GUIを開きます
+      settings:
+        description: 管理設定GUIを開きます
+    top:
+      parameters: "<type>"
+      description: トップGUIを開きます
+    view:
+      parameters: "<player>"
+      description: あなたのいいねを見ることができるGUIを開きます
+    help:
+      description: いいねのGUIを開きます
+  questions:
+    prefix: "＆c [SERVER]＆r："
+    like-cost: "＆5いいねコストを入力してください。"
+    like-remove-cost: "＆5いいねの削除ごとのコストを入力してください。"
+    dislike-cost: "＆5やだねコストを入力してください。"
+    dislike-remove-cost: "＆5やだねコストを入力してください。"
