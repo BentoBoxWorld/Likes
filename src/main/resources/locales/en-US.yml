@@ -21,11 +21,11 @@ likes:
       name: "[name]"
 
       like: "&6Likes count"
-      like-rank: "&6Place by Likes"
+      like-rank: "&6Rank by Likes"
       dislike: "&cDislikes count"
-      dislike-rank: "&cPlace by Dislikes"
+      dislike-rank: "&cRank by Dislikes"
       overall: "&aRank number"
-      overall-rank: "&aPlace by Rank"
+      overall-rank: "&aSort by Rank"
 
       add-like: "&6Add/Remove Like"
       add-dislike: "&cAdd/Remove Dislike"
