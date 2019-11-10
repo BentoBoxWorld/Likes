@@ -31,3 +31,6 @@ out/
 *.ipr
 *.iws
 *.iml
+/.classpath
+/.project
+/.settings/
