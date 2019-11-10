@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>world.bentobox</groupId>
@@ -14,30 +14,31 @@
 
     <inceptionYear>2019</inceptionYear>
 
-    <!--  SCM is a GitHub link to your project  -->
-    <!--  Can be removed   -->
+    <!-- SCM is a GitHub link to your project -->
+    <!-- Can be removed -->
     <scm>
         <connection>scm:git:https://github.com/BentoBoxWorld/Likes.git</connection>
         <developerConnection>scm:git:git@github.com:BentoBoxWorld/Likes.git</developerConnection>
         <url>https://github.com/BentoBoxWorld/Likes</url>
     </scm>
 
-    <!--  ciManagement is a build server that runs builds for your project  -->
-    <!--  Can be removed   -->
+    <!-- ciManagement is a build server that runs builds for your project -->
+    <!-- Can be removed -->
     <ciManagement>
         <system>jenkins</system>
         <url>http://ci.codemc.org/job/BentoBoxWorld/job/Likes</url>
     </ciManagement>
 
-    <!--  issueManagement is a link to issues page.   -->
-    <!--  Can be removed   -->
+    <!-- issueManagement is a link to issues page. -->
+    <!-- Can be removed -->
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/BentoBoxWorld/Likes/issues</url>
     </issueManagement>
 
-    <!--  distributionManagement contains public maven repositories for your addon  -->
-    <!--  Can be removed   -->
+    <!-- distributionManagement contains public maven repositories for your 
+        addon -->
+    <!-- Can be removed -->
     <distributionManagement>
         <snapshotRepository>
             <id>codemc-snapshots</id>
@@ -49,9 +50,10 @@
         </repository>
     </distributionManagement>
 
-    <!--  Properties contains all variables that can offten change, f.e. BentoBox API version -->
+    <!-- Properties contains all variables that can offten change, f.e. BentoBox 
+        API version -->
     <properties>
-        <!--    Some JAVA encoding settings    -->
+        <!-- Some JAVA encoding settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
@@ -98,13 +100,37 @@
             <properties>
                 <!-- Override only if necessary -->
                 <revision>${build.version}</revision>
-                <!-- Empties build number variable.-->
+                <!-- Empties build number variable. -->
                 <build.number></build.number>
             </properties>
         </profile>
+        <profile>
+            <id>sonar</id>
+            <properties>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+                <sonar.organization>bentobox-world</sonar.organization>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>3.6.0.1398</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sonar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
-    <!--  Repositories contains links from were dependencies will be searched  -->
+    <!-- Repositories contains links from were dependencies will be searched -->
     <repositories>
         <repository>
             <id>spigot-repo</id>
@@ -124,7 +150,7 @@
         </repository>
     </repositories>
 
-    <!--  Your addon must contain Spigot and BentoBox APIs dependencies.  -->
+    <!-- Your addon must contain Spigot and BentoBox APIs dependencies. -->
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -153,7 +179,8 @@
         </dependency>
     </dependencies>
 
-    <!--  Build contains information for maven. It allows to create correct jar file.  -->
+    <!-- Build contains information for maven. It allows to create correct 
+        jar file. -->
     <build>
         <finalName>${project.name}-${revision}${build.number}</finalName>
 
@@ -254,6 +281,33 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
                 <version>2.5.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.3</version>
+                <configuration>
+                    <append>true</append>
+                    <excludes>
+                        <!-- This is required to prevent Jacoco from adding 
+                            synthetic fields to a JavaBean class (causes errors in testing) -->
+                        <exclude>**/*Names*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
