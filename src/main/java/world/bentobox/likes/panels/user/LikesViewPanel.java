@@ -49,9 +49,6 @@ public class LikesViewPanel
     {
         this.addon = addon;
         this.user = user;
-        this.world = world;
-
-        this.permissionPrefix = permissionPrefix;
 
         this.likesObject = likesObject;
 
@@ -423,16 +420,6 @@ public class LikesViewPanel
      * This variable holds user who opens panel. Without it panel cannot be opened.
      */
     private final User user;
-
-    /**
-     * This variable holds a world to which gui referee.
-     */
-    private final World world;
-
-    /**
-     * Permission prefix
-     */
-    private final String permissionPrefix;
 
     /**
      * This variable holds likes object that is view by user in current gui.

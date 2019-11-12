@@ -165,7 +165,7 @@ public class EditSettingsPanel extends CommonPanel
 				name = this.user.getTranslation(Constants.BUTTON + "like-remove-cost");
 				description.add(this.user.getTranslation(Constants.DESCRIPTION + "like-remove-cost"));
 				description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-					"[value]", String.valueOf(this.settings.getLikeRemoveCost())));;
+					"[value]", String.valueOf(this.settings.getLikeRemoveCost())));
 				icon = new ItemStack(Material.GOLD_NUGGET);
 				clickHandler = (panel, user, clickType, slot) -> {
 					this.getNumberInput(number -> this.settings.setLikeRemoveCost(number.doubleValue()),
@@ -181,7 +181,7 @@ public class EditSettingsPanel extends CommonPanel
 				name = this.user.getTranslation(Constants.BUTTON + "dislike-cost");
 				description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike-cost"));
 				description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-					"[value]", String.valueOf(this.settings.getDislikeAddCost())));;
+					"[value]", String.valueOf(this.settings.getDislikeAddCost())));
 				icon = new ItemStack(Material.IRON_INGOT);
 				clickHandler = (panel, user, clickType, slot) -> {
 					this.getNumberInput(number -> this.settings.setDislikeAddCost(number.doubleValue()),
@@ -197,7 +197,7 @@ public class EditSettingsPanel extends CommonPanel
 				name = this.user.getTranslation(Constants.BUTTON + "dislike-remove-cost");
 				description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike-remove-cost"));
 				description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-					"[value]", String.valueOf(this.settings.getDislikeRemoveCost())));;
+					"[value]", String.valueOf(this.settings.getDislikeRemoveCost())));
 				icon = new ItemStack(Material.IRON_NUGGET);
 				clickHandler = (panel, user, clickType, slot) -> {
 					this.getNumberInput(number -> this.settings.setDislikeRemoveCost(number.doubleValue()),

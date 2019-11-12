@@ -1,6 +1,6 @@
 package world.bentobox.likes.utils.collections;
 
-/**
+/*
  * User: Vitaly Sazanovich
  * Date: 07/02/13
  * Time: 19:16
@@ -13,6 +13,7 @@ package world.bentobox.likes.utils.collections;
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
+import java.io.IOException;
 import java.util.*;
 
 
@@ -182,8 +183,7 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
         comparator = m.comparator();
         try {
             buildFromSorted(m.size(), m.entrySet().iterator(), null, null);
-        } catch (java.io.IOException cannotHappen) {
-        } catch (ClassNotFoundException cannotHappen) {
+        } catch (IOException | ClassNotFoundException cannotHappen) {
         }
     }
 
@@ -307,13 +307,12 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
         int mapSize = map.size();
         if (size == 0 && mapSize != 0 && map instanceof SortedMap) {
             Comparator c = ((SortedMap) map).comparator();
-            if (c == comparator || (c != null && c.equals(comparator))) {
+            if (Objects.equals(c, comparator)) {
                 ++modCount;
                 try {
                     buildFromSorted(mapSize, map.entrySet().iterator(),
                             null, null);
-                } catch (java.io.IOException cannotHappen) {
-                } catch (ClassNotFoundException cannotHappen) {
+                } catch (IOException | ClassNotFoundException cannotHappen) {
                 }
                 return;
             }
@@ -556,7 +555,7 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
             // throw NullPointerException
             //
             // compare(key, key); // type check
-            root = new Entry<K, V>(key, value, null);
+            root = new Entry<>(key, value, null);
             root.weight = 1;
             size = 1;
             modCount++;
@@ -592,7 +591,7 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
                     return t.setValue(value);
             } while (t != null);
         }
-        Entry<K, V> e = new Entry<K, V>(key, value, parent);
+        Entry<K, V> e = new Entry<>(key, value, parent);
         if (cmp < 0) {
             parent.left = e;
         } else {
@@ -650,7 +649,7 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
      */
     @Override
     public Object clone() {
-        IndexedTreeMap<K, V> clone = null;
+        IndexedTreeMap<K, V> clone;
         try {
             clone = (IndexedTreeMap<K, V>) super.clone();
         } catch (CloneNotSupportedException e) {
@@ -668,8 +667,7 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
         // Initialize clone with our mappings
         try {
             clone.buildFromSorted(size, entrySet().iterator(), null, null);
-        } catch (java.io.IOException cannotHappen) {
-        } catch (ClassNotFoundException cannotHappen) {
+        } catch (IOException | ClassNotFoundException cannotHappen) {
         }
 
         return clone;
@@ -1274,18 +1272,18 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
         @Override
         public NavigableSet<E> subSet(E fromElement, boolean fromInclusive,
                 E toElement, boolean toInclusive) {
-            return new IndexedTreeSet<E>(m.subMap(fromElement, fromInclusive,
+            return new IndexedTreeSet<>(m.subMap(fromElement, fromInclusive,
                     toElement, toInclusive));
         }
 
         @Override
         public NavigableSet<E> headSet(E toElement, boolean inclusive) {
-            return new IndexedTreeSet<E>(m.headMap(toElement, inclusive));
+            return new IndexedTreeSet<>(m.headMap(toElement, inclusive));
         }
 
         @Override
         public NavigableSet<E> tailSet(E fromElement, boolean inclusive) {
-            return new IndexedTreeSet<E>(m.tailMap(fromElement, inclusive));
+            return new IndexedTreeSet<>(m.tailMap(fromElement, inclusive));
         }
 
         @Override
@@ -1435,8 +1433,8 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
      * Test two values for equality.  Differs from o1.equals(o2) only in
      * that it copes with <tt>null</tt> o1 properly.
      */
-    final static boolean valEquals(Object o1, Object o2) {
-        return (o1 == null ? o2 == null : o1.equals(o2));
+    static boolean valEquals(Object o1, Object o2) {
+        return (Objects.equals(o1, o2));
     }
 
     /**
@@ -1444,7 +1442,7 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
      */
     static <K, V> Map.Entry<K, V> exportEntry(IndexedTreeMap.Entry<K, V> e) {
         return e == null ? null :
-            new java.util.AbstractMap.SimpleImmutableEntry<K, V>(e);
+                new java.util.AbstractMap.SimpleImmutableEntry<>(e);
     }
 
     /**
@@ -1517,8 +1515,7 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
         final boolean tooLow(Object key) {
             if (!fromStart) {
                 int c = m.compare(key, lo);
-                if (c < 0 || (c == 0 && !loInclusive))
-                    return true;
+                return c < 0 || (c == 0 && !loInclusive);
             }
             return false;
         }
@@ -1526,8 +1523,7 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
         final boolean tooHigh(Object key) {
             if (!toEnd) {
                 int c = m.compare(key, hi);
-                if (c > 0 || (c == 0 && !hiInclusive))
-                    return true;
+                return c > 0 || (c == 0 && !hiInclusive);
             }
             return false;
         }
@@ -1799,10 +1795,8 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
                 if (size == -1 || sizeModCount != m.modCount) {
                     sizeModCount = m.modCount;
                     size = 0;
-                    Iterator i = iterator();
-                    while (i.hasNext()) {
+                    for (Entry<K, V> kvEntry : this) {
                         size++;
-                        i.next();
                     }
                 }
                 return size;
@@ -2752,8 +2746,7 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
         s.writeInt(size);
 
         // Write out keys and values (alternating)
-        for (Iterator<Map.Entry<K, V>> i = entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry<K, V> e = i.next();
+        for (Map.Entry<K, V> e : entrySet()) {
             s.writeObject(e.getKey());
             s.writeObject(e.getValue());
         }
@@ -2799,8 +2792,7 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
     void addAllForTreeSet(SortedSet<? extends K> set, V defaultVal) {
         try {
             buildFromSorted(set.size(), set.iterator(), null, defaultVal);
-        } catch (java.io.IOException cannotHappen) {
-        } catch (ClassNotFoundException cannotHappen) {
+        } catch (IOException | ClassNotFoundException cannotHappen) {
         }
     }
 
@@ -2858,11 +2850,11 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
      * @param redLevel the level at which nodes should be red.
      *                 Must be equal to computeRedLevel for tree of this size.
      */
-    private final Entry<K, V> buildFromSorted(int level, int lo, int hi,
-            int redLevel,
-            Iterator it,
-            java.io.ObjectInputStream str,
-            V defaultVal)
+    private Entry<K, V> buildFromSorted(int level, int lo, int hi,
+                                        int redLevel,
+                                        Iterator it,
+                                        java.io.ObjectInputStream str,
+                                        V defaultVal)
                     throws java.io.IOException, ClassNotFoundException {
         /*
          * Strategy: The root is the middlemost element. To get to it, we
@@ -2902,7 +2894,7 @@ implements IndexedNavigableMap<K, V>, Cloneable, java.io.Serializable {
             value = (defaultVal != null ? defaultVal : (V) str.readObject());
         }
 
-        Entry<K, V> middle = new Entry<K, V>(key, value, null);
+        Entry<K, V> middle = new Entry<>(key, value, null);
 
         // color nodes in non-full bottommost level red
         if (level == redLevel)

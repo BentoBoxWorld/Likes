@@ -94,7 +94,6 @@ public class AdminPanel extends CommonPanel
 		ItemStack icon;
 		String name;
 		String description;
-		boolean glow;
 		PanelItem.ClickHandler clickHandler;
 
 		switch (button)
@@ -108,7 +107,6 @@ public class AdminPanel extends CommonPanel
 					ListIslandsPanel.open(this, ListIslandsPanel.Type.MANAGE);
 					return true;
 				};
-				glow = false;
 
 				break;
 			}
@@ -121,7 +119,6 @@ public class AdminPanel extends CommonPanel
 					ListIslandsPanel.open(this, ListIslandsPanel.Type.ICON);
 					return true;
 				};
-				glow = false;
 
 				break;
 			}
@@ -134,7 +131,6 @@ public class AdminPanel extends CommonPanel
 					this.addon.getManager().wipeData(this.world);
 					return true;
 				};
-				glow = false;
 
 				break;
 			}
@@ -147,7 +143,6 @@ public class AdminPanel extends CommonPanel
 					EditSettingsPanel.openPanel(this.addon, this.user, this.world, this.permissionPrefix);
 					return true;
 				};
-				glow = false;
 
 				break;
 			}
@@ -159,7 +154,7 @@ public class AdminPanel extends CommonPanel
 			icon(icon).
 			name(name).
 			description(GuiUtils.stringSplit(description, 999)).
-			glow(glow).
+			glow(false).
 			clickHandler(clickHandler).
 			build();
 	}

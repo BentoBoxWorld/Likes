@@ -28,304 +28,304 @@ import world.bentobox.bentobox.api.configuration.StoreAt;
 @ConfigComment("")
 public class Settings implements ConfigObject
 {
-	// ---------------------------------------------------------------------
-	// Section: Getters and Setters
-	// ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------
+    // Section: Getters and Setters
+    // ---------------------------------------------------------------------
 
 
-	/**
-	 * This method returns the disabledGameModes value.
-	 *
-	 * @return the value of disabledGameModes.
-	 */
-	public Set<String> getDisabledGameModes()
-	{
-		return disabledGameModes;
-	}
+    /**
+     * This method returns the disabledGameModes value.
+     *
+     * @return the value of disabledGameModes.
+     */
+    public Set<String> getDisabledGameModes()
+    {
+        return disabledGameModes;
+    }
 
 
-	/**
-	 * This method sets the disabledGameModes value.
-	 *
-	 * @param disabledGameModes the disabledGameModes new value.
-	 */
-	public void setDisabledGameModes(Set<String> disabledGameModes)
-	{
-		this.disabledGameModes = disabledGameModes;
-	}
+    /**
+     * This method sets the disabledGameModes value.
+     *
+     * @param disabledGameModes the disabledGameModes new value.
+     */
+    public void setDisabledGameModes(Set<String> disabledGameModes)
+    {
+        this.disabledGameModes = disabledGameModes;
+    }
 
 
-	/**
-	 * Method Settings#getDefaultIcon returns the defaultIcon of this object.
-	 *
-	 * @return the defaultIcon (type Material) of this object.
-	 */
-	public Material getDefaultIcon()
-	{
-		return defaultIcon;
-	}
+    /**
+     * Method Settings#getDefaultIcon returns the defaultIcon of this object.
+     *
+     * @return the defaultIcon (type Material) of this object.
+     */
+    public Material getDefaultIcon()
+    {
+        return defaultIcon;
+    }
 
 
-	/**
-	 * Method Settings#setDefaultIcon sets new value for the defaultIcon of this object.
-	 *
-	 * @param defaultIcon new value for this object.
-	 */
-	public void setDefaultIcon(Material defaultIcon)
-	{
-		this.defaultIcon = defaultIcon;
-	}
+    /**
+     * Method Settings#setDefaultIcon sets new value for the defaultIcon of this object.
+     *
+     * @param defaultIcon new value for this object.
+     */
+    public void setDefaultIcon(Material defaultIcon)
+    {
+        this.defaultIcon = defaultIcon;
+    }
 
 
-	/**
-	 * Method Settings#isLogHistory returns the logHistory of this object.
-	 *
-	 * @return the logHistory (type boolean) of this object.
-	 */
-	public boolean isLogHistory()
-	{
-		return logHistory;
-	}
+    /**
+     * Method Settings#isLogHistory returns the logHistory of this object.
+     *
+     * @return the logHistory (type boolean) of this object.
+     */
+    public boolean isLogHistory()
+    {
+        return logHistory;
+    }
 
 
-	/**
-	 * Method Settings#setLogHistory sets new value for the logHistory of this object.
-	 *
-	 * @param logHistory new value for this object.
-	 */
-	public void setLogHistory(boolean logHistory)
-	{
-		this.logHistory = logHistory;
-	}
+    /**
+     * Method Settings#setLogHistory sets new value for the logHistory of this object.
+     *
+     * @param logHistory new value for this object.
+     */
+    public void setLogHistory(boolean logHistory)
+    {
+        this.logHistory = logHistory;
+    }
 
 
-	/**
-	 * Method Settings#isResetLikes returns the resetLikes of this object.
-	 *
-	 * @return the resetLikes (type boolean) of this object.
-	 */
-	public boolean isResetLikes()
-	{
-		return resetLikes;
-	}
+    /**
+     * Method Settings#isResetLikes returns the resetLikes of this object.
+     *
+     * @return the resetLikes (type boolean) of this object.
+     */
+    public boolean isResetLikes()
+    {
+        return resetLikes;
+    }
 
 
-	/**
-	 * Method Settings#setResetLikes sets new value for the resetLikes of this object.
-	 * @param resetLikes new value for this object.
-	 *
-	 */
-	public void setResetLikes(boolean resetLikes)
-	{
-		this.resetLikes = resetLikes;
-	}
+    /**
+     * Method Settings#setResetLikes sets new value for the resetLikes of this object.
+     * @param resetLikes new value for this object.
+     *
+     */
+    public void setResetLikes(boolean resetLikes)
+    {
+        this.resetLikes = resetLikes;
+    }
 
 
-	/**
-	 * Method Settings#getLikeAddCost returns the likeAddCost of this object.
-	 *
-	 * @return the likeAddCost (type double) of this object.
-	 */
-	public double getLikeAddCost()
-	{
-		return likeAddCost;
-	}
+    /**
+     * Method Settings#getLikeAddCost returns the likeAddCost of this object.
+     *
+     * @return the likeAddCost (type double) of this object.
+     */
+    public double getLikeAddCost()
+    {
+        return likeAddCost;
+    }
 
 
-	/**
-	 * Method Settings#setLikeAddCost sets new value for the likeAddCost of this object.
-	 * @param likeAddCost new value for this object.
-	 *
-	 */
-	public void setLikeAddCost(double likeAddCost)
-	{
-		this.likeAddCost = likeAddCost;
-	}
+    /**
+     * Method Settings#setLikeAddCost sets new value for the likeAddCost of this object.
+     * @param likeAddCost new value for this object.
+     *
+     */
+    public void setLikeAddCost(double likeAddCost)
+    {
+        this.likeAddCost = likeAddCost;
+    }
 
 
-	/**
-	 * Method Settings#getLikeRemoveCost returns the likeRemoveCost of this object.
-	 *
-	 * @return the likeRemoveCost (type double) of this object.
-	 */
-	public double getLikeRemoveCost()
-	{
-		return likeRemoveCost;
-	}
+    /**
+     * Method Settings#getLikeRemoveCost returns the likeRemoveCost of this object.
+     *
+     * @return the likeRemoveCost (type double) of this object.
+     */
+    public double getLikeRemoveCost()
+    {
+        return likeRemoveCost;
+    }
 
 
-	/**
-	 * Method Settings#setLikeRemoveCost sets new value for the likeRemoveCost of this object.
-	 * @param likeRemoveCost new value for this object.
-	 *
-	 */
-	public void setLikeRemoveCost(double likeRemoveCost)
-	{
-		this.likeRemoveCost = likeRemoveCost;
-	}
+    /**
+     * Method Settings#setLikeRemoveCost sets new value for the likeRemoveCost of this object.
+     * @param likeRemoveCost new value for this object.
+     *
+     */
+    public void setLikeRemoveCost(double likeRemoveCost)
+    {
+        this.likeRemoveCost = likeRemoveCost;
+    }
 
 
-	/**
-	 * Method Settings#getDislikeAddCost returns the dislikeAddCost of this object.
-	 *
-	 * @return the dislikeAddCost (type double) of this object.
-	 */
-	public double getDislikeAddCost()
-	{
-		return dislikeAddCost;
-	}
+    /**
+     * Method Settings#getDislikeAddCost returns the dislikeAddCost of this object.
+     *
+     * @return the dislikeAddCost (type double) of this object.
+     */
+    public double getDislikeAddCost()
+    {
+        return dislikeAddCost;
+    }
 
 
-	/**
-	 * Method Settings#setDislikeAddCost sets new value for the dislikeAddCost of this object.
-	 * @param dislikeAddCost new value for this object.
-	 *
-	 */
-	public void setDislikeAddCost(double dislikeAddCost)
-	{
-		this.dislikeAddCost = dislikeAddCost;
-	}
+    /**
+     * Method Settings#setDislikeAddCost sets new value for the dislikeAddCost of this object.
+     * @param dislikeAddCost new value for this object.
+     *
+     */
+    public void setDislikeAddCost(double dislikeAddCost)
+    {
+        this.dislikeAddCost = dislikeAddCost;
+    }
 
 
-	/**
-	 * Method Settings#getDislikeRemoveCost returns the dislikeRemoveCost of this object.
-	 *
-	 * @return the dislikeRemoveCost (type double) of this object.
-	 */
-	public double getDislikeRemoveCost()
-	{
-		return dislikeRemoveCost;
-	}
+    /**
+     * Method Settings#getDislikeRemoveCost returns the dislikeRemoveCost of this object.
+     *
+     * @return the dislikeRemoveCost (type double) of this object.
+     */
+    public double getDislikeRemoveCost()
+    {
+        return dislikeRemoveCost;
+    }
 
 
-	/**
-	 * Method Settings#setDislikeRemoveCost sets new value for the dislikeRemoveCost of this object.
-	 * @param dislikeRemoveCost new value for this object.
-	 *
-	 */
-	public void setDislikeRemoveCost(double dislikeRemoveCost)
-	{
-		this.dislikeRemoveCost = dislikeRemoveCost;
-	}
+    /**
+     * Method Settings#setDislikeRemoveCost sets new value for the dislikeRemoveCost of this object.
+     * @param dislikeRemoveCost new value for this object.
+     *
+     */
+    public void setDislikeRemoveCost(double dislikeRemoveCost)
+    {
+        this.dislikeRemoveCost = dislikeRemoveCost;
+    }
 
 
-	/**
-	 * Method Settings#isInformPlayers returns the informPlayers of this object.
-	 *
-	 * @return the informPlayers (type boolean) of this object.
-	 */
-	public boolean isInformPlayers()
-	{
-		return informPlayers;
-	}
+    /**
+     * Method Settings#isInformPlayers returns the informPlayers of this object.
+     *
+     * @return the informPlayers (type boolean) of this object.
+     */
+    public boolean isInformPlayers()
+    {
+        return informPlayers;
+    }
 
 
-	/**
-	 * Method Settings#setInformPlayers sets new value for the informPlayers of this object.
-	 * @param informPlayers new value for this object.
-	 *
-	 */
-	public void setInformPlayers(boolean informPlayers)
-	{
-		this.informPlayers = informPlayers;
-	}
+    /**
+     * Method Settings#setInformPlayers sets new value for the informPlayers of this object.
+     * @param informPlayers new value for this object.
+     *
+     */
+    public void setInformPlayers(boolean informPlayers)
+    {
+        this.informPlayers = informPlayers;
+    }
 
 
-// ---------------------------------------------------------------------
-// Section: Variables
-// ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------
+    // Section: Variables
+    // ---------------------------------------------------------------------
 
 
-	@ConfigComment("")
-	@ConfigComment("Default icon for Top Island panel.")
-	@ConfigComment("Should be valid Material")
-	@ConfigEntry(path = "default-icon")
-	private Material defaultIcon = Material.PLAYER_HEAD;
+    @ConfigComment("")
+    @ConfigComment("Default icon for Top Island panel.")
+    @ConfigComment("Should be valid Material")
+    @ConfigEntry(path = "default-icon")
+    private Material defaultIcon = Material.PLAYER_HEAD;
 
-	@ConfigComment("")
-	@ConfigComment("Allows to store history data about added and removed likes and dislikes.")
-	@ConfigEntry(path = "log-history")
-	private boolean logHistory;
+    @ConfigComment("")
+    @ConfigComment("Allows to store history data about added and removed likes and dislikes.")
+    @ConfigEntry(path = "log-history")
+    private boolean logHistory;
 
-	@ConfigComment("")
-	@ConfigComment("Allows to enable ability to send message to island members about someone")
-	@ConfigComment("liking or disliking their island.")
-	@ConfigEntry(path = "inform-members")
-	private boolean informPlayers;
+    @ConfigComment("")
+    @ConfigComment("Allows to enable ability to send message to island members about someone")
+    @ConfigComment("liking or disliking their island.")
+    @ConfigEntry(path = "inform-members")
+    private boolean informPlayers;
 
-	@ConfigComment("")
-	@ConfigComment("Allows reset likes and dislikes after resetting island.")
-	@ConfigEntry(path = "reset-on-reset")
-	private boolean resetLikes;
+    @ConfigComment("")
+    @ConfigComment("Allows reset likes and dislikes after resetting island.")
+    @ConfigEntry(path = "reset-on-reset")
+    private boolean resetLikes;
 
-	@ConfigComment("")
-	@ConfigComment("Allows to define cost for player to add like.")
-	@ConfigEntry(path = "costs.add-like")
-	private double likeAddCost;
+    @ConfigComment("")
+    @ConfigComment("Allows to define cost for player to add like.")
+    @ConfigEntry(path = "costs.add-like")
+    private double likeAddCost;
 
-	@ConfigComment("")
-	@ConfigComment("Allows to define cost for player to remove like.")
-	@ConfigEntry(path = "costs.remove-like")
-	private double likeRemoveCost;
+    @ConfigComment("")
+    @ConfigComment("Allows to define cost for player to remove like.")
+    @ConfigEntry(path = "costs.remove-like")
+    private double likeRemoveCost;
 
-	@ConfigComment("")
-	@ConfigComment("Allows to define cost for player to add dislike.")
-	@ConfigEntry(path = "costs.add-dislike")
-	private double dislikeAddCost;
+    @ConfigComment("")
+    @ConfigComment("Allows to define cost for player to add dislike.")
+    @ConfigEntry(path = "costs.add-dislike")
+    private double dislikeAddCost;
 
-	@ConfigComment("")
-	@ConfigComment("Allows to define cost for player to remove dislike.")
-	@ConfigEntry(path = "costs.remove-dislike")
-	private double dislikeRemoveCost;
+    @ConfigComment("")
+    @ConfigComment("Allows to define cost for player to remove dislike.")
+    @ConfigEntry(path = "costs.remove-dislike")
+    private double dislikeRemoveCost;
 
-	@ConfigComment("")
-	@ConfigComment("This list stores GameModes in which Likes addon should not work.")
-	@ConfigComment("To disable addon it is necessary to write its name in new line that starts with -. Example:")
-	@ConfigComment("disabled-gamemodes:")
-	@ConfigComment(" - BSkyBlock")
-	@ConfigEntry(path = "disabled-gamemodes")
-	private Set<String> disabledGameModes = new HashSet<>();
-
-
-// ---------------------------------------------------------------------
-// Section: Enums
-// ---------------------------------------------------------------------
+    @ConfigComment("")
+    @ConfigComment("This list stores GameModes in which Likes addon should not work.")
+    @ConfigComment("To disable addon it is necessary to write its name in new line that starts with -. Example:")
+    @ConfigComment("disabled-gamemodes:")
+    @ConfigComment(" - BSkyBlock")
+    @ConfigEntry(path = "disabled-gamemodes")
+    private Set<String> disabledGameModes = new HashSet<>();
 
 
-	/**
-	 * Allows to select different Modes for viewing or choosing tops
-	 */
-	public enum VIEW_MODE
-	{
-		LIKES,
-		DISLIKES,
-		RANK;
+    // ---------------------------------------------------------------------
+    // Section: Enums
+    // ---------------------------------------------------------------------
 
 
-		/**
-		 * This method returns stored parameter from string.
-		 * @param parameter String of object that must be returned
-		 * @return CommandParameters object or null.
-		 */
-		public static VIEW_MODE getMode(String parameter)
-		{
-			return BY_NAME.get(parameter);
-		}
+    /**
+     * Allows to select different Modes for viewing or choosing tops
+     */
+    public enum VIEW_MODE
+    {
+        LIKES,
+        DISLIKES,
+        RANK;
 
-		/**
-		 * This map allows to access all enum values via their string.
-		 */
-		private final static Map<String, VIEW_MODE> BY_NAME = new HashMap<>();
 
-		/**
-		 * This static method populated BY_NAME map.
-		 */
-		static
-		{
-			for (VIEW_MODE mode : VIEW_MODE.values())
-			{
-				BY_NAME.put(mode.name(), mode);
-			}
-		}
-	}
+        /**
+         * This method returns stored parameter from string.
+         * @param parameter String of object that must be returned
+         * @return CommandParameters object or null.
+         */
+        public static VIEW_MODE getMode(String parameter)
+        {
+            return BY_NAME.get(parameter);
+        }
+
+        /**
+         * This map allows to access all enum values via their string.
+         */
+        private static final Map<String, VIEW_MODE> BY_NAME = new HashMap<>();
+
+        /*
+         * This static method populated BY_NAME map.
+         */
+        static
+        {
+            for (VIEW_MODE mode : VIEW_MODE.values())
+            {
+                BY_NAME.put(mode.name(), mode);
+            }
+        }
+    }
 }
