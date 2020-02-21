@@ -1,15 +1,16 @@
 package world.bentobox.likes.panels.user;
 
 
-import com.google.common.collect.ImmutableSet;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.World;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.World;
+
+import com.google.common.collect.ImmutableSet;
 
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
@@ -279,7 +280,7 @@ public class TopLikesPanel
 
 		PanelItem.ClickHandler clickHandler;
 
-		if (island.isPresent())
+		if (island.isPresent() && island.get().getOwner() != null)
 		{
 			UUID ownerId = island.get().getOwner();
 
