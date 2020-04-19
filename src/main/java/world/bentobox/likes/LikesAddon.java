@@ -1,11 +1,11 @@
 package world.bentobox.likes;
 
 
-import org.bukkit.Bukkit;
-import org.eclipse.jdt.annotation.NonNull;
-
 import java.util.Arrays;
 import java.util.Optional;
+
+import org.bukkit.Bukkit;
+import org.eclipse.jdt.annotation.NonNull;
 
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
