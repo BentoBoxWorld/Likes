@@ -1,16 +1,16 @@
 package world.bentobox.likes.panels.user;
 
 
-import com.google.common.collect.ImmutableSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import com.google.common.collect.ImmutableSet;
 
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
@@ -50,9 +50,12 @@ public class TopLikesPanel
 		this.user = user;
 		this.world = world;
 
-		this.permissionPrefix = permissionPrefix;
+		/*
+		 * Permission prefix
+		 */
+		String permissionPrefix1 = permissionPrefix;
 
-		this.iconPermission = this.permissionPrefix + "likes.icon";
+		this.iconPermission = permissionPrefix1 + "likes.icon";
 		this.viewMode = mode;
 
 		this.topPlayerList = new ArrayList<>(10);
@@ -277,7 +280,7 @@ public class TopLikesPanel
 
 		PanelItem.ClickHandler clickHandler;
 
-		if (island.isPresent())
+		if (island.isPresent() && island.get().getOwner() != null)
 		{
 			UUID ownerId = island.get().getOwner();
 
@@ -323,7 +326,7 @@ public class TopLikesPanel
 
 		PanelItem panelItem;
 
-		if (icon.equals(Material.PLAYER_HEAD))
+		if (icon == null || icon.equals(Material.PLAYER_HEAD))
 		{
 			panelItem = new PanelItemBuilder().
 				name(this.user.getTranslation(Constants.BUTTON + "name", "[name]", name)).
@@ -369,11 +372,6 @@ public class TopLikesPanel
 	private final World world;
 
 	/**
-	 * Permission prefix
-	 */
-	private final String permissionPrefix;
-
-	/**
 	 * Location to icon permission.
 	 */
 	private final String iconPermission;
@@ -397,7 +395,7 @@ public class TopLikesPanel
 	 */
 	private static final int[] PLACEMENTS = new int[10];
 
-	/**
+	/*
 	 * Populate button indexes
 	 */
 	static

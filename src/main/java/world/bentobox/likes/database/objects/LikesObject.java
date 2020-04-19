@@ -7,13 +7,13 @@
 package world.bentobox.likes.database.objects;
 
 
-import com.google.gson.annotations.Expose;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import com.google.gson.annotations.Expose;
 
 import world.bentobox.bentobox.api.logs.LogEntry;
 import world.bentobox.bentobox.database.objects.DataObject;

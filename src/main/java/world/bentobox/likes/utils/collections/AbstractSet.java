@@ -1,6 +1,6 @@
 package world.bentobox.likes.utils.collections;
 
-/**
+/*
  * User: Vitaly Sazanovich
  * Date: 07/02/13
  * Time: 19:25
@@ -87,9 +87,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
             return false;
         try {
             return containsAll(c);
-        } catch (ClassCastException unused) {
-            return false;
-        } catch (NullPointerException unused) {
+        } catch (ClassCastException | NullPointerException unused) {
             return false;
         }
     }
@@ -113,9 +111,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
      */
     public int hashCode() {
         int h = 0;
-        Iterator<E> i = iterator();
-        while (i.hasNext()) {
-            E obj = i.next();
+        for (E obj : this) {
             if (obj != null)
                 h += obj.hashCode();
         }
@@ -161,8 +157,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
         boolean modified = false;
 
         if (size() > c.size()) {
-            for (Iterator<?> i = c.iterator(); i.hasNext(); )
-                modified |= remove(i.next());
+            for (Object o : c) modified |= remove(o);
         } else {
             for (Iterator<?> i = iterator(); i.hasNext(); ) {
                 if (c.contains(i.next())) {

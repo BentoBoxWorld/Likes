@@ -1,6 +1,6 @@
 package world.bentobox.likes.utils.collections;
 
-/**
+/*
  * User: Vitaly Sazanovich
  * Date: 07/02/13
  * Time: 19:23
@@ -13,8 +13,12 @@ package world.bentobox.likes.utils.collections;
  * Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
-
-import java.util.*;
+import java.util.AbstractCollection;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * This class provides a skeletal implementation of the <tt>Map</tt>
@@ -422,9 +426,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
             return false;
 
         try {
-            Iterator<Entry<K, V>> i = entrySet().iterator();
-            while (i.hasNext()) {
-                Entry<K, V> e = i.next();
+            for (Entry<K, V> e : entrySet()) {
                 K key = e.getKey();
                 V value = e.getValue();
                 if (value == null) {
@@ -435,9 +437,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
                         return false;
                 }
             }
-        } catch (ClassCastException unused) {
-            return false;
-        } catch (NullPointerException unused) {
+        } catch (ClassCastException | NullPointerException unused) {
             return false;
         }
 
@@ -463,9 +463,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      */
     public int hashCode() {
         int h = 0;
-        Iterator<Entry<K, V>> i = entrySet().iterator();
-        while (i.hasNext())
-            h += i.next().hashCode();
+        for (Entry<K, V> kvEntry : entrySet()) h += kvEntry.hashCode();
         return h;
     }
 
@@ -519,7 +517,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      * Test for equality, checking for nulls.
      */
     private static boolean eq(Object o1, Object o2) {
-        return o1 == null ? o2 == null : o1.equals(o2);
+        return Objects.equals(o1, o2);
     }
 
     // Implementation Note: SimpleEntry and SimpleImmutableEntry

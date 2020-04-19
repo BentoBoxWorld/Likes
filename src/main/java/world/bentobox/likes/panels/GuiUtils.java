@@ -1,14 +1,16 @@
 package world.bentobox.likes.panels;
 
 
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
@@ -113,7 +115,7 @@ public class GuiUtils
 		private static BorderBlock getPanelBorder(Material material)
 		{
 			ItemStack itemStack = new ItemStack(material);
-			itemStack.getItemMeta().setDisplayName(" ");
+			Objects.requireNonNull(itemStack.getItemMeta()).setDisplayName(" ");
 
 			return new BorderBlock(itemStack);
 		}
@@ -205,12 +207,12 @@ public class GuiUtils
 		if (material.name().contains("WALL_"))
 		{
 			// Materials that is attached to wall cannot be showed in GUI. But they should be in list.
-			itemStack = new ItemStack(Material.getMaterial(material.name().replace("WALL_", "")));
+			itemStack = new ItemStack(Objects.requireNonNull(Material.getMaterial(material.name().replace("WALL_", ""))));
 		}
 		else if (material.name().startsWith("POTTED_"))
 		{
 			// Materials Potted elements cannot be in inventory.
-			itemStack = new ItemStack(Material.getMaterial(material.name().replace("POTTED_", "")));
+			itemStack = new ItemStack(Objects.requireNonNull(Material.getMaterial(material.name().replace("POTTED_", ""))));
 		}
 		else if (material.equals(Material.MELON_STEM) || material.equals(Material.ATTACHED_MELON_STEM))
 		{

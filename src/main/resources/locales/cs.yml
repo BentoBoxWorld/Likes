@@ -1,0 +1,139 @@
+# Translation by: CZghost
+
+likes:
+  gui:
+    titles:
+      select-block: "&dVybrat blok"
+      top: "&dTop ostrovy podle [type]"
+      view: "&dUkázat hodnocení ostrovů"
+      manage: "&dPřidat hodnocení &eLíbí se &dnebo &eNelíbí se"
+      settings: "&dEditovat nastavení"
+      admin: "&dAdministrátorský panel"
+      select-island: "&dVybrat ostrov"
+      select-player: "&dVybrat hráče"
+      edit-view: "&dEditovat hodnocení ostrova"
+    buttons:
+      cancel: "&cZrušit"
+      accept: "&aPřijmout"
+      previous: "Předchozí"
+      next: "Další"
+      return: "&aZpět"
+
+      view-mode: "&6Top typ"
+      name: "[name]"
+
+      like: "&6Počet &2Líbí se"
+      like-rank: "&6Hodnost dle &2Líbí se"
+      dislike: "&cPočet &4Nelíbí se"
+      dislike-rank: "&cHodnost dle &4Nelíbí se"
+      overall: "&aČíslo hodnosti"
+      overall-rank: "&aŘadit dle hodnosti"
+
+      add-like: "&6Přidat/Odebrat &2Líbí se"
+      add-dislike: "&cPřidat/Odebrat &4Nelíbí se"
+
+      like-cost: "Cena &2Líbí se"
+      like-remove-cost: "Cena odebrání &2Líbí se"
+      dislike-cost: "Cena &4Nelíbí se"
+      dislike-remove-cost: "Cena odebrání &4Nelíbí se"
+      default-icon: "Výchozí ikona"
+      inform-players: "Informovat členy ostrova"
+      log-history: "Zapisovat historii"
+      reset-likes: "Resetovat hodnocení"
+
+      manage-likes: "Spravovat hodnocení ostrova"
+      likes-icon: "Změnit ikonu ostrova"
+      wipe-data: "Smazat data"
+      edit-settings: "Editovat nastavení"
+
+      add-dislike-user: "Přidat &4Nelíbí se"
+      add-like-user: "Přidat &2Líbí se"
+      remove-dislike-user: "Odebrat &4Nelíbí se"
+      remove-like-user: "Odebrat &2Líbí se"
+    descriptions:
+      selected: "&dZvoleno"
+
+      view-mode: "&fUmoožňí zvolit,|&fkterý top|&fmá být zobrazen."
+      mode: "Ukáže TOP 10|ostrovů dle [type]."
+      top-value:
+        likes: "&6[rank]. ostrov dle &2Líbí se|&6s [value] &2Líbí se."
+        dislikes: "&6[rank]. ostrov dle &4Nelíbí se|&6s [value] &4Nelíbí se."
+        rank: "&6[rank]. ostrov dle bodů hodnocení|&6s [value] bodů hodnocení."
+      values: "Ostrov má:|[likes] &2Líbí se|[dislikes] &4Nelíbí se|[rank] bodů hodnocení."
+      unknown: "&cneznámý hráč"
+
+      current-value: "Nynější hodnota: [value]."
+      like: "Líbí se|ostatním hráčům."
+      dislike: "Nelíbí se|ostatním hráčům."
+      overall: "Vypočítány body hodnocení|(líbí se - nelíbí se)."
+      like-rank: "Umístění v TOP podle|počtu &2Líbí se&r."
+      dislike-rank: "Umístění v TOP podle|počtu &4Nelíbí se&r."
+      overall-rank: "Umístění v TOP podle|bodů hodnocení."
+      like-next: "Ukázat další hráče,|kterým se líbí tvůj ostrov."
+      dislike-next: "Ukázat další hráče,|kterým se nelíbí tvůj ostrov."
+      like-previous: "Ukázat předchozí hráče,|kterým se líbí tvůj ostrov."
+      dislike-previous: "Ukázat předchozí hráče,|kterým se nelíbí tvůj ostrov."
+
+      add-like: "Umožňuje přidat nebo|odebrat &2Líbí se|tomuto ostrovu."
+      add-dislike: "Umožňuje přidat nebo|odebrat &4Nelíbí se|tomuto ostrovu."
+      cost: "Nynější cena operace $[value]."
+
+      like-cost: "Umožňuje změnit, kolik|stojí přidání nového &2Líbí se&r."
+      like-remove-cost: "Umožňuje změnit kolik|stojí odebrání &2Líbí se&r."
+      dislike-cost: "Umožňuje změnit kolik|stojí přidání nového &4Nelíbí se&r."
+      dislike-remove-cost: "Umožňuje změnit kolik|stojí odebrání &4Nelíbí se&r."
+      default-icon: "Umožňuje změnit výchozí|ikonu v TOPech."
+      inform-players: "Umožňuje přepnout, zda|by měli být členové ostrova|informováno, pokud se někomu|(ne)líbí jejich ostrov"
+      log-history: "Umožňuje přepnout, zda|by se měla historie|ukládat."
+      reset-likes: "Umožňuje přepnout, zda|by reetování ostrova mělo|resetovat hodnocení ostrova."
+
+      manage-likes: "Umožňuje přidat/odebrat|hráče, kterým se (ne)líbí|vybrané ostrovy."
+      likes-icon: "Umožňuje změnit ikonu ostrova v menu TOP."
+      wipe-data: "Umožňuje kompletně|odstranit všechna uložená|data z nynějšího|herního módu."
+      edit-settings: "Umožňuje editovat|nastavení doplňku|prostřednictvím GUI."
+  types:
+    likes: "&2Líbí se"
+    dislikes: "&4Nelíbí se"
+    rank: "Body hodnocení"
+
+  messages:
+    add-like: "&aLíbí se ti ostrov [island]."
+    player-add-like: "&a[user] se líbí tvůj ostrov."
+    remove-like: "&cOdstranil jsi své &2Líbí se &cz ostrova [island]."
+    player-remove-like: "&c[user] odstranil své &2Líbí se &cz tvého ostrova."
+    add-dislike: "&cNelíbí se ti ostrov [island]."
+    player-add-dislike: "&c[user] se nelíbí tvůj ostrov."
+    remove-dislike: "&aOdstranil jsi své &4Nelíbí se &cz ostrova [island]."
+    player-remove-dislike: "&a[user] odstranil své &4Nelíbí se &cz tvého ostrova."
+    no-data-about-island: "Nejsou zde data o tomto ostrově."
+    no-data-about-your-island: "Nejsou zde data o tvém ostrově."
+  errors:
+    not-on-island: "&cMusíš být na ostrově ke spuštění tohoto příkazu!"
+    your-island: "&cNemůžeš přidávat &2Líbí se &cnebo &4Nelíbí se &csvému ostrovu!"
+    numeric-only: "&cVstup by měl být pouze numerický!"
+    not-valid-value: "&cČíslo by mělo být větší než [min] a menší než [max], ale vstup je [value]!"
+    top-is-empty: "&cPardon, nikdo není v TOP!"
+    database-error: "&cPardon, vyskytla se chyba s databází. Nelze najít data tvého ostrova."
+  questions:
+    prefix: "&c[SERVER]&r: "
+    like-cost: "&5Prosím, vlož cenu za jednotku &2Líbí se&5."
+    like-remove-cost: "&5Prosím, vlož cenu za odebrání &2Líbí se&5."
+    dislike-cost: "&5Prosím, vlož cenu za jednotku &4Nelíbí se&5."
+    dislike-remove-cost: "&5Prosím, vlož cenu za odebrání &4Nelíbí se&5."
+  commands:
+    admin:
+      help:
+        parameters: ""
+        description: "otevře administrátorské GUI"
+      settings:
+        parameters: ""
+        description: "otevře administrátorské GUI nastavení"
+    help:
+      parameters: ""
+      description: "otevře GUI hodnocení"
+    top:
+      parameters: "<type>"
+      description: "otevře GUI TOP"
+    view:
+      parameters: "<player>"
+      description: "otevře GUI, kde můžeš vidět své hodnocení"

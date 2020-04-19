@@ -17,7 +17,7 @@ authors:
   - BONNe
 
 # Soft dependencies of current addon.
-softdepend: AcidIsland, BSkyBlock, CaveBlock, SkyGrid, Warps
+softdepend: AcidIsland, BSkyBlock, CaveBlock, SkyGrid, Warps, AOneBlock
 
 # List of addon permissions
 permissions:
@@ -115,4 +115,28 @@ permissions:
     default: op
   skygrid.likes.admin.settings:
     description: Let the admin use the '/sga likes settings' command
+    default: op
+
+  # aoneblock Permissions
+  aoneblock.likes:
+    description: Let the player use the '/ob likes' command
+    default: true
+  aoneblock.likes.top:
+    description: Let the player use the '/ob likes top' command
+    default: true
+  aoneblock.likes.view:
+    description: Let the player use the '/ob likes view' command
+    default: true
+  aoneblock.likes.view.others:
+    description: Let the player use the '/ob likes view <player>' command
+    default: op
+  aoneblock.likes.bypass-cost:
+    description: Let the player to avoid paying for any likes/dislikes changes.
+    default: op
+
+  aoneblock.likes.admin:
+    description: Let the admin use the '/oba likes' command
+    default: op
+  aoneblock.likes.admin.settings:
+    description: Let the admin use the '/oba likes settings' command
     default: op

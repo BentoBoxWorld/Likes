@@ -1,6 +1,6 @@
 package world.bentobox.likes.utils.collections;
 
-/**
+/*
  * User: Vitaly Sazanovich
  * Date: 07/02/13
  * Time: 19:26
@@ -12,8 +12,15 @@ package world.bentobox.likes.utils.collections;
  * Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.NavigableSet;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.SortedSet;
 
 
 /**
@@ -114,7 +121,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      * {@code ClassCastException}.
      */
     public IndexedTreeSet() {
-        this(new IndexedTreeMap<E, Object>());
+        this(new IndexedTreeMap<>());
     }
 
     /**
@@ -131,7 +138,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      *                   ordering} of the elements will be used.
      */
     public IndexedTreeSet(Comparator<? super E> comparator) {
-        this(new IndexedTreeMap<E, Object>(comparator));
+        this(new IndexedTreeMap<>(comparator));
     }
 
     /**
@@ -297,7 +304,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
             IndexedTreeMap<E, Object> map = (IndexedTreeMap<E, Object>) m;
             Comparator<? super E> cc = (Comparator<? super E>) set.comparator();
             Comparator<? super E> mc = map.comparator();
-            if (cc == mc || (cc != null && cc.equals(mc))) {
+            if (Objects.equals(cc, mc)) {
                 map.addAllForTreeSet(set, PRESENT);
                 return true;
             }
@@ -315,7 +322,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      */
     public NavigableSet<E> subSet(E fromElement, boolean fromInclusive,
                                   E toElement, boolean toInclusive) {
-        return new IndexedTreeSet<E>(m.subMap(fromElement, fromInclusive,
+        return new IndexedTreeSet<>(m.subMap(fromElement, fromInclusive,
                 toElement, toInclusive));
     }
 
@@ -328,7 +335,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      * @since 1.6
      */
     public NavigableSet<E> headSet(E toElement, boolean inclusive) {
-        return new IndexedTreeSet<E>(m.headMap(toElement, inclusive));
+        return new IndexedTreeSet<>(m.headMap(toElement, inclusive));
     }
 
     /**
@@ -340,7 +347,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      * @since 1.6
      */
     public NavigableSet<E> tailSet(E fromElement, boolean inclusive) {
-        return new IndexedTreeSet<E>(m.tailMap(fromElement, inclusive));
+        return new IndexedTreeSet<>(m.tailMap(fromElement, inclusive));
     }
 
     /**
@@ -463,14 +470,14 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
      * @return a shallow copy of this set
      */
     public Object clone() {
-        IndexedTreeSet<E> clone = null;
+        IndexedTreeSet<E> clone;
         try {
             clone = (IndexedTreeSet<E>) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
         }
 
-        clone.m = new IndexedTreeMap<E, Object>(m);
+        clone.m = new IndexedTreeMap<>(m);
         return clone;
     }
 
@@ -498,8 +505,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
         s.writeInt(m.size());
 
         // Write out all elements in the proper order.
-        for (Iterator i = m.keySet().iterator(); i.hasNext(); )
-            s.writeObject(i.next());
+        for (E e : m.keySet()) s.writeObject(e);
     }
 
     /**
@@ -517,9 +523,9 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
         // Create backing IndexedTreeMap
         IndexedTreeMap<E, Object> tm;
         if (c == null)
-            tm = new IndexedTreeMap<E, Object>();
+            tm = new IndexedTreeMap<>();
         else
-            tm = new IndexedTreeMap<E, Object>(c);
+            tm = new IndexedTreeMap<>(c);
         m = tm;
 
         // Read in size
@@ -548,7 +554,7 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
             if (e.weight != e.sumup()) {
                 throw new Exception("Weight is incorrect:" + e.weight + "!=" + e.sumup() + " for " + e.key);
             }
-            e = ((IndexedTreeMap) m).successor(e);
+            e = IndexedTreeMap.successor(e);
         }
     }
 }
