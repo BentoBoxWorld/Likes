@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.inventory.ItemStack;
 
 import world.bentobox.bentobox.api.panels.Panel;
 import world.bentobox.bentobox.api.panels.PanelItem;
@@ -21,6 +22,7 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.config.Settings;
+import world.bentobox.likes.panels.CommonPanel;
 import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.utils.Constants;
 
@@ -28,7 +30,7 @@ import world.bentobox.likes.utils.Constants;
 /**
  * This class creates GUI that allows to like and dislike island.
  */
-public class LikesManagePanel
+public class LikesManagePanel extends CommonPanel
 {
 	/**
 	 * This is internal constructor. It is used internally in current class to avoid
@@ -41,12 +43,26 @@ public class LikesManagePanel
 	 */
 	private LikesManagePanel(LikesAddon addon, User user, World world, String permissionPrefix, Island island)
 	{
-		this.addon = addon;
+		super(addon, user, world, permissionPrefix);
 		this.settings = addon.getSettings();
-		this.user = user;
-		this.world = world;
+		this.target = user;
 
-		this.permissionPrefix = permissionPrefix;
+		this.island = island;
+	}
+
+
+	/**
+	 * This is internal constructor. It is used internally in current class to avoid
+	 * creating objects everywhere.
+	 * @param parent Parent GUI
+	 * @param target User who adds like (equals user unless admin forces different)
+	 * @param island The id of island which likes should be managed.
+	 */
+	private LikesManagePanel(CommonPanel parent, User target, Island island)
+	{
+		super(parent);
+		this.settings = this.addon.getSettings();
+		this.target = target;
 
 		this.island = island;
 	}
@@ -67,20 +83,50 @@ public class LikesManagePanel
 	}
 
 
+	/**
+	 * This method is used to open UserPanel outside this class. It will be much easier
+	 * to open panel with single method call then initializing new object.
+	 * @param target User who adds like (equals user unless admin forces different)
+	 * @param islandId The id of island which likes should be managed.
+	 */
+	public static void openPanel(CommonPanel parent, User target, Island islandId)
+	{
+		new LikesManagePanel(parent, target, islandId).build();
+	}
+
+
 // ---------------------------------------------------------------------
 // Section: Methods
 // ---------------------------------------------------------------------
 
 
-	private void build()
+	/**
+	 * Method that must be added in all panels.
+	 */
+	public void build()
 	{
 		PanelBuilder panelBuilder = new PanelBuilder().
 			name(this.user.getTranslation(Constants.TITLE + "manage")).
 			type(Panel.Type.HOPPER).
 			user(this.user);
 
-		panelBuilder.item(1, this.createLikeButton());
-		panelBuilder.item(3, this.createDislikeButton());
+		switch (this.settings.getMode())
+		{
+			case LIKES:
+				panelBuilder.item(2, this.createLikeButton());
+				break;
+			case LIKES_DISLIKES:
+				panelBuilder.item(1, this.createLikeButton());
+				panelBuilder.item(3, this.createDislikeButton());
+				break;
+			case STARS:
+				panelBuilder.item(0, this.createStarsButton(1));
+				panelBuilder.item(1, this.createStarsButton(2));
+				panelBuilder.item(2, this.createStarsButton(3));
+				panelBuilder.item(3, this.createStarsButton(4));
+				panelBuilder.item(4, this.createStarsButton(5));
+				break;
+		}
 
 		// At the end we just call build method that creates and opens panel.
 		panelBuilder.build();
@@ -93,7 +139,7 @@ public class LikesManagePanel
 	 */
 	private PanelItem createLikeButton()
 	{
-		final boolean hasLiked = this.addon.getManager().hasLiked(this.user.getUniqueId(), this.island.getUniqueId(), this.world);
+		final boolean hasLiked = this.addon.getManager().hasLiked(this.target.getUniqueId(), this.island.getUniqueId(), this.world);
 
 		List<String> description = new ArrayList<>();
 
@@ -123,18 +169,25 @@ public class LikesManagePanel
 				{
 					if (this.hasPaid(this.settings.getLikeRemoveCost()))
 					{
-						this.addon.getManager().removeLike(this.user, this.island, this.world);
+						this.addon.getManager().removeLike(this.target, this.island, this.world);
 					}
 				}
 				else
 				{
 					if (this.hasPaid(this.settings.getLikeAddCost()))
 					{
-						this.addon.getManager().addLike(this.user, this.island, this.world);
+						this.addon.getManager().addLike(this.target, this.island, this.world);
 					}
 				}
 
-				user.closeInventory();
+				if (this.parent != null)
+				{
+					this.parent.build();
+				}
+				else
+				{
+					user.closeInventory();
+				}
 
 				return true;
 			}).
@@ -149,7 +202,7 @@ public class LikesManagePanel
 	 */
 	private PanelItem createDislikeButton()
 	{
-		final boolean hasDisliked = this.addon.getManager().hasDisliked(this.user.getUniqueId(), this.island.getUniqueId(), this.world);
+		final boolean hasDisliked = this.addon.getManager().hasDisliked(this.target.getUniqueId(), this.island.getUniqueId(), this.world);
 
 		List<String> description = new ArrayList<>();
 
@@ -179,22 +232,94 @@ public class LikesManagePanel
 				{
 					if (this.hasPaid(this.settings.getDislikeRemoveCost()))
 					{
-						this.addon.getManager().removeDislike(this.user, this.island, this.world);
+						this.addon.getManager().removeDislike(this.target, this.island, this.world);
 					}
 				}
 				else
 				{
 					if (this.hasPaid(this.settings.getDislikeAddCost()))
 					{
-						this.addon.getManager().addDislike(this.user, this.island, this.world);
+						this.addon.getManager().addDislike(this.target, this.island, this.world);
 					}
 				}
 
-				user.closeInventory();
+				if (this.parent != null)
+				{
+					this.parent.build();
+				}
+				else
+				{
+					user.closeInventory();
+				}
 
 				return true;
 			}).
 			glow(hasDisliked).
+			build();
+	}
+
+
+	/**
+	 * This method creates Stars Button with given value.
+	 * @param value value for stars button.
+	 * @return PanelItem that process stars action.
+	 */
+	private PanelItem createStarsButton(int value)
+	{
+		final boolean hasStarred =
+			this.addon.getManager().hasStarred(this.target.getUniqueId(), this.island.getUniqueId(), this.world);
+
+		List<String> description = new ArrayList<>();
+
+		description.add(this.user.getTranslation(Constants.DESCRIPTION + "add-stars"));
+
+		if (this.addon.getVaultHook() != null)
+		{
+			if (hasStarred && this.settings.getLikeRemoveCost() > 0)
+			{
+				description.add(this.user.getTranslation(Constants.DESCRIPTION + "cost",
+					"[value]", this.settings.getLikeRemoveCost() + ""));
+			}
+			else if (!hasStarred && this.settings.getLikeAddCost() > 0)
+			{
+				description.add(this.user.getTranslation(Constants.DESCRIPTION + "cost",
+					"[value]", this.settings.getLikeAddCost() + ""));
+			}
+		}
+
+		return new PanelItemBuilder().
+			name(this.user.getTranslation(Constants.BUTTON + "add-stars")).
+			icon(new ItemStack(Material.NETHER_STAR, value)).
+			description(GuiUtils.stringSplit(description, 999)).
+			clickHandler((panel, user, clickType, slot) -> {
+
+				if (hasStarred)
+				{
+					if (this.hasPaid(this.settings.getLikeRemoveCost()))
+					{
+						this.addon.getManager().removeStars(this.target, this.island, this.world);
+					}
+				}
+				else
+				{
+					if (this.hasPaid(this.settings.getLikeAddCost()))
+					{
+						this.addon.getManager().addStars(this.target, value, this.island, this.world);
+					}
+				}
+
+				if (this.parent != null)
+				{
+					this.parent.build();
+				}
+				else
+				{
+					user.closeInventory();
+				}
+
+				return true;
+			}).
+			glow(hasStarred).
 			build();
 	}
 
@@ -231,29 +356,15 @@ public class LikesManagePanel
 // ---------------------------------------------------------------------
 
 	/**
-	 * This variable allows to access addon object.
-	 */
-	private final LikesAddon addon;
-
-	/**
 	 * This variable allows to access addon settings object.
 	 */
 	private final Settings settings;
 
 	/**
-	 * This variable holds user who opens panel. Without it panel cannot be opened.
+	 * This variable holds user who adds like. Different than user, if admin forces someone
+	 * to add like/dislike/star.
 	 */
-	private final User user;
-
-	/**
-	 * This variable holds a world to which gui referee.
-	 */
-	private final World world;
-
-	/**
-	 * Permission prefix
-	 */
-	private final String permissionPrefix;
+	private final User target;
 
 	/**
 	 * This variable holds a likes object that need to be managed.

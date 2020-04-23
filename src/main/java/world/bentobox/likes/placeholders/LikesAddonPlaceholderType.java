@@ -11,6 +11,7 @@ package world.bentobox.likes.placeholders;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.LikesAddon;
+import world.bentobox.likes.config.Settings;
 import world.bentobox.likes.database.objects.LikesObject;
 import world.bentobox.likes.utils.collections.IndexedTreeSet;
 
@@ -58,6 +59,20 @@ public enum LikesAddonPlaceholderType
 	ISLAND_RANK_PLACE("island_rank_place", (addon, gameModeAddon, island) -> island != null ?
 		String.valueOf(LikesAddonPlaceholderType.getSortedRank(addon, gameModeAddon).
 			entryIndex(LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) : ""),
+
+	/**
+	 * This placeholder returns likes that is set for given island.
+	 */
+	ISLAND_STARS("island_stars_value", (addon, gameModeAddon, island) -> island != null ?
+		String.valueOf(LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island).getStarsValue()) : ""),
+
+	/**
+	 * This placeholder returns island rank placement by their like count.
+	 */
+	ISLAND_STARS_PLACE("island_stars_place", (addon, gameModeAddon, island) -> island != null ?
+		String.valueOf(LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).
+			entryIndex(LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) : ""),
+
 
 // ---------------------------------------------------------------------
 // Section: Top By Likes
@@ -941,6 +956,302 @@ public enum LikesAddonPlaceholderType
 	BY_RANK_COUNT_10("top_rank_count_10", (addon, gameModeAddon, island) -> {
 		LikesObject object = LikesAddonPlaceholderType.getSortedRank(addon, gameModeAddon).exact(9);
 		return object != null ? String.valueOf(object.getRank()) : "";
+	}),
+
+
+// ---------------------------------------------------------------------
+// Section: Top By Stars
+// ---------------------------------------------------------------------
+
+
+	/**
+	 * This placeholder returns name of island owner which island is in top 1 place by average stars value.
+	 */
+	BY_STARS_OWNER_NAME_1("top_stars_owner_name_1", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(0);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> addon.getPlayers().getName(value.getOwner())).orElse("");
+	}),
+
+	/**
+	 * This placeholder returns name of island which is in top 1 place by average stars value.
+	 */
+	BY_STARS_ISLAND_NAME_1("top_stars_island_name_1", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(0);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
+			orElse("");
+	}),
+
+	/**
+	 * This placeholder returns count of likes for island that is in top 1 place by average stars value.
+	 */
+	BY_STARS_COUNT_1("top_stars_count_1", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(0);
+		return object != null ? String.valueOf(object.getStarsValue()) : "";
+	}),
+
+	/**
+	 * This placeholder returns name of island owner which island is in top 2 place by average stars value.
+	 */
+	BY_STARS_OWNER_NAME_2("top_stars_owner_name_2", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(1);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> addon.getPlayers().getName(value.getOwner())).orElse("");
+	}),
+
+	/**
+	 * This placeholder returns name of island which is in top 2 place by average stars value.
+	 */
+	BY_STARS_ISLAND_NAME_2("top_stars_island_name_2", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(1);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
+			orElse("");
+	}),
+
+	/**
+	 * This placeholder returns count of likes for island that is in top 2 place by average stars value.
+	 */
+	BY_STARS_COUNT_2("top_stars_count_2", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(1);
+		return object != null ? String.valueOf(object.getStarsValue()) : "";
+	}),
+
+	/**
+	 * This placeholder returns name of island owner which island is in top 3 place by average stars value.
+	 */
+	BY_STARS_OWNER_NAME_3("top_stars_owner_name_3", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(2);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> addon.getPlayers().getName(value.getOwner())).orElse("");
+	}),
+
+	/**
+	 * This placeholder returns name of island which is in top 3 place by average stars value.
+	 */
+	BY_STARS_ISLAND_NAME_3("top_stars_island_name_3", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(2);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
+			orElse("");
+	}),
+
+	/**
+	 * This placeholder returns count of likes for island that is in top 3 place by average stars value.
+	 */
+	BY_STARS_COUNT_3("top_stars_count_3", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(2);
+		return object != null ? String.valueOf(object.getStarsValue()) : "";
+	}),
+
+	/**
+	 * This placeholder returns name of island owner which island is in top 4 place by average stars value.
+	 */
+	BY_STARS_OWNER_NAME_4("top_stars_owner_name_4", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(3);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> addon.getPlayers().getName(value.getOwner())).orElse("");
+	}),
+
+	/**
+	 * This placeholder returns name of island which is in top 4 place by average stars value.
+	 */
+	BY_STARS_ISLAND_NAME_4("top_stars_island_name_4", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(3);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
+			orElse("");
+	}),
+
+	/**
+	 * This placeholder returns count of likes for island that is in top 4 place by average stars value.
+	 */
+	BY_STARS_COUNT_4("top_stars_count_4", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(3);
+		return object != null ? String.valueOf(object.getStarsValue()) : "";
+	}),
+
+	/**
+	 * This placeholder returns name of island owner which island is in top 5 place by average stars value.
+	 */
+	BY_STARS_OWNER_NAME_5("top_stars_owner_name_5", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(4);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> addon.getPlayers().getName(value.getOwner())).orElse("");
+	}),
+
+	/**
+	 * This placeholder returns name of island which is in top 5 place by average stars value.
+	 */
+	BY_STARS_ISLAND_NAME_5("top_stars_island_name_5", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(4);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
+			orElse("");
+	}),
+
+	/**
+	 * This placeholder returns count of likes for island that is in top 5 place by average stars value.
+	 */
+	BY_STARS_COUNT_5("top_stars_count_5", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(4);
+		return object != null ? String.valueOf(object.getStarsValue()) : "";
+	}),
+
+	/**
+	 * This placeholder returns name of island owner which island is in top 6 place by average stars value.
+	 */
+	BY_STARS_OWNER_NAME_6("top_stars_owner_name_6", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(5);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> addon.getPlayers().getName(value.getOwner())).orElse("");
+	}),
+
+	/**
+	 * This placeholder returns name of island which is in top 6 place by average stars value.
+	 */
+	BY_STARS_ISLAND_NAME_6("top_stars_island_name_6", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(5);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
+			orElse("");
+	}),
+
+	/**
+	 * This placeholder returns count of likes for island that is in top 6 place by average stars value.
+	 */
+	BY_STARS_COUNT_6("top_stars_count_6", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(5);
+		return object != null ? String.valueOf(object.getStarsValue()) : "";
+	}),
+
+	/**
+	 * This placeholder returns name of island owner which island is in top 7 place by average stars value.
+	 */
+	BY_STARS_OWNER_NAME_7("top_stars_owner_name_7", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(6);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> addon.getPlayers().getName(value.getOwner())).orElse("");
+	}),
+
+	/**
+	 * This placeholder returns name of island which is in top 7 place by average stars value.
+	 */
+	BY_STARS_ISLAND_NAME_7("top_stars_island_name_7", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(6);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
+			orElse("");
+	}),
+
+	/**
+	 * This placeholder returns count of likes for island that is in top 7 place by average stars value.
+	 */
+	BY_STARS_COUNT_7("top_stars_count_7", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(6);
+		return object != null ? String.valueOf(object.getStarsValue()) : "";
+	}),
+
+	/**
+	 * This placeholder returns name of island owner which island is in top 8 place by average stars value.
+	 */
+	BY_STARS_OWNER_NAME_8("top_stars_owner_name_8", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(7);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> addon.getPlayers().getName(value.getOwner())).orElse("");
+	}),
+
+	/**
+	 * This placeholder returns name of island which is in top 8 place by average stars value.
+	 */
+	BY_STARS_ISLAND_NAME_8("top_stars_island_name_8", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(7);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
+			orElse("");
+	}),
+
+	/**
+	 * This placeholder returns count of likes for island that is in top 8 place by average stars value.
+	 */
+	BY_STARS_COUNT_8("top_stars_count_8", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(7);
+		return object != null ? String.valueOf(object.getStarsValue()) : "";
+	}),
+
+	/**
+	 * This placeholder returns name of island owner which island is in top 9 place by average stars value.
+	 */
+	BY_STARS_OWNER_NAME_9("top_stars_owner_name_9", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(8);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> addon.getPlayers().getName(value.getOwner())).orElse("");
+	}),
+
+	/**
+	 * This placeholder returns name of island which is in top 9 place by average stars value.
+	 */
+	BY_STARS_ISLAND_NAME_9("top_stars_island_name_9", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(8);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
+			orElse("");
+	}),
+
+	/**
+	 * This placeholder returns count of likes for island that is in top 9 place by average stars value.
+	 */
+	BY_STARS_COUNT_9("top_stars_count_9", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(8);
+		return object != null ? String.valueOf(object.getStarsValue()) : "";
+	}),
+
+	/**
+	 * This placeholder returns name of island owner which island is in top 10 place by average stars value.
+	 */
+	BY_STARS_OWNER_NAME_10("top_stars_owner_name_10", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(9);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> addon.getPlayers().getName(value.getOwner())).orElse("");
+	}),
+
+	/**
+	 * This placeholder returns name of island which is in top 10 by average stars value.
+	 */
+	BY_STARS_ISLAND_NAME_10("top_stars_island_name_10", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(9);
+
+		return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
+			map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
+			orElse("");
+	}),
+
+	/**
+	 * This placeholder returns count of likes for island that is in top 10 place by average stars value.
+	 */
+	BY_STARS_COUNT_10("top_stars_count_10", (addon, gameModeAddon, island) -> {
+		LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(9);
+		return object != null ? String.valueOf(object.getStarsValue()) : "";
 	});
 
 
@@ -1031,11 +1342,23 @@ public enum LikesAddonPlaceholderType
 	 * This method returns IndexedTreeSet that contains ordered LikesObject by their rank number.
 	 * @param addon Likes Addon.
 	 * @param gameModeAddon Target GameMode addon.
-	 * @return IndexedTreeSet where objects are ordered by their rank numver.
+	 * @return IndexedTreeSet where objects are ordered by their rank number.
 	 */
 	private static IndexedTreeSet<LikesObject> getSortedRank(LikesAddon addon, GameModeAddon gameModeAddon)
 	{
 		return addon.getManager().getSortedRank(gameModeAddon.getDescription().getName());
+	}
+
+
+	/**
+	 * This method returns IndexedTreeSet that contains ordered LikesObject by their stars value.
+	 * @param addon Likes Addon.
+	 * @param gameModeAddon Target GameMode addon.
+	 * @return IndexedTreeSet where objects are ordered by their stars value.
+	 */
+	private static IndexedTreeSet<LikesObject> getSortedStars(LikesAddon addon, GameModeAddon gameModeAddon)
+	{
+		return addon.getManager().getSortedStars(gameModeAddon.getDescription().getName());
 	}
 
 

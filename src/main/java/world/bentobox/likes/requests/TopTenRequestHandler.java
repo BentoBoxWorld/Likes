@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 
 import world.bentobox.bentobox.api.addons.request.AddonRequestHandler;
 import world.bentobox.likes.LikesAddon;
+import world.bentobox.likes.config.Settings;
 import world.bentobox.likes.config.Settings.VIEW_MODE;
 
 
@@ -56,9 +57,13 @@ public class TopTenRequestHandler extends AddonRequestHandler
             return Collections.emptyMap();
         }
 
-        Map<String, Long> returnMap = new LinkedHashMap<>(10);
+        Map<String, Number> returnMap = new LinkedHashMap<>(10);
 
-        switch (VIEW_MODE.getMode((String) map.getOrDefault("type", "likes")))
+        String defaultValue =
+            this.addon.getSettings().getMode().equals(Settings.LikeMode.STARS) ?
+                "stars" : "likes";
+
+        switch (VIEW_MODE.getMode((String) map.getOrDefault("type", defaultValue)))
         {
             case LIKES:
                 this.addon.getManager().getTopByLikes(Bukkit.getWorld((String) map.get("world-name"))).
@@ -71,6 +76,10 @@ public class TopTenRequestHandler extends AddonRequestHandler
             case RANK:
                 this.addon.getManager().getTopByRank(Bukkit.getWorld((String) map.get("world-name"))).
                     forEach(likesObject -> returnMap.put(likesObject.getUniqueId(), likesObject.getRank()));
+                break;
+            case STARS:
+                this.addon.getManager().getTopByStars(Bukkit.getWorld((String) map.get("world-name"))).
+                    forEach(likesObject -> returnMap.put(likesObject.getUniqueId(), likesObject.getStarsValue()));
                 break;
         }
 

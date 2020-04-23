@@ -60,13 +60,16 @@ public class LikesRequestHandler extends AddonRequestHandler
         returnMap.put("likes", likesObject.getLikes());
         returnMap.put("dislikes", likesObject.getDislikes());
         returnMap.put("rank", likesObject.getRank());
+        returnMap.put("stars", likesObject.getStarsValue());
 
         returnMap.put("placeByLikes", this.addon.getManager().getSortedLikes(world).entryIndex(likesObject));
         returnMap.put("placeByDislikes", this.addon.getManager().getSortedDislikes(world).entryIndex(likesObject));
         returnMap.put("placeByRank", this.addon.getManager().getSortedRank(world).entryIndex(likesObject));
+        returnMap.put("placeByStars", this.addon.getManager().getSortedStars(world).entryIndex(likesObject));
 
         returnMap.put("likedBy", likesObject.getLikedBy());
         returnMap.put("dislikedBy", likesObject.getDislikedBy());
+        returnMap.put("staredBy", likesObject.getStarredBy());
 
         return returnMap;
     }

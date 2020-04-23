@@ -7,11 +7,7 @@
 package world.bentobox.likes.database.objects;
 
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import com.google.gson.annotations.Expose;
 
@@ -95,6 +91,54 @@ public class LikesObject implements DataObject
 
 
 	/**
+	 * This method adds star in current object with given value.
+	 * @param user User who liked island.
+	 * @param value Value of given star.
+	 */
+	public void addStars(UUID user, int value)
+	{
+		this.likedBy.add(user);
+		this.stars += value;
+	}
+
+
+	/**
+	 * This method removes stars from current object.
+	 * @param user User who remove star from island.
+	 */
+	public void removeStars(UUID user)
+	{
+		Integer value = this.starredBy.remove(user);
+
+		if (value != null)
+		{
+			// Reduce only if player is in staredBy map.
+			this.stars -= value;
+		}
+	}
+
+
+	/**
+	 * This method returns average value from all stars.
+	 * @return Double value for given island from stars.
+	 */
+	public double getStarsValue()
+	{
+		return this.stars > 0 ? this.stars * 1.0 / this.starredBy.size() : 0;
+	}
+
+
+	/**
+	 * This method returns number of users who starred island.
+	 * @return Number of stars given by user.
+	 */
+	public int numberOfStars()
+	{
+		return this.starredBy.size();
+	}
+
+
+	/**
 	 * This method adds given log entry to history.
 	 * @param entry Log Entry that should be added to history.
 	 */
@@ -127,12 +171,34 @@ public class LikesObject implements DataObject
 
 
 	/**
-	 * This method returns if current likes object is not empty - At least one likes or dislikes.
+	 * This method returns if given user is already starred this island.
+	 * @param user UUID for user that must be checked.
+	 * @return {@code true} if user has already starred this island, {@code false} - otherwise.
+	 */
+	public boolean hasStarred(UUID user)
+	{
+		return this.starredBy.containsKey(user);
+	}
+
+
+	/**
+	 * This method returns if current likes object is not empty - At least one like, dislike or star.
 	 * @return {@code true} if current object has at least one likes or dislikes, {@code false} - otherwise.
 	 */
 	public boolean isNotEmpty()
 	{
-		return this.likes != 0 || this.dislikes != 0;
+		return this.likes != 0 || this.dislikes != 0 || this.stars != 0;
+	}
+
+
+	/**
+	 * This map clears collections from this object.
+	 */
+	public void clearCollections()
+	{
+		this.likedBy.clear();
+		this.dislikedBy.clear();
+		this.starredBy.clear();
 	}
 
 
@@ -303,6 +369,48 @@ public class LikesObject implements DataObject
 	}
 
 
+	/**
+	 * This method returns the stars value.
+	 * @return the value of stars.
+	 */
+	public long getStars()
+	{
+		return this.stars;
+	}
+
+
+	/**
+	 * This method sets the stars value.
+	 * @param stars the stars new value.
+	 *
+	 */
+	public void setStars(long stars)
+	{
+		this.stars = stars;
+	}
+
+
+	/**
+	 * This method returns the starredBy value.
+	 * @return the value of starredBy.
+	 */
+	public Map<UUID, Integer> getStarredBy()
+	{
+		return this.starredBy;
+	}
+
+
+	/**
+	 * This method sets the starredBy value.
+	 * @param starredBy the starredBy new value.
+	 *
+	 */
+	public void setStarredBy(Map<UUID, Integer> starredBy)
+	{
+		this.starredBy = starredBy;
+	}
+
+
 // ---------------------------------------------------------------------
 // Section: Variables
 // ---------------------------------------------------------------------
@@ -319,6 +427,12 @@ public class LikesObject implements DataObject
 	 */
 	@Expose
 	private long dislikes;
+
+	/**
+	 * Stars of the island.
+	 */
+	@Expose
+	private long stars;
 
 	/**
 	 * GameMode where current object operates.
@@ -343,6 +457,12 @@ public class LikesObject implements DataObject
 	 */
 	@Expose
 	private Set<UUID> dislikedBy = new HashSet<>();
+
+	/**
+	 * Set that contains all players who clicked on star and value of it for current island.
+	 */
+	@Expose
+	private Map<UUID, Integer> starredBy = new HashMap<>();
 
 	/**
 	 * Stores history about likes changes.

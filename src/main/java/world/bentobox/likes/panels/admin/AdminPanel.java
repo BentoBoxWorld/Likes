@@ -60,7 +60,7 @@ public class AdminPanel extends CommonPanel
 
 
 	@Override
-	protected void build()
+	public void build()
 	{
 		PanelBuilder panelBuilder = new PanelBuilder().
 			user(this.user).

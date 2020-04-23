@@ -232,6 +232,27 @@ public class Settings implements ConfigObject
     }
 
 
+    /**
+     * This method returns the mode value.
+     * @return the value of mode.
+     */
+    public LikeMode getMode()
+    {
+        return mode;
+    }
+
+
+    /**
+     * This method sets the mode value.
+     * @param mode the mode new value.
+     *
+     */
+    public void setMode(LikeMode mode)
+    {
+        this.mode = mode;
+    }
+
+
     // ---------------------------------------------------------------------
     // Section: Variables
     // ---------------------------------------------------------------------
@@ -244,20 +265,18 @@ public class Settings implements ConfigObject
     private Material defaultIcon = Material.PLAYER_HEAD;
 
     @ConfigComment("")
-    @ConfigComment("Allows to store history data about added and removed likes and dislikes.")
-    @ConfigEntry(path = "log-history")
-    private boolean logHistory;
-
-    @ConfigComment("")
     @ConfigComment("Allows to enable ability to send message to island members about someone")
     @ConfigComment("liking or disliking their island.")
     @ConfigEntry(path = "inform-members")
     private boolean informPlayers;
 
     @ConfigComment("")
-    @ConfigComment("Allows reset likes and dislikes after resetting island.")
-    @ConfigEntry(path = "reset-on-reset")
-    private boolean resetLikes;
+    @ConfigComment("Allows to switch addon between 3 different modes:")
+    @ConfigComment("  - LIKES: allows only adding a like to island.")
+    @ConfigComment("  - LIKES_DISLIKES: allows only adding a like and dislike to island.")
+    @ConfigComment("  - STARS: allows adding stars from 1-5 to island.")
+    @ConfigEntry(path = "mode")
+    private LikeMode mode = LikeMode.LIKES_DISLIKES;
 
     @ConfigComment("")
     @ConfigComment("Allows to define cost for player to add like.")
@@ -280,6 +299,16 @@ public class Settings implements ConfigObject
     private double dislikeRemoveCost;
 
     @ConfigComment("")
+    @ConfigComment("Allows reset likes and dislikes after resetting island.")
+    @ConfigEntry(path = "reset-on-reset")
+    private boolean resetLikes;
+
+    @ConfigComment("")
+    @ConfigComment("Allows to store history data about added and removed likes and dislikes.")
+    @ConfigEntry(path = "log-history")
+    private boolean logHistory;
+
+    @ConfigComment("")
     @ConfigComment("This list stores GameModes in which Likes addon should not work.")
     @ConfigComment("To disable addon it is necessary to write its name in new line that starts with -. Example:")
     @ConfigComment("disabled-gamemodes:")
@@ -294,13 +323,34 @@ public class Settings implements ConfigObject
 
 
     /**
+     * This enum holds all possible values for Addon Like Storage Mode.
+     */
+    public enum LikeMode
+    {
+        /**
+         * Store only Likes. Dislikes and rank is disabled.
+         */
+        LIKES,
+        /**
+         * Stores Likes and Dislikes.
+         */
+        LIKES_DISLIKES,
+        /**
+         * Stores Stars which has value from 1 to 5.
+         */
+        STARS
+    }
+
+
+    /**
      * Allows to select different Modes for viewing or choosing tops
      */
     public enum VIEW_MODE
     {
         LIKES,
         DISLIKES,
-        RANK;
+        RANK,
+        STARS;
 
 
         /**

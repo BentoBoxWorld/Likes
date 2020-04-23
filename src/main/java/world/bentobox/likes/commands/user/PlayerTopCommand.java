@@ -84,18 +84,33 @@ public class PlayerTopCommand extends CompositeCommand
 	{
 		Settings.VIEW_MODE mode;
 
-		if (!args.isEmpty())
+		switch (((LikesAddon) this.getAddon()).getSettings().getMode())
 		{
-			mode = Settings.VIEW_MODE.getMode(args.get(0));
-
-			if (mode == null)
-			{
+			case LIKES:
 				mode = Settings.VIEW_MODE.LIKES;
-			}
-		}
-		else
-		{
-			mode = Settings.VIEW_MODE.LIKES;
+				break;
+			case LIKES_DISLIKES:
+				if (!args.isEmpty())
+				{
+					mode = Settings.VIEW_MODE.getMode(args.get(0));
+
+					if (mode == null || mode == Settings.VIEW_MODE.STARS)
+					{
+						mode = Settings.VIEW_MODE.LIKES;
+					}
+				}
+				else
+				{
+					mode = Settings.VIEW_MODE.LIKES;
+				}
+
+				break;
+			case STARS:
+				mode = Settings.VIEW_MODE.STARS;
+
+				break;
+			default:
+				mode = Settings.VIEW_MODE.LIKES;
 		}
 
 		TopLikesPanel.openPanel((LikesAddon) this.getAddon(),
@@ -125,9 +140,17 @@ public class PlayerTopCommand extends CompositeCommand
 
 		final List<String> returnList = new ArrayList<>();
 
-		for (Settings.VIEW_MODE value : Settings.VIEW_MODE.values())
+		switch (((LikesAddon) this.getAddon()).getSettings().getMode())
 		{
-			returnList.add(value.name().toLowerCase());
+			case LIKES:
+				break;
+			case LIKES_DISLIKES:
+				returnList.add(Settings.VIEW_MODE.LIKES.name().toLowerCase());
+				returnList.add(Settings.VIEW_MODE.DISLIKES.name().toLowerCase());
+				returnList.add(Settings.VIEW_MODE.RANK.name().toLowerCase());
+				break;
+			case STARS:
+				break;
 		}
 
 		return Optional.of(Util.tabLimit(returnList, lastString));

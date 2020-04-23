@@ -1,4 +1,4 @@
-# LikesAddon Configuration ${version}
+# LikesAddon Configuration 2.0.0
 # This config file is dynamic and saved when the server is shutdown.
 #
 #
@@ -6,15 +6,15 @@
 # Should be valid Material
 default-icon: PLAYER_HEAD
 #
-# Allows to store history data about added and removed likes and dislikes.
-log-history: false
-#
 # Allows to enable ability to send message to island members about someone
 # liking or disliking their island.
 inform-members: true
 #
-# Allows reset likes and dislikes after resetting island.
-reset-on-reset: true
+# Allows to switch addon between 3 different modes:
+#   - LIKES: allows only adding a like to island.
+#   - LIKES_DISLIKES: allows only adding a like and dislike to island.
+#   - STARS: allows adding stars from 1-5 to island.
+mode: LIKES_DISLIKES
 costs:
   #
   # Allows to define cost for player to add like.
@@ -28,6 +28,12 @@ costs:
   #
   # Allows to define cost for player to remove dislike.
   remove-dislike: 0.0
+#
+# Allows reset likes and dislikes after resetting island.
+reset-on-reset: true
+#
+# Allows to store history data about added and removed likes and dislikes.
+log-history: false
 #
 # This list stores GameModes in which Likes addon should not work.
 # To disable addon it is necessary to write its name in new line that starts with -. Example:

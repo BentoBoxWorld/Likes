@@ -154,10 +154,24 @@ public class ListIslandsPanel extends CommonPanel
 
 		if (likesObject != null)
 		{
-			description.add(this.user.getTranslation(Constants.DESCRIPTION + "values",
-				"[likes]", "" + likesObject.getLikes(),
-				"[dislikes]", "" + likesObject.getDislikes(),
-				"[rank]", "" + likesObject.getRank()));
+			switch (this.getMode())
+			{
+				case LIKES:
+					description.add(this.user.getTranslation(Constants.DESCRIPTION + "likes-values",
+						"[likes]", "" + likesObject.getLikes()));
+					break;
+				case LIKES_DISLIKES:
+					description.add(this.user.getTranslation(Constants.DESCRIPTION + "likes-dislikes-values",
+						"[likes]", "" + likesObject.getLikes(),
+						"[dislikes]", "" + likesObject.getDislikes(),
+						"[rank]", "" + likesObject.getRank()));
+					break;
+				case STARS:
+					description.add(this.user.getTranslation(Constants.DESCRIPTION + "stars-values",
+						"[stars]", "" + likesObject.getStarsValue(),
+						"[votes]", "" + likesObject.numberOfStars()));
+					break;
+			}
 		}
 
 		ImmutableSet<UUID> members = island.getMemberSet();

@@ -59,19 +59,19 @@
         <java.version>1.8</java.version>
 
         <!-- SPIGOT API version -->
-        <spigot.version>1.14.4-R0.1-SNAPSHOT</spigot.version>
+        <spigot.version>1.15.2-R0.1-SNAPSHOT</spigot.version>
         <!-- Vault API version -->
         <vault.version>1.7</vault.version>
 
         <!-- BentoBox API version -->
-        <bentobox.version>1.7.0</bentobox.version>
+        <bentobox.version>1.12.0</bentobox.version>
         <!-- Warps addon version -->
         <warps.version>1.7.0</warps.version>
 
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- This allows to change between versions and snapshots. -->
-        <build.version>1.7.1</build.version>
+        <build.version>2.0.0</build.version>
         <build.number>-LOCAL</build.number>
     </properties>
 
