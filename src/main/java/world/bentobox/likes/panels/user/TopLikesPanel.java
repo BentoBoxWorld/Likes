@@ -179,8 +179,10 @@ public class TopLikesPanel
 		List<String> description = new ArrayList<>(5);
 		description.add(this.user.getTranslation(Constants.DESCRIPTION + "view-mode"));
 
-		List<VIEW_MODE> values = Arrays.asList(VIEW_MODE.values());
-		values.remove(VIEW_MODE.STARS);
+		List<VIEW_MODE> values = new ArrayList<>(3);
+		values.add(VIEW_MODE.LIKES);
+		values.add(VIEW_MODE.DISLIKES);
+		values.add(VIEW_MODE.RANK);
 
 		values.stream().map(value -> (this.viewMode.equals(value) ? "&2" : "&c") +
 			this.user.getTranslation(Constants.DESCRIPTION + "mode",
