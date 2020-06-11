@@ -11,6 +11,8 @@ repository: 'BentoBoxWorld/Likes'
 # Icon of addon that will be displayed in Addon Manager.
 # Must use Material.values() with uppercase.
 icon: 'DIAMOND'
+# BentoBox API version
+api-version: 1.14
 
 # List of addon authors.
 authors:
@@ -21,122 +23,27 @@ softdepend: AcidIsland, BSkyBlock, CaveBlock, SkyGrid, Warps, AOneBlock
 
 # List of addon permissions
 permissions:
-  # AcidIsland Permissions
-  acidisland.likes:
+  # Permissions
+  '[gamemode].likes':
     description: Let the player use the '/ai likes' command
     default: true
-  acidisland.likes.top:
+  '[gamemode].likes.top':
     description: Let the player use the '/ai likes top' command
     default: true
-  acidisland.likes.view:
+  '[gamemode].likes.view':
     description: Let the player use the '/ai likes view' command
     default: true
-  acidisland.likes.view.others:
+  '[gamemode].likes.view.others':
     description: Let the player use the '/ai likes view <player>' command
     default: op
-  acidisland.likes.bypass-cost:
+  '[gamemode].likes.bypass-cost':
     description: Let the player to avoid paying for any likes/dislikes changes.
     default: op
 
-  acidisland.likes.admin:
+  '[gamemode].likes.admin':
     description: Let the admin use the '/acid likes' command
     default: op
-  acidisland.likes.admin.settings:
+  '[gamemode].likes.admin.settings':
     description: Let the admin use the '/acid likes settings' command
     default: op
 
-  # BSkyBlock Permissions
-  bskyblock.likes:
-    description: Let the player use the '/island likes' command
-    default: true
-  bskyblock.likes.top:
-    description: Let the player use the '/island likes top' command
-    default: true
-  bskyblock.likes.view:
-    description: Let the player use the '/island likes view' command
-    default: true
-  bskyblock.likes.view.others:
-    description: Let the player use the '/island likes view <player>' command
-    default: op
-  bskyblock.likes.bypass-cost:
-    description: Let the player to avoid paying for any likes/dislikes changes.
-    default: op
-
-  bskyblock.likes.admin:
-    description: Let the admin use the '/bsb likes' command
-    default: op
-  bskyblock.likes.admin.settings:
-    description: Let the admin use the '/bsb likes settings' command
-    default: op
-
-  # CaveBlock Permissions
-  caveblock.likes:
-    description: Let the player use the '/cave likes' command
-    default: true
-  caveblock.likes.top:
-    description: Let the player use the '/cave likes top' command
-    default: true
-  caveblock.likes.view:
-    description: Let the player use the '/cave likes view' command
-    default: true
-  caveblock.likes.view.others:
-    description: Let the player use the '/cave likes view <player>' command
-    default: op
-  caveblock.likes.bypass-cost:
-    description: Let the player to avoid paying for any likes/dislikes changes.
-    default: op
-
-  caveblock.likes.admin:
-    description: Let the admin use the '/cba likes' command
-    default: op
-  caveblock.admin.likes.settings:
-    description: Let the admin use the '/cba likes settings' command
-    default: op
-
-  # SkyGrid Permissions
-  skygrid.likes:
-    description: Let the player use the '/skygrid likes' command
-    default: true
-  skygrid.likes.top:
-    description: Let the player use the '/skygrid likes top' command
-    default: true
-  skygrid.likes.view:
-    description: Let the player use the '/skygrid likes view' command
-    default: true
-  skygrid.likes.view.others:
-    description: Let the player use the '/skygrid likes view <player>' command
-    default: op
-  skygrid.likes.bypass-cost:
-    description: Let the player to avoid paying for any likes/dislikes changes.
-    default: op
-
-  skygrid.likes.admin:
-    description: Let the admin use the '/sga likes' command
-    default: op
-  skygrid.likes.admin.settings:
-    description: Let the admin use the '/sga likes settings' command
-    default: op
-
-  # aoneblock Permissions
-  aoneblock.likes:
-    description: Let the player use the '/ob likes' command
-    default: true
-  aoneblock.likes.top:
-    description: Let the player use the '/ob likes top' command
-    default: true
-  aoneblock.likes.view:
-    description: Let the player use the '/ob likes view' command
-    default: true
-  aoneblock.likes.view.others:
-    description: Let the player use the '/ob likes view <player>' command
-    default: op
-  aoneblock.likes.bypass-cost:
-    description: Let the player to avoid paying for any likes/dislikes changes.
-    default: op
-
-  aoneblock.likes.admin:
-    description: Let the admin use the '/oba likes' command
-    default: op
-  aoneblock.likes.admin.settings:
-    description: Let the admin use the '/oba likes settings' command
-    default: op

@@ -27,7 +27,6 @@ import world.bentobox.likes.database.objects.LikesObject;
 import world.bentobox.likes.panels.CommonPanel;
 import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.panels.user.LikesManagePanel;
-import world.bentobox.likes.panels.user.LikesViewPanel;
 import world.bentobox.likes.panels.util.SelectUserGUI;
 import world.bentobox.likes.utils.Constants;
 

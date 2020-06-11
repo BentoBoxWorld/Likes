@@ -7,7 +7,11 @@
 package world.bentobox.likes.managers;
 
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.bukkit.World;
@@ -21,7 +25,12 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.config.Settings;
 import world.bentobox.likes.database.objects.LikesObject;
-import world.bentobox.likes.events.*;
+import world.bentobox.likes.events.DislikeAddEvent;
+import world.bentobox.likes.events.DislikeRemoveEvent;
+import world.bentobox.likes.events.LikeAddEvent;
+import world.bentobox.likes.events.LikeRemoveEvent;
+import world.bentobox.likes.events.StarsAddEvent;
+import world.bentobox.likes.events.StarsRemoveEvent;
 import world.bentobox.likes.utils.Constants;
 import world.bentobox.likes.utils.Utils;
 import world.bentobox.likes.utils.collections.IndexedTreeSet;
@@ -51,19 +60,19 @@ public class LikesManager
         // Save memory, by adding values to set if they are necessary.
         switch (this.addon.getSettings().getMode())
         {
-            case LIKES:
-                this.sortedLikeCache = new HashMap<>();
+        case LIKES:
+            this.sortedLikeCache = new HashMap<>();
 
-                break;
-            case LIKES_DISLIKES:
-                this.sortedDislikeCache = new HashMap<>();
-                this.sortedLikeCache = new HashMap<>();
-                this.sortedRankCache = new HashMap<>();
+            break;
+        case LIKES_DISLIKES:
+            this.sortedDislikeCache = new HashMap<>();
+            this.sortedLikeCache = new HashMap<>();
+            this.sortedRankCache = new HashMap<>();
 
-                break;
-            case STARS:
-                this.sortedStarsCache = new HashMap<>();
-                break;
+            break;
+        case STARS:
+            this.sortedStarsCache = new HashMap<>();
+            break;
         }
 
         this.load();
@@ -84,17 +93,17 @@ public class LikesManager
 
         switch (this.addon.getSettings().getMode())
         {
-            case LIKES:
-                this.sortedLikeCache.clear();
-                break;
-            case LIKES_DISLIKES:
-                this.sortedLikeCache.clear();
-                this.sortedDislikeCache.clear();
-                this.sortedRankCache.clear();
-                break;
-            case STARS:
-                this.sortedStarsCache.clear();
-                break;
+        case LIKES:
+            this.sortedLikeCache.clear();
+            break;
+        case LIKES_DISLIKES:
+            this.sortedLikeCache.clear();
+            this.sortedDislikeCache.clear();
+            this.sortedRankCache.clear();
+            break;
+        case STARS:
+            this.sortedStarsCache.clear();
+            break;
         }
 
         this.addon.getLogger().info("Loading likes...");
@@ -114,48 +123,48 @@ public class LikesManager
 
         switch (this.addon.getSettings().getMode())
         {
-            case LIKES:
-            {
-                // Add object into GameMode to sorted by likes cache.
-                this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
+        case LIKES:
+        {
+            // Add object into GameMode to sorted by likes cache.
+            this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
                     gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getLikes).reversed().
-                        thenComparing(LikesObject::getDislikes).
-                        thenComparing(LikesObject::getUniqueId))).add(likesObject);
+                            thenComparing(LikesObject::getDislikes).
+                            thenComparing(LikesObject::getUniqueId))).add(likesObject);
 
-                break;
-            }
-            case LIKES_DISLIKES:
-            {
-                // Add object into GameMode to sorted by likes cache.
-                this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
+            break;
+        }
+        case LIKES_DISLIKES:
+        {
+            // Add object into GameMode to sorted by likes cache.
+            this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
                     gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getLikes).reversed().
-                        thenComparing(LikesObject::getDislikes).
-                        thenComparing(LikesObject::getUniqueId))).add(likesObject);
+                            thenComparing(LikesObject::getDislikes).
+                            thenComparing(LikesObject::getUniqueId))).add(likesObject);
 
-                // Add object into GameMode to sorted by dislikes cache.
-                this.sortedDislikeCache.computeIfAbsent(likesObject.getGameMode(),
+            // Add object into GameMode to sorted by dislikes cache.
+            this.sortedDislikeCache.computeIfAbsent(likesObject.getGameMode(),
                     gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getDislikes).reversed().
-                        thenComparing(LikesObject::getLikes).
-                        thenComparing(LikesObject::getUniqueId))).add(likesObject);
+                            thenComparing(LikesObject::getLikes).
+                            thenComparing(LikesObject::getUniqueId))).add(likesObject);
 
-                // Add object into GameMode to sorted by rank cache.
-                this.sortedRankCache.computeIfAbsent(likesObject.getGameMode(),
+            // Add object into GameMode to sorted by rank cache.
+            this.sortedRankCache.computeIfAbsent(likesObject.getGameMode(),
                     gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getRank).reversed().
-                        thenComparing(LikesObject::getLikes).reversed().
-                        thenComparing(LikesObject::getDislikes).reversed().
-                        thenComparing(LikesObject::getUniqueId))).add(likesObject);
+                            thenComparing(LikesObject::getLikes).reversed().
+                            thenComparing(LikesObject::getDislikes).reversed().
+                            thenComparing(LikesObject::getUniqueId))).add(likesObject);
 
-                break;
-            }
-            case STARS:
-            {
-                // Add object into GameMode to sorted by likes cache.
-                this.sortedStarsCache.computeIfAbsent(likesObject.getGameMode(),
+            break;
+        }
+        case STARS:
+        {
+            // Add object into GameMode to sorted by likes cache.
+            this.sortedStarsCache.computeIfAbsent(likesObject.getGameMode(),
                     gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getStarsValue).reversed().
-                        thenComparing(LikesObject::numberOfStars).reversed())).add(likesObject);
+                            thenComparing(LikesObject::numberOfStars).reversed())).add(likesObject);
 
-                break;
-            }
+            break;
+        }
         }
     }
 
@@ -202,7 +211,7 @@ public class LikesManager
         likesObject.setUniqueId(uniqueID);
         likesObject.setGameMode(gameMode);
 
-        this.likesDatabase.saveObject(likesObject);
+        this.likesDatabase.saveObjectAsync(likesObject);
         // Add to cache
         this.load(likesObject);
 
@@ -255,7 +264,7 @@ public class LikesManager
      */
     public void save()
     {
-        this.likesCache.values().forEach(this.likesDatabase::saveObject);
+        this.likesCache.values().forEach(this.likesDatabase::saveObjectAsync);
     }
 
 
@@ -275,26 +284,26 @@ public class LikesManager
 
         switch (this.addon.getSettings().getMode())
         {
-            case LIKES:
-                this.sortedLikeCache.remove(gameMode);
-                break;
-            case LIKES_DISLIKES:
-                this.sortedLikeCache.remove(gameMode);
-                this.sortedDislikeCache.remove(gameMode);
-                this.sortedRankCache.remove(gameMode);
-                break;
-            case STARS:
-                this.sortedStarsCache.remove(gameMode);
-                break;
+        case LIKES:
+            this.sortedLikeCache.remove(gameMode);
+            break;
+        case LIKES_DISLIKES:
+            this.sortedLikeCache.remove(gameMode);
+            this.sortedDislikeCache.remove(gameMode);
+            this.sortedRankCache.remove(gameMode);
+            break;
+        case STARS:
+            this.sortedStarsCache.remove(gameMode);
+            break;
         }
 
         // Remove from database
         this.likesDatabase.loadObjects().stream().
-            filter(likesObject -> gameMode.equalsIgnoreCase(likesObject.getGameMode())).
-            forEach(likesObject -> {
-                this.likesDatabase.deleteObject(likesObject);
-                this.likesCache.remove(likesObject.getUniqueId());
-            });
+        filter(likesObject -> gameMode.equalsIgnoreCase(likesObject.getGameMode())).
+        forEach(likesObject -> {
+            this.likesDatabase.deleteObject(likesObject);
+            this.likesCache.remove(likesObject.getUniqueId());
+        });
     }
 
     // ---------------------------------------------------------------------
@@ -522,32 +531,32 @@ public class LikesManager
             if (this.addon.getSettings().isLogHistory())
             {
                 object.addLogRecord(new LogEntry.Builder("ADD_STARS").
-                    data("user-id", user.toString()).
-                    data("value", Integer.toString(value)).
-                    build());
+                        data("user-id", user.toString()).
+                        data("value", Integer.toString(value)).
+                        build());
             }
 
             String name = island.getName() == null || island.getName().isEmpty() ?
-                this.addon.getPlayers().getName(island.getOwner()) : island.getName();
+                    this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
-            user.sendMessage(user.getTranslation(Constants.MESSAGE + "add-stars",
-                "[island]", name,
-                "[stars]", Integer.toString(value)));
+                    user.sendMessage(user.getTranslation(Constants.MESSAGE + "add-stars",
+                            "[island]", name,
+                            "[stars]", Integer.toString(value)));
 
-            // Send message to users
-            if (this.addon.getSettings().isInformPlayers())
-            {
-                island.getMemberSet().stream().
-                    map(User::getInstance).
-                    filter(User::isOnline).
-                    forEach(member -> member.sendMessage(
-                        member.getTranslation(Constants.MESSAGE + "player-add-stars",
-                            "[user]", user.getName(),
-                            "[stars]", Integer.toString(value))));
-            }
+                    // Send message to users
+                    if (this.addon.getSettings().isInformPlayers())
+                    {
+                        island.getMemberSet().stream().
+                        map(User::getInstance).
+                        filter(User::isOnline).
+                        forEach(member -> member.sendMessage(
+                                member.getTranslation(Constants.MESSAGE + "player-add-stars",
+                                        "[user]", user.getName(),
+                                        "[stars]", Integer.toString(value))));
+                    }
 
-            // Fire event
-            this.addon.callEvent(new StarsAddEvent(user.getUniqueId(), value, island.getUniqueId()));
+                    // Fire event
+                    this.addon.callEvent(new StarsAddEvent(user.getUniqueId(), value, island.getUniqueId()));
         }
     }
 
@@ -571,27 +580,27 @@ public class LikesManager
             if (this.addon.getSettings().isLogHistory())
             {
                 object.addLogRecord(new LogEntry.Builder("REMOVE_STARS").
-                    data("user-id", user.toString()).
-                    build());
+                        data("user-id", user.toString()).
+                        build());
             }
 
             String name = island.getName() == null || island.getName().isEmpty() ?
-                this.addon.getPlayers().getName(island.getOwner()) : island.getName();
+                    this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
-            user.sendMessage(user.getTranslation(Constants.MESSAGE + "remove-stars", "[island]", name));
+                    user.sendMessage(user.getTranslation(Constants.MESSAGE + "remove-stars", "[island]", name));
 
-            // Send message to users
-            if (this.addon.getSettings().isInformPlayers())
-            {
-                island.getMemberSet().stream().
-                    map(User::getInstance).
-                    filter(User::isOnline).
-                    forEach(member -> member.sendMessage(
-                        member.getTranslation(Constants.MESSAGE + "player-remove-stars", "[user]", user.getName())));
-            }
+                    // Send message to users
+                    if (this.addon.getSettings().isInformPlayers())
+                    {
+                        island.getMemberSet().stream().
+                        map(User::getInstance).
+                        filter(User::isOnline).
+                        forEach(member -> member.sendMessage(
+                                member.getTranslation(Constants.MESSAGE + "player-remove-stars", "[user]", user.getName())));
+                    }
 
-            // Fire event
-            this.addon.callEvent(new StarsRemoveEvent(user.getUniqueId(), island.getUniqueId()));
+                    // Fire event
+                    this.addon.callEvent(new StarsRemoveEvent(user.getUniqueId(), island.getUniqueId()));
         }
     }
 
@@ -628,8 +637,8 @@ public class LikesManager
         if (this.addon.getSettings().isLogHistory())
         {
             object.addLogRecord( new LogEntry.Builder("RESET_ISLAND").
-                data("user-id", user.toString()).
-                build());
+                    data("user-id", user.toString()).
+                    build());
         }
     }
 
@@ -702,9 +711,9 @@ public class LikesManager
     public IndexedTreeSet<LikesObject> getSortedLikes(String gameMode)
     {
         return !this.addon.getSettings().getMode().equals(Settings.LikeMode.STARS) &&
-            this.sortedLikeCache.containsKey(gameMode) ?
-                this.sortedLikeCache.get(gameMode) :
-                    new IndexedTreeSet<>();
+                this.sortedLikeCache.containsKey(gameMode) ?
+                        this.sortedLikeCache.get(gameMode) :
+                            new IndexedTreeSet<>();
     }
 
 
@@ -727,9 +736,9 @@ public class LikesManager
     public IndexedTreeSet<LikesObject> getSortedDislikes(String gameMode)
     {
         return this.addon.getSettings().getMode().equals(Settings.LikeMode.LIKES_DISLIKES) &&
-            this.sortedDislikeCache.containsKey(gameMode) ?
-                this.sortedDislikeCache.get(gameMode) :
-                    new IndexedTreeSet<>();
+                this.sortedDislikeCache.containsKey(gameMode) ?
+                        this.sortedDislikeCache.get(gameMode) :
+                            new IndexedTreeSet<>();
     }
 
 
@@ -752,9 +761,9 @@ public class LikesManager
     public IndexedTreeSet<LikesObject> getSortedRank(String gameMode)
     {
         return this.addon.getSettings().getMode().equals(Settings.LikeMode.LIKES_DISLIKES) &&
-            this.sortedRankCache.containsKey(gameMode) ?
-                this.sortedRankCache.get(gameMode) :
-                new IndexedTreeSet<>();
+                this.sortedRankCache.containsKey(gameMode) ?
+                        this.sortedRankCache.get(gameMode) :
+                            new IndexedTreeSet<>();
     }
 
 
@@ -777,9 +786,9 @@ public class LikesManager
     public IndexedTreeSet<LikesObject> getSortedStars(String gameMode)
     {
         return this.addon.getSettings().getMode().equals(Settings.LikeMode.STARS) &&
-            this.sortedStarsCache.containsKey(gameMode) ?
-                this.sortedStarsCache.get(gameMode) :
-                new IndexedTreeSet<>();
+                this.sortedStarsCache.containsKey(gameMode) ?
+                        this.sortedStarsCache.get(gameMode) :
+                            new IndexedTreeSet<>();
     }
 
 

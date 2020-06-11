@@ -64,14 +64,14 @@
         <vault.version>1.7</vault.version>
 
         <!-- BentoBox API version -->
-        <bentobox.version>1.12.0</bentobox.version>
+        <bentobox.version>1.14.0-SNAPSHOT</bentobox.version>
         <!-- Warps addon version -->
         <warps.version>1.7.0</warps.version>
 
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- This allows to change between versions and snapshots. -->
-        <build.version>2.0.0</build.version>
+        <build.version>2.1.0</build.version>
         <build.number>-LOCAL</build.number>
     </properties>
 
