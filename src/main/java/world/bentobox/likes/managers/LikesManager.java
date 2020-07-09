@@ -202,7 +202,7 @@ public class LikesManager
         likesObject.setUniqueId(uniqueID);
         likesObject.setGameMode(gameMode);
 
-        this.likesDatabase.saveObject(likesObject);
+        this.likesDatabase.saveObjectAsync(likesObject);
         // Add to cache
         this.load(likesObject);
 
@@ -255,7 +255,7 @@ public class LikesManager
      */
     public void save()
     {
-        this.likesCache.values().forEach(this.likesDatabase::saveObject);
+        this.likesCache.values().forEach(this.likesDatabase::saveObjectAsync);
     }
 
 
