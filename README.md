@@ -6,17 +6,15 @@ This is Likes Addon that allows to give Like and Dislike to other player islands
 
 ## How to use
 
-1. Place the addon jar in the addons folder of the BentoBox plugin
-2. Restart the server
+1. Place the addon jar in the addons folder of the BentoBox plugin.
+2. Restart the server.
+3. Edit configuration.
+4. Restart the server again.
 
 ## Compatibility
 
-- [x] BentoBox - 1.7.0 version
-- [x] BSkyBlock - 1.7.0 version
-- [x] AcidIsland - 1.7.0 version
-- [x] SkyGrid - 1.7.0 version
-- [x] CaveBlock - 1.7.0 version
+- [x] BentoBox - 1.14.0 version
 
 ## Information
 
-More information can be found in [Wiki Pages](https://github.com/BentoBoxWorld/Likes/wiki).
+More information can be found in [Wiki Pages](https://docs.bentobox.world/addons/Likes/).
