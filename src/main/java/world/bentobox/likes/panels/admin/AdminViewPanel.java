@@ -26,6 +26,8 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.database.objects.LikesObject;
 import world.bentobox.likes.panels.CommonPanel;
 import world.bentobox.likes.panels.GuiUtils;
+import world.bentobox.likes.panels.user.LikesManagePanel;
+import world.bentobox.likes.panels.user.LikesViewPanel;
 import world.bentobox.likes.panels.util.SelectUserGUI;
 import world.bentobox.likes.utils.Constants;
 
@@ -46,22 +48,61 @@ public class AdminViewPanel extends CommonPanel
     {
         super(parent);
 
+        this.island = island;
+
         // Create new object if it does not exist as admin is editing it.
         this.likesObject = this.addon.getManager().getIslandLikes(island.getUniqueId(), this.world);
 
-        this.likedByUsers = this.likesObject.getLikedBy().stream().
-                map(uuid -> this.addon.getPlayers().getName(uuid)).
-                sorted(String::compareToIgnoreCase).
-                collect(Collectors.toList());
+        switch (this.getMode())
+        {
+            case LIKES:
+                this.likedByUsers = this.likesObject.getLikedBy().stream().
+                    map(uuid -> this.addon.getPlayers().getName(uuid)).
+                    sorted(String::compareToIgnoreCase).
+                    collect(Collectors.toList());
+                break;
+            case LIKES_DISLIKES:
+                this.likedByUsers = this.likesObject.getLikedBy().stream().
+                    map(uuid -> this.addon.getPlayers().getName(uuid)).
+                    sorted(String::compareToIgnoreCase).
+                    collect(Collectors.toList());
 
-        this.dislikedByUsers = this.likesObject.getDislikedBy().stream().
-                map(uuid -> this.addon.getPlayers().getName(uuid)).
-                sorted(String::compareToIgnoreCase).
-                collect(Collectors.toList());
+                this.dislikedByUsers = this.likesObject.getDislikedBy().stream().
+                    map(uuid -> this.addon.getPlayers().getName(uuid)).
+                    sorted(String::compareToIgnoreCase).
+                    collect(Collectors.toList());
+                break;
+            case STARS:
+                this.likedByUsers = this.likesObject.getStarredBy().keySet().stream().
+                    map(uuid -> this.addon.getPlayers().getName(uuid)).
+                    sorted(String::compareToIgnoreCase).
+                    collect(Collectors.toList());
+                break;
+        }
 
-        this.likeRank = this.addon.getManager().getSortedLikes(this.world).entryIndex(this.likesObject) + 1L;
-        this.dislikeRank = this.addon.getManager().getSortedDislikes(this.world).entryIndex(this.likesObject) + 1L;
-        this.overallRank = this.addon.getManager().getSortedRank(this.world).entryIndex(this.likesObject) + 1L;
+        if (this.addon.getManager().getSortedLikes(this.world).contains(this.likesObject))
+        {
+            switch (this.addon.getSettings().getMode())
+            {
+                case LIKES:
+                    this.likeRank = this.addon.getManager().getSortedLikes(this.world).entryIndex(this.likesObject) + 1L;
+                    break;
+                case LIKES_DISLIKES:
+                    this.likeRank = this.addon.getManager().getSortedLikes(this.world).entryIndex(this.likesObject) + 1L;
+                    this.dislikeRank = this.addon.getManager().getSortedDislikes(this.world).entryIndex(this.likesObject) + 1L;
+                    this.overallRank = this.addon.getManager().getSortedRank(this.world).entryIndex(this.likesObject) + 1L;
+                    break;
+                case STARS:
+                    this.likeRank = this.addon.getManager().getSortedStars(this.world).entryIndex(this.likesObject) + 1L;
+                    break;
+            }
+        }
+        else
+        {
+            this.likeRank = -1;
+            this.dislikeRank = -1;
+            this.overallRank = -1;
+        }
     }
 
 
@@ -84,12 +125,56 @@ public class AdminViewPanel extends CommonPanel
 
 
     @Override
-    protected void build()
+    public void build()
     {
         PanelBuilder panelBuilder = new PanelBuilder().
                 name(this.user.getTranslation(Constants.TITLE + "edit-view")).
                 user(this.user);
 
+        switch (this.addon.getSettings().getMode())
+        {
+            case LIKES:
+                this.buildLikesPanel(panelBuilder);
+                break;
+            case LIKES_DISLIKES:
+                this.buildLikesDislikesPanel(panelBuilder);
+                break;
+            case STARS:
+                this.buildStarsPanel(panelBuilder);
+                break;
+        }
+
+        // At the end we just call build method that creates and opens panel.
+        panelBuilder.build();
+    }
+
+
+    /**
+     * This method builds Likes admin panel.
+     * @param panelBuilder PanelBuilder that need to be populated.
+     */
+    private void buildLikesPanel(PanelBuilder panelBuilder)
+    {
+        GuiUtils.fillBorder(panelBuilder, 4, Material.MAGENTA_STAINED_GLASS_PANE);
+
+        panelBuilder.item(2, this.createButton(Button.ADD_LIKE_USER));
+        panelBuilder.item(3, this.createButton(Button.REMOVE_LIKE_USER));
+
+        panelBuilder.item(10, this.createButton(Button.LIKE));
+        panelBuilder.item(11, this.createButton(Button.LIKE_RANK));
+
+        this.populateLikers(panelBuilder);
+
+        panelBuilder.item(53, this.returnButton);
+    }
+
+
+    /**
+     * This method builds Likes and Dislikes admin panel.
+     * @param panelBuilder PanelBuilder that need to be populated.
+     */
+    private void buildLikesDislikesPanel(PanelBuilder panelBuilder)
+    {
         GuiUtils.fillBorder(panelBuilder, 6, Material.MAGENTA_STAINED_GLASS_PANE);
 
         panelBuilder.item(2, this.createButton(Button.ADD_LIKE_USER));
@@ -112,9 +197,26 @@ public class AdminViewPanel extends CommonPanel
         this.populateDislikers(panelBuilder);
 
         panelBuilder.item(53, this.returnButton);
+    }
 
-        // At the end we just call build method that creates and opens panel.
-        panelBuilder.build();
+
+    /**
+     * This method builds Stars admin panel.
+     * @param panelBuilder PanelBuilder that need to be populated.
+     */
+    private void buildStarsPanel(PanelBuilder panelBuilder)
+    {
+        GuiUtils.fillBorder(panelBuilder, 4, Material.MAGENTA_STAINED_GLASS_PANE);
+
+        panelBuilder.item(2, this.createButton(Button.ADD_STARS_USER));
+        panelBuilder.item(3, this.createButton(Button.REMOVE_STARS_USER));
+
+        panelBuilder.item(10, this.createButton(Button.STARS));
+        panelBuilder.item(11, this.createButton(Button.STARS_RANK));
+
+        this.populateStars(panelBuilder);
+
+        panelBuilder.item(53, this.returnButton);
     }
 
 
@@ -132,262 +234,372 @@ public class AdminViewPanel extends CommonPanel
 
         switch (button)
         {
-        case LIKE:
-        {
-            icon = new ItemStack(Material.GOLD_INGOT);
-            name = this.user.getTranslation(Constants.BUTTON + "like");
+            case LIKE:
+            {
+                icon = new ItemStack(Material.GOLD_INGOT);
+                name = this.user.getTranslation(Constants.BUTTON + "like");
 
-            description = new ArrayList<>(2);
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "like"));
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                    "[value]",
-                    this.likesObject.getLikes() + ""));
+                description = new ArrayList<>(2);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "like"));
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
+                        "[value]",
+                        this.likesObject.getLikes() + ""));
 
-            clickHandler = null;
+                clickHandler = null;
 
-            break;
-        }
-        case LIKE_RANK:
-        {
-            icon = new ItemStack(Material.GOLD_BLOCK);
-            name = this.user.getTranslation(Constants.BUTTON + "like-rank");
+                break;
+            }
+            case LIKE_RANK:
+            {
+                icon = new ItemStack(Material.GOLD_BLOCK);
+                name = this.user.getTranslation(Constants.BUTTON + "like-rank");
 
-            description = new ArrayList<>(2);
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "like-rank"));
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                    "[value]",
-                    this.likeRank + ""));
+                description = new ArrayList<>(2);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "like-rank"));
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
+                        "[value]",
+                        this.likeRank + ""));
 
-            clickHandler = null;
+                clickHandler = null;
 
-            break;
-        }
-        case DISLIKE:
-        {
-            icon = new ItemStack(Material.IRON_INGOT);
-            name = this.user.getTranslation(Constants.BUTTON + "dislike");
+                break;
+            }
+            case DISLIKE:
+            {
+                icon = new ItemStack(Material.IRON_INGOT);
+                name = this.user.getTranslation(Constants.BUTTON + "dislike");
 
-            description = new ArrayList<>(2);
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike"));
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                    "[value]",
-                    this.likesObject.getDislikes() + ""));
+                description = new ArrayList<>(2);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike"));
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
+                        "[value]",
+                        this.likesObject.getDislikes() + ""));
 
-            clickHandler = null;
+                clickHandler = null;
 
-            break;
-        }
-        case DISLIKE_RANK:
-        {
-            icon = new ItemStack(Material.IRON_BLOCK);
-            name = this.user.getTranslation(Constants.BUTTON + "dislike-rank");
+                break;
+            }
+            case DISLIKE_RANK:
+            {
+                icon = new ItemStack(Material.IRON_BLOCK);
+                name = this.user.getTranslation(Constants.BUTTON + "dislike-rank");
 
-            description = new ArrayList<>(2);
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike-rank"));
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                    "[value]",
-                    this.dislikeRank + ""));
+                description = new ArrayList<>(2);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike-rank"));
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
+                        "[value]",
+                        this.dislikeRank + ""));
 
-            clickHandler = null;
+                clickHandler = null;
 
-            break;
-        }
-        case OVERALL:
-        {
-            icon = new ItemStack(Material.DIAMOND);
-            name = this.user.getTranslation(Constants.BUTTON + "overall");
+                break;
+            }
+            case OVERALL:
+            {
+                icon = new ItemStack(Material.DIAMOND);
+                name = this.user.getTranslation(Constants.BUTTON + "overall");
 
-            description = new ArrayList<>(2);
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "overall"));
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                    "[value]",
-                    this.likesObject.getRank() + ""));
+                description = new ArrayList<>(2);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "overall"));
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
+                        "[value]",
+                        this.likesObject.getRank() + ""));
 
-            clickHandler = null;
+                clickHandler = null;
 
-            break;
-        }
-        case OVERALL_RANK:
-        {
-            icon = new ItemStack(Material.DIAMOND_BLOCK);
-            name = this.user.getTranslation(Constants.BUTTON + "overall-rank");
+                break;
+            }
+            case OVERALL_RANK:
+            {
+                icon = new ItemStack(Material.DIAMOND_BLOCK);
+                name = this.user.getTranslation(Constants.BUTTON + "overall-rank");
 
-            description = new ArrayList<>(2);
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "overall-rank"));
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                    "[value]",
-                    this.overallRank + ""));
+                description = new ArrayList<>(2);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "overall-rank"));
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
+                        "[value]",
+                        this.overallRank + ""));
 
-            clickHandler = null;
+                clickHandler = null;
 
-            break;
-        }
-        case NEXT_LIKE:
-        {
-            icon = new ItemStack(Material.OAK_SIGN);
-            name = this.user.getTranslation(Constants.BUTTON + "next");
-            description = new ArrayList<>(1);
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "like-next"));
+                break;
+            }
+            case NEXT_LIKE:
+            {
+                icon = new ItemStack(Material.OAK_SIGN);
+                name = this.user.getTranslation(Constants.BUTTON + "next");
+                description = new ArrayList<>(1);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "like-next"));
 
-            clickHandler = (panel, user, clickType, slot) -> {
-                this.likeOffset++;
-                this.build();
-                return true;
-            };
+                clickHandler = (panel, user, clickType, slot) -> {
+                    this.likeOffset++;
+                    this.build();
+                    return true;
+                };
 
-            break;
-        }
-        case PREVIOUS_LIKE:
-        {
-            icon = new ItemStack(Material.OAK_SIGN);
-            name = this.user.getTranslation(Constants.BUTTON + "previous");
-            description = new ArrayList<>(1);
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "like-previous"));
+                break;
+            }
+            case PREVIOUS_LIKE:
+            {
+                icon = new ItemStack(Material.OAK_SIGN);
+                name = this.user.getTranslation(Constants.BUTTON + "previous");
+                description = new ArrayList<>(1);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "like-previous"));
 
-            clickHandler = (panel, user, clickType, slot) -> {
-                this.likeOffset--;
-                this.build();
-                return true;
-            };
+                clickHandler = (panel, user, clickType, slot) -> {
+                    this.likeOffset--;
+                    this.build();
+                    return true;
+                };
 
-            break;
-        }
-        case NEXT_DISLIKE:
-        {
-            icon = new ItemStack(Material.OAK_SIGN);
-            name = this.user.getTranslation(Constants.BUTTON + "next");
-            description = new ArrayList<>(1);
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike-next"));
+                break;
+            }
+            case NEXT_DISLIKE:
+            {
+                icon = new ItemStack(Material.OAK_SIGN);
+                name = this.user.getTranslation(Constants.BUTTON + "next");
+                description = new ArrayList<>(1);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike-next"));
 
-            clickHandler = (panel, user, clickType, slot) -> {
-                this.dislikeOffset++;
-                this.build();
-                return true;
-            };
+                clickHandler = (panel, user, clickType, slot) -> {
+                    this.dislikeOffset++;
+                    this.build();
+                    return true;
+                };
 
-            break;
-        }
-        case PREVIOUS_DISLIKE:
-        {
-            icon = new ItemStack(Material.OAK_SIGN);
-            name = this.user.getTranslation(Constants.BUTTON + "previous");
-            description = new ArrayList<>(1);
-            description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike-previous"));
+                break;
+            }
+            case PREVIOUS_DISLIKE:
+            {
+                icon = new ItemStack(Material.OAK_SIGN);
+                name = this.user.getTranslation(Constants.BUTTON + "previous");
+                description = new ArrayList<>(1);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike-previous"));
 
-            clickHandler = (panel, user, clickType, slot) -> {
-                this.dislikeOffset--;
-                this.build();
-                return true;
-            };
+                clickHandler = (panel, user, clickType, slot) -> {
+                    this.dislikeOffset--;
+                    this.build();
+                    return true;
+                };
 
-            break;
-        }
-        case ADD_LIKE_USER:
-        {
-            icon = new ItemStack(Material.GOLD_NUGGET);
-            name = this.user.getTranslation(Constants.BUTTON + "add-like-user");
-            description = new ArrayList<>(1);
+                break;
+            }
+            case ADD_LIKE_USER:
+            {
+                icon = new ItemStack(Material.GOLD_NUGGET);
+                name = this.user.getTranslation(Constants.BUTTON + "add-like-user");
+                description = new ArrayList<>(1);
 
-            clickHandler = (panel, user, clickType, slot) -> {
-                SelectUserGUI.open(user,
-                        this.getOnlineUserList(),
-                        this.convertToUserList(this.likesObject.getLikedBy()),
-                        player -> {
-                            if (player != null)
-                            {
-                                if (this.likesObject.hasDisliked(player.getUniqueId()))
+                clickHandler = (panel, user, clickType, slot) -> {
+                    SelectUserGUI.open(user,
+                            this.getOnlineUserList(),
+                            this.convertToUserList(this.likesObject.getLikedBy()),
+                            player -> {
+                                if (player != null)
                                 {
+                                    if (this.likesObject.hasDisliked(player.getUniqueId()))
+                                    {
+                                        this.dislikedByUsers.remove(player.getName());
+                                    }
+
+                                    this.likesObject.addLike(player.getUniqueId());
+                                    this.likedByUsers.add(player.getName());
+                                }
+
+                                this.build();
+                            });
+                    return true;
+                };
+
+                break;
+            }
+            case REMOVE_LIKE_USER:
+            {
+                icon = new ItemStack(Material.LAVA_BUCKET);
+                name = this.user.getTranslation(Constants.BUTTON + "remove-like-user");
+                description = new ArrayList<>(1);
+
+                clickHandler = (panel, user, clickType, slot) -> {
+                    SelectUserGUI.open(user,
+                            this.convertToUserList(this.likesObject.getLikedBy()),
+                            player -> {
+                                if (player != null)
+                                {
+                                    this.likesObject.removeLike(player.getUniqueId());
+                                    this.likedByUsers.remove(player.getName());
+                                }
+
+                                this.build();
+                            });
+                    return true;
+                };
+
+                break;
+            }
+            case ADD_DISLIKE_USER:
+            {
+                icon = new ItemStack(Material.IRON_NUGGET);
+                name = this.user.getTranslation(Constants.BUTTON + "add-dislike-user");
+                description = new ArrayList<>(1);
+
+                clickHandler = (panel, user, clickType, slot) -> {
+                    SelectUserGUI.open(user,
+                            this.getOnlineUserList(),
+                            this.convertToUserList(this.likesObject.getDislikedBy()),
+                            player -> {
+                                if (player != null)
+                                {
+                                    if (this.likesObject.hasLiked(player.getUniqueId()))
+                                    {
+                                        this.likedByUsers.remove(player.getName());
+                                    }
+
+                                    this.likesObject.addDislike(player.getUniqueId());
+                                    this.dislikedByUsers.add(player.getName());
+                                }
+
+                                this.build();
+                            });
+                    return true;
+                };
+
+                break;
+            }
+            case REMOVE_DISLIKE_USER:
+            {
+                icon = new ItemStack(Material.LAVA_BUCKET);
+                name = this.user.getTranslation(Constants.BUTTON + "remove-dislike-user");
+                description = new ArrayList<>(1);
+
+                clickHandler = (panel, user, clickType, slot) -> {
+                    SelectUserGUI.open(user,
+                            this.convertToUserList(this.likesObject.getDislikedBy()),
+                            player -> {
+                                if (player != null)
+                                {
+                                    this.likesObject.removeDislike(player.getUniqueId());
                                     this.dislikedByUsers.remove(player.getName());
                                 }
 
-                                this.likesObject.addLike(player.getUniqueId());
+                                this.build();
+                            });
+                    return true;
+                };
+
+                break;
+            }
+
+            case STARS:
+            {
+                icon = new ItemStack(Material.NETHER_STAR);
+                name = this.user.getTranslation(Constants.BUTTON + "stars");
+
+                description = new ArrayList<>(2);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "stars"));
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
+                    "[value]",
+                    this.likesObject.getStarsValue() + ""));
+
+                clickHandler = null;
+
+                break;
+            }
+            case STARS_RANK:
+            {
+                icon = new ItemStack(Material.BEACON);
+                name = this.user.getTranslation(Constants.BUTTON + "stars-rank");
+
+                description = new ArrayList<>(2);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "stars-rank"));
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
+                    "[value]",
+                    this.likeRank + ""));
+
+                clickHandler = null;
+
+                break;
+            }
+
+            case ADD_STARS_USER:
+            {
+                icon = new ItemStack(Material.NETHER_STAR);
+                name = this.user.getTranslation(Constants.BUTTON + "add-stars-user");
+                description = new ArrayList<>(1);
+
+                clickHandler = (panel, user, clickType, slot) -> {
+                    SelectUserGUI.open(user,
+                        this.getOnlineUserList(),
+                        this.convertToUserList(this.likesObject.getStarredBy().keySet()),
+                        player -> {
+                            if (player != null)
+                            {
+                                LikesManagePanel.openPanel(this, player, this.island);
                                 this.likedByUsers.add(player.getName());
                             }
 
                             this.build();
                         });
-                return true;
-            };
+                    return true;
+                };
 
-            break;
-        }
-        case REMOVE_LIKE_USER:
-        {
-            icon = new ItemStack(Material.LAVA_BUCKET);
-            name = this.user.getTranslation(Constants.BUTTON + "remove-like-user");
-            description = new ArrayList<>(1);
+                break;
+            }
+            case REMOVE_STARS_USER:
+            {
+                icon = new ItemStack(Material.LAVA_BUCKET);
+                name = this.user.getTranslation(Constants.BUTTON + "remove-stars-user");
+                description = new ArrayList<>(1);
 
-            clickHandler = (panel, user, clickType, slot) -> {
-                SelectUserGUI.open(user,
-                        this.convertToUserList(this.likesObject.getLikedBy()),
+                clickHandler = (panel, user, clickType, slot) -> {
+                    SelectUserGUI.open(user,
+                        this.convertToUserList(this.likesObject.getStarredBy().keySet()),
                         player -> {
                             if (player != null)
                             {
-                                this.likesObject.removeLike(player.getUniqueId());
+                                this.likesObject.removeStars(player.getUniqueId());
                                 this.likedByUsers.remove(player.getName());
                             }
 
                             this.build();
                         });
-                return true;
-            };
+                    return true;
+                };
 
-            break;
-        }
-        case ADD_DISLIKE_USER:
-        {
-            icon = new ItemStack(Material.IRON_NUGGET);
-            name = this.user.getTranslation(Constants.BUTTON + "add-dislike-user");
-            description = new ArrayList<>(1);
+                break;
+            }
 
-            clickHandler = (panel, user, clickType, slot) -> {
-                SelectUserGUI.open(user,
-                        this.getOnlineUserList(),
-                        this.convertToUserList(this.likesObject.getDislikedBy()),
-                        player -> {
-                            if (player != null)
-                            {
-                                if (this.likesObject.hasLiked(player.getUniqueId()))
-                                {
-                                    this.likedByUsers.remove(player.getName());
-                                }
+            case NEXT_STARS:
+            {
+                icon = new ItemStack(Material.OAK_SIGN);
+                name = this.user.getTranslation(Constants.BUTTON + "next");
+                description = new ArrayList<>(1);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "stars-next"));
 
-                                this.likesObject.addDislike(player.getUniqueId());
-                                this.dislikedByUsers.add(player.getName());
-                            }
+                clickHandler = (panel, user, clickType, slot) -> {
+                    this.likeOffset++;
+                    this.build();
+                    return true;
+                };
 
-                            this.build();
-                        });
-                return true;
-            };
+                break;
+            }
+            case PREVIOUS_STARS:
+            {
+                icon = new ItemStack(Material.OAK_SIGN);
+                name = this.user.getTranslation(Constants.BUTTON + "previous");
+                description = new ArrayList<>(1);
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "stars-previous"));
 
-            break;
-        }
-        case REMOVE_DISLIKE_USER:
-        {
-            icon = new ItemStack(Material.LAVA_BUCKET);
-            name = this.user.getTranslation(Constants.BUTTON + "remove-dislike-user");
-            description = new ArrayList<>(1);
+                clickHandler = (panel, user, clickType, slot) -> {
+                    this.likeOffset--;
+                    this.build();
+                    return true;
+                };
 
-            clickHandler = (panel, user, clickType, slot) -> {
-                SelectUserGUI.open(user,
-                        this.convertToUserList(this.likesObject.getDislikedBy()),
-                        player -> {
-                            if (player != null)
-                            {
-                                this.likesObject.removeDislike(player.getUniqueId());
-                                this.dislikedByUsers.remove(player.getName());
-                            }
-
-                            this.build();
-                        });
-                return true;
-            };
-
-            break;
-        }
-        default:
-            return null;
+                break;
+            }
+            default:
+                return null;
         }
 
         return new PanelItemBuilder().
@@ -461,6 +673,42 @@ public class AdminViewPanel extends CommonPanel
 
 
     /**
+     * This method populates all stars into given panel builder.
+     * @param panelBuilder PanelBuilder object.
+     */
+    private void populateStars(PanelBuilder panelBuilder)
+    {
+        if (this.likeOffset > 0)
+        {
+            panelBuilder.item(18, this.createButton(Button.PREVIOUS_STARS));
+        }
+
+        if ((this.likeOffset + 1) * 7 < this.likesObject.numberOfStars())
+        {
+            panelBuilder.item(26, this.createButton(Button.NEXT_STARS));
+        }
+
+        final int startIndex = this.likeOffset * 7;
+
+        for (int index = 0, size = this.likesObject.numberOfStars();
+            index < 7 && startIndex + index < size;
+            index++)
+        {
+            String userName = this.likedByUsers.get(startIndex + index);
+
+            PanelItem panelItem = new PanelItemBuilder().
+                icon(userName).
+                glow(false).
+                build();
+            panelItem.getItem().setAmount(this.likesObject.getStarredBy().get(
+                this.addon.getPlayers().getUUID(userName)));
+
+            panelBuilder.item(19 + index, panelItem);
+        }
+    }
+
+
+    /**
      * This method returns list that contains all online users.
      * @return Online User List.
      */
@@ -497,6 +745,8 @@ public class AdminViewPanel extends CommonPanel
         DISLIKE_RANK,
         OVERALL,
         OVERALL_RANK,
+        STARS,
+        STARS_RANK,
 
         NEXT_LIKE,
         PREVIOUS_LIKE,
@@ -504,10 +754,15 @@ public class AdminViewPanel extends CommonPanel
         NEXT_DISLIKE,
         PREVIOUS_DISLIKE,
 
+        NEXT_STARS,
+        PREVIOUS_STARS,
+
         ADD_LIKE_USER,
         REMOVE_LIKE_USER,
         ADD_DISLIKE_USER,
-        REMOVE_DISLIKE_USER
+        REMOVE_DISLIKE_USER,
+        ADD_STARS_USER,
+        REMOVE_STARS_USER
     }
 
 
@@ -522,6 +777,11 @@ public class AdminViewPanel extends CommonPanel
     private final LikesObject likesObject;
 
     /**
+     * This variable holds targeted island by current panel.
+     */
+    private final Island island;
+
+    /**
      * This variable stores index of current liker.
      */
     private int likeOffset;
@@ -534,25 +794,25 @@ public class AdminViewPanel extends CommonPanel
     /**
      * This list contains player names that liked current island.
      */
-    private final List<String> likedByUsers;
+    private List<String> likedByUsers;
 
     /**
      * This list contains player names that disliked current island.
      */
-    private final List<String> dislikedByUsers;
+    private List<String> dislikedByUsers;
 
     /**
      * This variable holds island rank by likes.
      */
-    private final long likeRank;
+    private long likeRank;
 
     /**
      * This variable holds island rank by dislikes.
      */
-    private final long dislikeRank;
+    private long dislikeRank;
 
     /**
      * This variable holds island rank by rank.
      */
-    private final long overallRank;
+    private long overallRank;
 }

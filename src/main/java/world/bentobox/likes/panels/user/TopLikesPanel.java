@@ -1,10 +1,7 @@
 package world.bentobox.likes.panels.user;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,6 +15,7 @@ import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.LikesAddon;
+import world.bentobox.likes.config.Settings;
 import world.bentobox.likes.config.Settings.VIEW_MODE;
 import world.bentobox.likes.database.objects.LikesObject;
 import world.bentobox.likes.panels.GuiUtils;
@@ -114,6 +112,10 @@ public class TopLikesPanel
 				this.topPlayerList.addAll(this.addon.getManager().getTopByRank(this.world));
 				mainMaterial = Material.MAGENTA_STAINED_GLASS_PANE;
 				break;
+			case STARS:
+				this.topPlayerList.addAll(this.addon.getManager().getTopByStars(this.world));
+				mainMaterial = Material.BLUE_STAINED_GLASS_PANE;
+				break;
 			default:
 				// This should never happen!
 				this.user.closeInventory();
@@ -150,7 +152,10 @@ public class TopLikesPanel
 
 		GuiUtils.fillBorder(panelBuilder, rowCount, mainMaterial);
 
-		panelBuilder.item(8, this.createViewModeButton());
+		if (this.addon.getSettings().getMode().equals(Settings.LikeMode.LIKES_DISLIKES))
+		{
+			panelBuilder.item(8, this.createViewModeButton());
+		}
 
 		this.populatePlayerButtons(panelBuilder);
 
@@ -174,12 +179,15 @@ public class TopLikesPanel
 		List<String> description = new ArrayList<>(5);
 		description.add(this.user.getTranslation(Constants.DESCRIPTION + "view-mode"));
 
-		for (VIEW_MODE value : VIEW_MODE.values())
-		{
-			description.add((this.viewMode.equals(value) ? "&2" : "&c") +
-				this.user.getTranslation(Constants.DESCRIPTION + "mode",
-					"[type]", this.user.getTranslation(Constants.TYPES + value.name().toLowerCase())));
-		}
+		List<VIEW_MODE> values = new ArrayList<>(3);
+		values.add(VIEW_MODE.LIKES);
+		values.add(VIEW_MODE.DISLIKES);
+		values.add(VIEW_MODE.RANK);
+
+		values.stream().map(value -> (this.viewMode.equals(value) ? "&2" : "&c") +
+			this.user.getTranslation(Constants.DESCRIPTION + "mode",
+				"[type]", this.user.getTranslation(Constants.TYPES + value.name().toLowerCase()))).
+			forEach(description::add);
 
 		switch (this.viewMode)
 		{
@@ -253,30 +261,44 @@ public class TopLikesPanel
 		String name;
 		List<String> description = new ArrayList<>();
 
-		final long value;
-
 		switch (this.viewMode)
 		{
 			case LIKES:
-				value = likesObject.getLikes();
+				description.add(this.user.getTranslation(Constants.DESCRIPTION + "top-value." + this.viewMode.name().toLowerCase(),
+					"[rank]", rank + "", "[value]", Long.toString(likesObject.getLikes())));
 				break;
 			case DISLIKES:
-				value = likesObject.getDislikes();
+				description.add(this.user.getTranslation(Constants.DESCRIPTION + "top-value." + this.viewMode.name().toLowerCase(),
+					"[rank]", rank + "", "[value]", Long.toString(likesObject.getDislikes())));
 				break;
 			case RANK:
-				value = likesObject.getRank();
+				description.add(this.user.getTranslation(Constants.DESCRIPTION + "top-value." + this.viewMode.name().toLowerCase(),
+					"[rank]", rank + "", "[value]", Long.toString(likesObject.getRank())));
 				break;
-			default:
-				value = 0;
+			case STARS:
+				description.add(this.user.getTranslation(Constants.DESCRIPTION + "top-value." + this.viewMode.name().toLowerCase(),
+					"[rank]", rank + "", "[value]", Double.toString(likesObject.getStarsValue())));
+				break;
 		}
 
-		description.add(this.user.getTranslation(Constants.DESCRIPTION + "top-value." + this.viewMode.name().toLowerCase(),
-			"[rank]", rank + "", "[value]", value + ""));
-
-		description.add(this.user.getTranslation(Constants.DESCRIPTION + "values",
-			"[likes]", "" + likesObject.getLikes(),
-			"[dislikes]", "" + likesObject.getDislikes(),
-			"[rank]", "" + likesObject.getRank()));
+		switch (this.addon.getSettings().getMode())
+		{
+			case LIKES:
+				description.add(this.user.getTranslation(Constants.DESCRIPTION + "likes-values",
+					"[likes]", "" + likesObject.getLikes()));
+				break;
+			case LIKES_DISLIKES:
+				description.add(this.user.getTranslation(Constants.DESCRIPTION + "likes-dislikes-values",
+					"[likes]", "" + likesObject.getLikes(),
+					"[dislikes]", "" + likesObject.getDislikes(),
+					"[rank]", "" + likesObject.getRank()));
+				break;
+			case STARS:
+				description.add(this.user.getTranslation(Constants.DESCRIPTION + "stars-values",
+					"[stars]", "" + likesObject.getStarsValue(),
+					"[votes]", "" + likesObject.numberOfStars()));
+				break;
+		}
 
 		PanelItem.ClickHandler clickHandler;
 

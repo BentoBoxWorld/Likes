@@ -7,11 +7,7 @@
 package world.bentobox.likes.managers;
 
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.bukkit.World;
@@ -23,11 +19,9 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.LikesAddon;
+import world.bentobox.likes.config.Settings;
 import world.bentobox.likes.database.objects.LikesObject;
-import world.bentobox.likes.events.DislikeAddEvent;
-import world.bentobox.likes.events.DislikeRemoveEvent;
-import world.bentobox.likes.events.LikeAddEvent;
-import world.bentobox.likes.events.LikeRemoveEvent;
+import world.bentobox.likes.events.*;
 import world.bentobox.likes.utils.Constants;
 import world.bentobox.likes.utils.Utils;
 import world.bentobox.likes.utils.collections.IndexedTreeSet;
@@ -54,9 +48,23 @@ public class LikesManager
         this.likesDatabase = new Database<>(addon, LikesObject.class);
         this.likesCache = new HashMap<>();
 
-        this.sortedDislikeCache = new HashMap<>();
-        this.sortedLikeCache = new HashMap<>();
-        this.sortedRankCache = new HashMap<>();
+        // Save memory, by adding values to set if they are necessary.
+        switch (this.addon.getSettings().getMode())
+        {
+            case LIKES:
+                this.sortedLikeCache = new HashMap<>();
+
+                break;
+            case LIKES_DISLIKES:
+                this.sortedDislikeCache = new HashMap<>();
+                this.sortedLikeCache = new HashMap<>();
+                this.sortedRankCache = new HashMap<>();
+
+                break;
+            case STARS:
+                this.sortedStarsCache = new HashMap<>();
+                break;
+        }
 
         this.load();
     }
@@ -74,9 +82,20 @@ public class LikesManager
     {
         this.likesCache.clear();
 
-        this.sortedLikeCache.clear();
-        this.sortedDislikeCache.clear();
-        this.sortedRankCache.clear();
+        switch (this.addon.getSettings().getMode())
+        {
+            case LIKES:
+                this.sortedLikeCache.clear();
+                break;
+            case LIKES_DISLIKES:
+                this.sortedLikeCache.clear();
+                this.sortedDislikeCache.clear();
+                this.sortedRankCache.clear();
+                break;
+            case STARS:
+                this.sortedStarsCache.clear();
+                break;
+        }
 
         this.addon.getLogger().info("Loading likes...");
 
@@ -93,24 +112,51 @@ public class LikesManager
         // Add object into Island to LikeObject cache.
         this.likesCache.put(likesObject.getUniqueId(), likesObject);
 
-        // Add object into GameMode to sorted by likes cache.
-        this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
-                gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getLikes).reversed().
+        switch (this.addon.getSettings().getMode())
+        {
+            case LIKES:
+            {
+                // Add object into GameMode to sorted by likes cache.
+                this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
+                    gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getLikes).reversed().
                         thenComparing(LikesObject::getDislikes).
                         thenComparing(LikesObject::getUniqueId))).add(likesObject);
 
-        // Add object into GameMode to sorted by dislikes cache.
-        this.sortedDislikeCache.computeIfAbsent(likesObject.getGameMode(),
-                gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getDislikes).reversed().
+                break;
+            }
+            case LIKES_DISLIKES:
+            {
+                // Add object into GameMode to sorted by likes cache.
+                this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
+                    gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getLikes).reversed().
+                        thenComparing(LikesObject::getDislikes).
+                        thenComparing(LikesObject::getUniqueId))).add(likesObject);
+
+                // Add object into GameMode to sorted by dislikes cache.
+                this.sortedDislikeCache.computeIfAbsent(likesObject.getGameMode(),
+                    gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getDislikes).reversed().
                         thenComparing(LikesObject::getLikes).
                         thenComparing(LikesObject::getUniqueId))).add(likesObject);
 
-        // Add object into GameMode to sorted by rank cache.
-        this.sortedRankCache.computeIfAbsent(likesObject.getGameMode(),
-                gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getRank).reversed().
+                // Add object into GameMode to sorted by rank cache.
+                this.sortedRankCache.computeIfAbsent(likesObject.getGameMode(),
+                    gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getRank).reversed().
                         thenComparing(LikesObject::getLikes).reversed().
                         thenComparing(LikesObject::getDislikes).reversed().
                         thenComparing(LikesObject::getUniqueId))).add(likesObject);
+
+                break;
+            }
+            case STARS:
+            {
+                // Add object into GameMode to sorted by likes cache.
+                this.sortedStarsCache.computeIfAbsent(likesObject.getGameMode(),
+                    gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getStarsValue).reversed().
+                        thenComparing(LikesObject::numberOfStars).reversed())).add(likesObject);
+
+                break;
+            }
+        }
     }
 
 
@@ -156,7 +202,7 @@ public class LikesManager
         likesObject.setUniqueId(uniqueID);
         likesObject.setGameMode(gameMode);
 
-        this.likesDatabase.saveObject(likesObject);
+        this.likesDatabase.saveObjectAsync(likesObject);
         // Add to cache
         this.load(likesObject);
 
@@ -209,7 +255,7 @@ public class LikesManager
      */
     public void save()
     {
-        this.likesCache.values().forEach(this.likesDatabase::saveObject);
+        this.likesCache.values().forEach(this.likesDatabase::saveObjectAsync);
     }
 
 
@@ -226,17 +272,29 @@ public class LikesManager
         String gameMode = Utils.getGameMode(world);
 
         // Empty sorted cache
-        this.sortedLikeCache.remove(gameMode);
-        this.sortedDislikeCache.remove(gameMode);
-        this.sortedRankCache.remove(gameMode);
+
+        switch (this.addon.getSettings().getMode())
+        {
+            case LIKES:
+                this.sortedLikeCache.remove(gameMode);
+                break;
+            case LIKES_DISLIKES:
+                this.sortedLikeCache.remove(gameMode);
+                this.sortedDislikeCache.remove(gameMode);
+                this.sortedRankCache.remove(gameMode);
+                break;
+            case STARS:
+                this.sortedStarsCache.remove(gameMode);
+                break;
+        }
 
         // Remove from database
         this.likesDatabase.loadObjects().stream().
-        filter(likesObject -> gameMode.equalsIgnoreCase(likesObject.getGameMode())).
-        forEach(likesObject -> {
-            this.likesDatabase.deleteObject(likesObject);
-            this.likesCache.remove(likesObject.getUniqueId());
-        });
+            filter(likesObject -> gameMode.equalsIgnoreCase(likesObject.getGameMode())).
+            forEach(likesObject -> {
+                this.likesDatabase.deleteObject(likesObject);
+                this.likesCache.remove(likesObject.getUniqueId());
+            });
     }
 
     // ---------------------------------------------------------------------
@@ -445,6 +503,112 @@ public class LikesManager
 
 
     /**
+     * This method adds number of stars from given user to target island, in given world.
+     * @param user User who adds stars.
+     * @param value Value of the stars.
+     * @param island Island which receive stars.
+     * @param world World where island is located.
+     */
+    public void addStars(User user, int value, Island island, World world)
+    {
+        String gameMode = Utils.getGameMode(world);
+        LikesObject object = this.getIslandLikes(island.getUniqueId(), gameMode);
+
+        if (!object.hasStarred(user.getUniqueId()))
+        {
+            object.addStars(user.getUniqueId(), value);
+
+            // Log history
+            if (this.addon.getSettings().isLogHistory())
+            {
+                object.addLogRecord(new LogEntry.Builder("ADD_STARS").
+                    data("user-id", user.toString()).
+                    data("value", Integer.toString(value)).
+                    build());
+            }
+
+            String name = island.getName() == null || island.getName().isEmpty() ?
+                this.addon.getPlayers().getName(island.getOwner()) : island.getName();
+
+            user.sendMessage(user.getTranslation(Constants.MESSAGE + "add-stars",
+                "[island]", name,
+                "[stars]", Integer.toString(value)));
+
+            // Send message to users
+            if (this.addon.getSettings().isInformPlayers())
+            {
+                island.getMemberSet().stream().
+                    map(User::getInstance).
+                    filter(User::isOnline).
+                    forEach(member -> member.sendMessage(
+                        member.getTranslation(Constants.MESSAGE + "player-add-stars",
+                            "[user]", user.getName(),
+                            "[stars]", Integer.toString(value))));
+            }
+
+            // Fire event
+            this.addon.callEvent(new StarsAddEvent(user.getUniqueId(), value, island.getUniqueId()));
+        }
+    }
+
+
+    /**
+     * This method removes like from given user to target island, in given world.
+     * @param user User who removes like.
+     * @param island Island which lost like.
+     * @param world World where island is located.
+     */
+    public void removeStars(User user, Island island, World world)
+    {
+        String gameMode = Utils.getGameMode(world);
+        LikesObject object = this.getIslandLikes(island.getUniqueId(), gameMode);
+
+        if (object.hasStarred(user.getUniqueId()))
+        {
+            object.removeStars(user.getUniqueId());
+
+            // Log history
+            if (this.addon.getSettings().isLogHistory())
+            {
+                object.addLogRecord(new LogEntry.Builder("REMOVE_STARS").
+                    data("user-id", user.toString()).
+                    build());
+            }
+
+            String name = island.getName() == null || island.getName().isEmpty() ?
+                this.addon.getPlayers().getName(island.getOwner()) : island.getName();
+
+            user.sendMessage(user.getTranslation(Constants.MESSAGE + "remove-stars", "[island]", name));
+
+            // Send message to users
+            if (this.addon.getSettings().isInformPlayers())
+            {
+                island.getMemberSet().stream().
+                    map(User::getInstance).
+                    filter(User::isOnline).
+                    forEach(member -> member.sendMessage(
+                        member.getTranslation(Constants.MESSAGE + "player-remove-stars", "[user]", user.getName())));
+            }
+
+            // Fire event
+            this.addon.callEvent(new StarsRemoveEvent(user.getUniqueId(), island.getUniqueId()));
+        }
+    }
+
+
+    /**
+     * This method returns if given player has liked target island, in given world.
+     * @param user User which need to be checked.
+     * @param islandId Island which need to be checked.
+     * @param world World where island is located.
+     */
+    public boolean hasStarred(UUID user, String islandId, World world)
+    {
+        return this.getIslandLikes(islandId, Utils.getGameMode(world)).hasStarred(user);
+    }
+
+
+    /**
      * This method resets likes and dislikes for current island.
      * @param user User who reset island.
      * @param islandId Island Id.
@@ -457,12 +621,15 @@ public class LikesManager
 
         object.setLikes(0L);
         object.setDislikes(0L);
+        object.setStars(0L);
+
+        object.clearCollections();
 
         if (this.addon.getSettings().isLogHistory())
         {
             object.addLogRecord( new LogEntry.Builder("RESET_ISLAND").
-                    data("user-id", user.toString()).
-                    build());
+                data("user-id", user.toString()).
+                build());
         }
     }
 
@@ -506,6 +673,17 @@ public class LikesManager
 
 
     /**
+     * This method returns top 10 islands by stars.
+     * @param world World where top list must be found.
+     * @return List that contains max 10 elements where ordered by stars.
+     */
+    public List<LikesObject> getTopByStars(World world)
+    {
+        return this.getSortedStars(world).stream().limit(10).filter(LikesObject::isNotEmpty).collect(Collectors.toList());
+    }
+
+
+    /**
      * This method returns Indexed Tree Set with Likes Object ordered by like count.
      * @param world Target world
      * @return Indexed Tree Set where likes objects are ordered by like count.
@@ -523,7 +701,8 @@ public class LikesManager
      */
     public IndexedTreeSet<LikesObject> getSortedLikes(String gameMode)
     {
-        return this.sortedLikeCache.containsKey(gameMode) ?
+        return !this.addon.getSettings().getMode().equals(Settings.LikeMode.STARS) &&
+            this.sortedLikeCache.containsKey(gameMode) ?
                 this.sortedLikeCache.get(gameMode) :
                     new IndexedTreeSet<>();
     }
@@ -547,7 +726,8 @@ public class LikesManager
      */
     public IndexedTreeSet<LikesObject> getSortedDislikes(String gameMode)
     {
-        return this.sortedDislikeCache.containsKey(gameMode) ?
+        return this.addon.getSettings().getMode().equals(Settings.LikeMode.LIKES_DISLIKES) &&
+            this.sortedDislikeCache.containsKey(gameMode) ?
                 this.sortedDislikeCache.get(gameMode) :
                     new IndexedTreeSet<>();
     }
@@ -571,9 +751,35 @@ public class LikesManager
      */
     public IndexedTreeSet<LikesObject> getSortedRank(String gameMode)
     {
-        return this.sortedRankCache.containsKey(gameMode) ?
+        return this.addon.getSettings().getMode().equals(Settings.LikeMode.LIKES_DISLIKES) &&
+            this.sortedRankCache.containsKey(gameMode) ?
                 this.sortedRankCache.get(gameMode) :
-                    new IndexedTreeSet<>();
+                new IndexedTreeSet<>();
+    }
+
+
+    /**
+     * This method returns Indexed Tree Set with Likes Object ordered by stars.
+     * @param world Target world
+     * @return Indexed Tree Set where likes objects are ordered by stars.
+     */
+    public IndexedTreeSet<LikesObject> getSortedStars(World world)
+    {
+        return this.getSortedStars(Utils.getGameMode(world));
+    }
+
+
+    /**
+     * This method returns Indexed Tree Set with Likes Object ordered by stars value.
+     * @param gameMode Target GameMode addon name.
+     * @return Indexed Tree Set where likes objects are ordered by stars value.
+     */
+    public IndexedTreeSet<LikesObject> getSortedStars(String gameMode)
+    {
+        return this.addon.getSettings().getMode().equals(Settings.LikeMode.STARS) &&
+            this.sortedStarsCache.containsKey(gameMode) ?
+                this.sortedStarsCache.get(gameMode) :
+                new IndexedTreeSet<>();
     }
 
 
@@ -615,4 +821,10 @@ public class LikesManager
      * It should be cached, because of PlaceHolders.
      */
     private Map<String, IndexedTreeSet<LikesObject>> sortedRankCache;
+
+    /**
+     * This map links GameMode's to liked islands sorted by rank.
+     * It should be cached, because of PlaceHolders.
+     */
+    private Map<String, IndexedTreeSet<LikesObject>> sortedStarsCache;
 }

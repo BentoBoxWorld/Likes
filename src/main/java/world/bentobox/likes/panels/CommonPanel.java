@@ -15,6 +15,7 @@ import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.likes.LikesAddon;
+import world.bentobox.likes.config.Settings;
 import world.bentobox.likes.utils.Constants;
 
 
@@ -87,7 +88,22 @@ public abstract class CommonPanel
 	/**
 	 * Method that must be added in all panels.
 	 */
-	protected abstract void build();
+	public abstract void build();
+
+
+// ---------------------------------------------------------------------
+// Section: Common methods
+// ---------------------------------------------------------------------
+
+
+	/**
+	 * This method returns operational mode for addon.
+	 * @return Which LikeMode is currently active.
+	 */
+	protected final Settings.LikeMode getMode()
+	{
+		return this.addon.getSettings().getMode();
+	}
 
 
 // ---------------------------------------------------------------------
