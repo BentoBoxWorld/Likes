@@ -13,6 +13,7 @@ import com.google.gson.annotations.Expose;
 
 import world.bentobox.bentobox.api.logs.LogEntry;
 import world.bentobox.bentobox.database.objects.DataObject;
+import world.bentobox.bentobox.database.objects.Table;
 import world.bentobox.bentobox.database.objects.adapters.Adapter;
 import world.bentobox.bentobox.database.objects.adapters.LogEntryListAdapter;
 
@@ -20,6 +21,7 @@ import world.bentobox.bentobox.database.objects.adapters.LogEntryListAdapter;
 /**
  * Object that holds number of likes and dislikes.
  */
+@Table(name = "LikesData")
 public class LikesObject implements DataObject
 {
 	/**
