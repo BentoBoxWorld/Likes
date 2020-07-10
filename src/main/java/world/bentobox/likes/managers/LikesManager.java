@@ -617,6 +617,19 @@ public class LikesManager
 
 
     /**
+     * This method returns if given player has added starts to target island, in given world.
+     * @param user User which need to be checked.
+     * @param islandId Island which need to be checked.
+     * @param world World where island is located.
+     * @return integer from 0-5 with star count.
+     */
+    public int getStarred(UUID user, String islandId, World world)
+    {
+        return this.getIslandLikes(islandId, Utils.getGameMode(world)).getStarred(user);
+    }
+
+
+    /**
      * This method resets likes and dislikes for current island.
      * @param user User who reset island.
      * @param islandId Island Id.

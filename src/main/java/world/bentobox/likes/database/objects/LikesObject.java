@@ -184,6 +184,17 @@ public class LikesObject implements DataObject
 
 
 	/**
+	 * This method returns value of added stars from given user.
+	 * @param user UUID for user that must be checked.
+	 * @return Integer in range from 0-5.
+	 */
+	public int getStarred(UUID user)
+	{
+		return this.starredBy.getOrDefault(user, 0);
+	}
+
+
+	/**
 	 * This method returns if current likes object is not empty - At least one like, dislike or star.
 	 * @return {@code true} if current object has at least one likes or dislikes, {@code false} - otherwise.
 	 */
