@@ -9,6 +9,7 @@ package world.bentobox.likes.panels.user;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.database.objects.LikesObject;
 import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.utils.Constants;
+import world.bentobox.likes.utils.collections.IndexedTreeSet;
 
 
 /**
@@ -53,18 +55,18 @@ public class LikesViewPanel
 
         this.likesObject = likesObject;
 
+        IndexedTreeSet<LikesObject> initialSearchSet;
+
         switch (this.addon.getSettings().getMode())
         {
             case LIKES:
-            {
                 this.likedByUsers = this.likesObject.getLikedBy().stream().
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
+                initialSearchSet = this.addon.getManager().getSortedLikes(world);
                 break;
-            }
             case LIKES_DISLIKES:
-            {
                 this.likedByUsers = this.likesObject.getLikedBy().stream().
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
@@ -74,32 +76,33 @@ public class LikesViewPanel
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
+                initialSearchSet = this.addon.getManager().getSortedLikes(world);
                 break;
-            }
             case STARS:
-            {
                 this.likedByUsers = this.likesObject.getStarredBy().keySet().stream().
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
+                initialSearchSet = this.addon.getManager().getSortedStars(world);
                 break;
-            }
+            default:
+                initialSearchSet = new IndexedTreeSet<>(Comparator.comparing(LikesObject::getUniqueId));
         }
 
-        if (this.addon.getManager().getSortedLikes(world).contains(likesObject))
+        if (initialSearchSet.contains(this.likesObject))
         {
             switch (this.addon.getSettings().getMode())
             {
                 case LIKES:
-                    this.likeRank = this.addon.getManager().getSortedLikes(world).entryIndex(likesObject) + 1L;
+                    this.likeRank = initialSearchSet.entryIndex(likesObject) + 1L;
                     break;
                 case LIKES_DISLIKES:
-                    this.likeRank = this.addon.getManager().getSortedLikes(world).entryIndex(likesObject) + 1L;
+                    this.likeRank = initialSearchSet.entryIndex(likesObject) + 1L;
                     this.dislikeRank = this.addon.getManager().getSortedDislikes(world).entryIndex(likesObject) + 1L;
                     this.overallRank = this.addon.getManager().getSortedRank(world).entryIndex(likesObject) + 1L;
                     break;
                 case STARS:
-                    this.likeRank = this.addon.getManager().getSortedStars(world).entryIndex(likesObject) + 1L;
+                    this.likeRank = initialSearchSet.entryIndex(likesObject) + 1L;
                     break;
             }
         }

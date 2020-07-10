@@ -321,27 +321,29 @@ public class LikesManager
             if (this.addon.getSettings().isLogHistory())
             {
                 object.addLogRecord(new LogEntry.Builder("ADD_LIKE").
-                        data("user-id", user.toString()).
-                        build());
+                    data("user-id", user.toString()).
+                    build());
             }
 
             String name = island.getName() == null || island.getName().isEmpty() ?
-                    this.addon.getPlayers().getName(island.getOwner()) : island.getName();
+                this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
-                    user.sendMessage(user.getTranslation(Constants.MESSAGE + "add-like", "[island]", name));
+            user.sendMessage(user.getTranslation(Constants.MESSAGE + "add-like", "[island]", name));
 
-                    // Send message to users
-                    if (this.addon.getSettings().isInformPlayers())
-                    {
-                        island.getMemberSet().stream().
-                        map(User::getInstance).
-                        filter(User::isOnline).
-                        forEach(member -> member.sendMessage(
-                                member.getTranslation(Constants.MESSAGE + "player-add-like", "[user]", user.getName())));
-                    }
+            // Send message to users
+            if (this.addon.getSettings().isInformPlayers())
+            {
+                island.getMemberSet().stream().
+                    map(User::getInstance).
+                    filter(User::isOnline).
+                    forEach(member -> member.sendMessage(
+                        member.getTranslation(Constants.MESSAGE + "player-add-like",
+                            "[user]",
+                            user.getName())));
+            }
 
-                    // Fire event
-                    this.addon.callEvent(new LikeAddEvent(user.getUniqueId(), island.getUniqueId()));
+            // Fire event
+            this.addon.callEvent(new LikeAddEvent(user.getUniqueId(), island.getUniqueId()));
         }
     }
 
@@ -365,27 +367,29 @@ public class LikesManager
             if (this.addon.getSettings().isLogHistory())
             {
                 object.addLogRecord(new LogEntry.Builder("REMOVE_LIKE").
-                        data("user-id", user.toString()).
-                        build());
+                    data("user-id", user.toString()).
+                    build());
             }
 
             String name = island.getName() == null || island.getName().isEmpty() ?
-                    this.addon.getPlayers().getName(island.getOwner()) : island.getName();
+                this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
-                    user.sendMessage(user.getTranslation(Constants.MESSAGE + "remove-like", "[island]", name));
+            user.sendMessage(user.getTranslation(Constants.MESSAGE + "remove-like", "[island]", name));
 
-                    // Send message to users
-                    if (this.addon.getSettings().isInformPlayers())
-                    {
-                        island.getMemberSet().stream().
-                        map(User::getInstance).
-                        filter(User::isOnline).
-                        forEach(member -> member.sendMessage(
-                                member.getTranslation(Constants.MESSAGE + "player-remove-like", "[user]", user.getName())));
-                    }
+            // Send message to users
+            if (this.addon.getSettings().isInformPlayers())
+            {
+                island.getMemberSet().stream().
+                    map(User::getInstance).
+                    filter(User::isOnline).
+                    forEach(member -> member.sendMessage(
+                        member.getTranslation(Constants.MESSAGE + "player-remove-like",
+                            "[user]",
+                            user.getName())));
+            }
 
-                    // Fire event
-                    this.addon.callEvent(new LikeRemoveEvent(user.getUniqueId(), island.getUniqueId()));
+            // Fire event
+            this.addon.callEvent(new LikeRemoveEvent(user.getUniqueId(), island.getUniqueId()));
         }
     }
 
@@ -421,27 +425,29 @@ public class LikesManager
             if (this.addon.getSettings().isLogHistory())
             {
                 object.addLogRecord(new LogEntry.Builder("ADD_DISLIKE").
-                        data("user-id", user.toString()).
-                        build());
+                    data("user-id", user.toString()).
+                    build());
             }
 
             String name = island.getName() == null || island.getName().isEmpty() ?
-                    this.addon.getPlayers().getName(island.getOwner()) : island.getName();
+                this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
-                    user.sendMessage(user.getTranslation(Constants.MESSAGE + "add-dislike", "[island]", name));
+            user.sendMessage(user.getTranslation(Constants.MESSAGE + "add-dislike", "[island]", name));
 
-                    // Send message to users
-                    if (this.addon.getSettings().isInformPlayers())
-                    {
-                        island.getMemberSet().stream().
-                        map(User::getInstance).
-                        filter(User::isOnline).
-                        forEach(member -> member.sendMessage(
-                                member.getTranslation(Constants.MESSAGE + "player-add-dislike", "[user]", user.getName())));
-                    }
+            // Send message to users
+            if (this.addon.getSettings().isInformPlayers())
+            {
+                island.getMemberSet().stream().
+                    map(User::getInstance).
+                    filter(User::isOnline).
+                    forEach(member -> member.sendMessage(
+                        member.getTranslation(Constants.MESSAGE + "player-add-dislike",
+                            "[user]",
+                            user.getName())));
+            }
 
-                    // Fire event
-                    this.addon.callEvent(new DislikeAddEvent(user.getUniqueId(), island.getUniqueId()));
+            // Fire event
+            this.addon.callEvent(new DislikeAddEvent(user.getUniqueId(), island.getUniqueId()));
         }
     }
 
@@ -465,27 +471,29 @@ public class LikesManager
             if (this.addon.getSettings().isLogHistory())
             {
                 object.addLogRecord(new LogEntry.Builder("REMOVE_DISLIKE").
-                        data("user-id", user.toString()).
-                        build());
+                    data("user-id", user.toString()).
+                    build());
             }
 
             String name = island.getName() == null || island.getName().isEmpty() ?
-                    this.addon.getPlayers().getName(island.getOwner()) : island.getName();
+                this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
-                    user.sendMessage(user.getTranslation(Constants.MESSAGE + "remove-dislike", "[island]", name));
+            user.sendMessage(user.getTranslation(Constants.MESSAGE + "remove-dislike", "[island]", name));
 
-                    // Send message to users
-                    if (this.addon.getSettings().isInformPlayers())
-                    {
-                        island.getMemberSet().stream().
-                        map(User::getInstance).
-                        filter(User::isOnline).
-                        forEach(member -> member.sendMessage(
-                                member.getTranslation(Constants.MESSAGE + "player-remove-dislike", "[user]", user.getName())));
-                    }
+            // Send message to users
+            if (this.addon.getSettings().isInformPlayers())
+            {
+                island.getMemberSet().stream().
+                    map(User::getInstance).
+                    filter(User::isOnline).
+                    forEach(member -> member.sendMessage(
+                        member.getTranslation(Constants.MESSAGE + "player-remove-dislike",
+                            "[user]",
+                            user.getName())));
+            }
 
-                    // Fire event
-                    this.addon.callEvent(new DislikeRemoveEvent(user.getUniqueId(), island.getUniqueId()));
+            // Fire event
+            this.addon.callEvent(new DislikeRemoveEvent(user.getUniqueId(), island.getUniqueId()));
         }
     }
 
@@ -704,7 +712,7 @@ public class LikesManager
         return !this.addon.getSettings().getMode().equals(Settings.LikeMode.STARS) &&
             this.sortedLikeCache.containsKey(gameMode) ?
                 this.sortedLikeCache.get(gameMode) :
-                    new IndexedTreeSet<>();
+                    new IndexedTreeSet<>(Comparator.comparing(LikesObject::getLikes));
     }
 
 
@@ -729,7 +737,7 @@ public class LikesManager
         return this.addon.getSettings().getMode().equals(Settings.LikeMode.LIKES_DISLIKES) &&
             this.sortedDislikeCache.containsKey(gameMode) ?
                 this.sortedDislikeCache.get(gameMode) :
-                    new IndexedTreeSet<>();
+                    new IndexedTreeSet<>(Comparator.comparing(LikesObject::getDislikes));
     }
 
 
@@ -754,7 +762,7 @@ public class LikesManager
         return this.addon.getSettings().getMode().equals(Settings.LikeMode.LIKES_DISLIKES) &&
             this.sortedRankCache.containsKey(gameMode) ?
                 this.sortedRankCache.get(gameMode) :
-                new IndexedTreeSet<>();
+                new IndexedTreeSet<>(Comparator.comparing(LikesObject::getRank));
     }
 
 
@@ -779,7 +787,7 @@ public class LikesManager
         return this.addon.getSettings().getMode().equals(Settings.LikeMode.STARS) &&
             this.sortedStarsCache.containsKey(gameMode) ?
                 this.sortedStarsCache.get(gameMode) :
-                new IndexedTreeSet<>();
+                new IndexedTreeSet<>(Comparator.comparing(LikesObject::getStarsValue));
     }
 
 
