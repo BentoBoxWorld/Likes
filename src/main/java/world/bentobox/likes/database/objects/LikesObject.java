@@ -99,7 +99,7 @@ public class LikesObject implements DataObject
 	 */
 	public void addStars(UUID user, int value)
 	{
-		this.likedBy.add(user);
+		this.starredBy.put(user, value);
 		this.stars += value;
 	}
 
