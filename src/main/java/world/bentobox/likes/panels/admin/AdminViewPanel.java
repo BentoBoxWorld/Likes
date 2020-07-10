@@ -541,8 +541,6 @@ public class AdminViewPanel extends CommonPanel
                                 LikesManagePanel.openPanel(this, player, this.island);
                                 this.likedByUsers.add(player.getName());
                             }
-
-                            this.build();
                         });
                     return true;
                 };
