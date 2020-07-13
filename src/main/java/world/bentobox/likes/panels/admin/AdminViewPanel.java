@@ -7,10 +7,7 @@
 package world.bentobox.likes.panels.admin;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -30,6 +27,7 @@ import world.bentobox.likes.panels.user.LikesManagePanel;
 import world.bentobox.likes.panels.user.LikesViewPanel;
 import world.bentobox.likes.panels.util.SelectUserGUI;
 import world.bentobox.likes.utils.Constants;
+import world.bentobox.likes.utils.collections.IndexedTreeSet;
 
 
 /**
@@ -53,6 +51,8 @@ public class AdminViewPanel extends CommonPanel
         // Create new object if it does not exist as admin is editing it.
         this.likesObject = this.addon.getManager().getIslandLikes(island.getUniqueId(), this.world);
 
+        IndexedTreeSet<LikesObject> initialSearchSet = this.addon.getManager().getSortedLikes(this.world);
+
         switch (this.getMode())
         {
             case LIKES:
@@ -60,6 +60,7 @@ public class AdminViewPanel extends CommonPanel
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
+                initialSearchSet = this.addon.getManager().getSortedLikes(this.world);
                 break;
             case LIKES_DISLIKES:
                 this.likedByUsers = this.likesObject.getLikedBy().stream().
@@ -71,29 +72,33 @@ public class AdminViewPanel extends CommonPanel
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
+                initialSearchSet = this.addon.getManager().getSortedLikes(this.world);
                 break;
             case STARS:
                 this.likedByUsers = this.likesObject.getStarredBy().keySet().stream().
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
+                initialSearchSet = this.addon.getManager().getSortedStars(this.world);
                 break;
+            default:
+                initialSearchSet = new IndexedTreeSet<>(Comparator.comparing(LikesObject::getUniqueId));
         }
 
-        if (this.addon.getManager().getSortedLikes(this.world).contains(this.likesObject))
+        if (initialSearchSet.contains(this.likesObject))
         {
             switch (this.addon.getSettings().getMode())
             {
                 case LIKES:
-                    this.likeRank = this.addon.getManager().getSortedLikes(this.world).entryIndex(this.likesObject) + 1L;
+                    this.likeRank = initialSearchSet.entryIndex(this.likesObject) + 1L;
                     break;
                 case LIKES_DISLIKES:
-                    this.likeRank = this.addon.getManager().getSortedLikes(this.world).entryIndex(this.likesObject) + 1L;
+                    this.likeRank = initialSearchSet.entryIndex(this.likesObject) + 1L;
                     this.dislikeRank = this.addon.getManager().getSortedDislikes(this.world).entryIndex(this.likesObject) + 1L;
                     this.overallRank = this.addon.getManager().getSortedRank(this.world).entryIndex(this.likesObject) + 1L;
                     break;
                 case STARS:
-                    this.likeRank = this.addon.getManager().getSortedStars(this.world).entryIndex(this.likesObject) + 1L;
+                    this.likeRank = initialSearchSet.entryIndex(this.likesObject) + 1L;
                     break;
             }
         }
@@ -536,8 +541,6 @@ public class AdminViewPanel extends CommonPanel
                                 LikesManagePanel.openPanel(this, player, this.island);
                                 this.likedByUsers.add(player.getName());
                             }
-
-                            this.build();
                         });
                     return true;
                 };

@@ -99,7 +99,7 @@ public class LikesObject implements DataObject
 	 */
 	public void addStars(UUID user, int value)
 	{
-		this.likedBy.add(user);
+		this.starredBy.put(user, value);
 		this.stars += value;
 	}
 
@@ -180,6 +180,17 @@ public class LikesObject implements DataObject
 	public boolean hasStarred(UUID user)
 	{
 		return this.starredBy.containsKey(user);
+	}
+
+
+	/**
+	 * This method returns value of added stars from given user.
+	 * @param user UUID for user that must be checked.
+	 * @return Integer in range from 0-5.
+	 */
+	public int getStarred(UUID user)
+	{
+		return this.starredBy.getOrDefault(user, 0);
 	}
 
 

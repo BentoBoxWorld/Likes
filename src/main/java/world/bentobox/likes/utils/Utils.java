@@ -30,7 +30,7 @@ public class Utils
 	 */
 	public static String getPermissionValue(User user, String permissionPrefix, String defaultValue)
 	{
-		if (user.isPlayer())
+		if (user != null && user.isPlayer())
 		{
 			if (permissionPrefix.endsWith("."))
 			{

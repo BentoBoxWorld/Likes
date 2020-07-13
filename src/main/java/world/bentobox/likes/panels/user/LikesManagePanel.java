@@ -120,12 +120,24 @@ public class LikesManagePanel extends CommonPanel
 				panelBuilder.item(3, this.createDislikeButton());
 				break;
 			case STARS:
-				panelBuilder.item(0, this.createStarsButton(1));
-				panelBuilder.item(1, this.createStarsButton(2));
-				panelBuilder.item(2, this.createStarsButton(3));
-				panelBuilder.item(3, this.createStarsButton(4));
-				panelBuilder.item(4, this.createStarsButton(5));
-				break;
+
+				final int starCount = this.addon.getManager().getStarred(
+					this.target.getUniqueId(),
+					this.island.getUniqueId(),
+					this.world);
+
+				if (starCount == 0 || starCount > 5)
+				{
+					panelBuilder.item(0, this.createStarsButton(1, false));
+					panelBuilder.item(1, this.createStarsButton(2, false));
+					panelBuilder.item(2, this.createStarsButton(3, false));
+					panelBuilder.item(3, this.createStarsButton(4, false));
+					panelBuilder.item(4, this.createStarsButton(5, false));
+				}
+				else
+				{
+					panelBuilder.item(starCount - 1, this.createStarsButton(starCount, true));
+				}
 		}
 
 		// At the end we just call build method that creates and opens panel.
@@ -262,13 +274,11 @@ public class LikesManagePanel extends CommonPanel
 	/**
 	 * This method creates Stars Button with given value.
 	 * @param value value for stars button.
+	 * @param hasStarred indicates that player has added star to this island.
 	 * @return PanelItem that process stars action.
 	 */
-	private PanelItem createStarsButton(int value)
+	private PanelItem createStarsButton(int value, boolean hasStarred)
 	{
-		final boolean hasStarred =
-			this.addon.getManager().hasStarred(this.target.getUniqueId(), this.island.getUniqueId(), this.world);
-
 		List<String> description = new ArrayList<>();
 
 		description.add(this.user.getTranslation(Constants.DESCRIPTION + "add-stars"));
