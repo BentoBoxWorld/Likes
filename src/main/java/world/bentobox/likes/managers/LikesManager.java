@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.eclipse.jdt.annotation.NonNull;
 
 import world.bentobox.bentobox.api.addons.GameModeAddon;
+import world.bentobox.bentobox.api.events.addon.AddonEvent;
 import world.bentobox.bentobox.api.logs.LogEntry;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.Database;
@@ -344,6 +345,13 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new LikeAddEvent(user.getUniqueId(), island.getUniqueId()));
+            
+            Map<String, Object> keyValues = new HashMap<>();
+            keyValues.put("eventName", "LikeAddEvent");
+            keyValues.put("targetPlayer", user.getUniqueId());
+            keyValues.put("islandUUID", island.getUniqueId());
+            
+            new AddonEvent().builder().addon(addon).keyValues(keyValues).build();
         }
     }
 
