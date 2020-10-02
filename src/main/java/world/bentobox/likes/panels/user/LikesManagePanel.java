@@ -157,7 +157,7 @@ public class LikesManagePanel extends CommonPanel
 
 		description.add(this.user.getTranslation(Constants.DESCRIPTION + "add-like"));
 
-		if (this.addon.getVaultHook() != null)
+		if (this.addon.isEconomyProvided())
 		{
 			if (hasLiked && this.settings.getLikeRemoveCost() > 0)
 			{
@@ -220,7 +220,7 @@ public class LikesManagePanel extends CommonPanel
 
 		description.add(this.user.getTranslation(Constants.DESCRIPTION + "add-dislike"));
 
-		if (this.addon.getVaultHook() != null)
+		if (this.addon.isEconomyProvided())
 		{
 			if (hasDisliked && this.settings.getDislikeRemoveCost() > 0)
 			{
@@ -283,7 +283,7 @@ public class LikesManagePanel extends CommonPanel
 
 		description.add(this.user.getTranslation(Constants.DESCRIPTION + "add-stars"));
 
-		if (this.addon.getVaultHook() != null)
+		if (this.addon.isEconomyProvided())
 		{
 			if (hasStarred && this.settings.getLikeRemoveCost() > 0)
 			{
@@ -342,7 +342,7 @@ public class LikesManagePanel extends CommonPanel
 	private boolean hasPaid(double cost)
 	{
 		if (this.user.isOp() ||
-			this.addon.getVaultHook() == null ||
+			!this.addon.isEconomyProvided() ||
 			this.user.hasPermission(this.permissionPrefix + "likes.bypass-cost"))
 		{
 			return true;

@@ -132,10 +132,10 @@ public class LikesAddon extends Addon
         // Even if Vault is installed, it does not mean that economy can be used. It is
         // necessary to check it via VaultHook#hook() method.
 
-        if (!vaultHook.isPresent() || !vaultHook.get().hook())
+        if (!vaultHook.isPresent())
         {
             this.vaultHook = null;
-            this.logWarning("Economy plugin not found by Likes Addon!");
+            this.logWarning("Vault plugin not found. Economy will not work!");
         }
         else
         {
@@ -237,6 +237,16 @@ public class LikesAddon extends Addon
     // ---------------------------------------------------------------------
     // Section: Getters
     // ---------------------------------------------------------------------
+
+
+    /**
+     *
+     * @return economyProvided variable.
+     */
+    public boolean isEconomyProvided()
+    {
+        return this.vaultHook != null && this.vaultHook.hook();
+    }
 
 
     /**
