@@ -1,0 +1,155 @@
+---
+likes:
+  gui:
+    titles:
+      select-block: "&dSélectionner un bloque "
+      top: "& dTop Islands par [type]"
+      view: "& dView Island aime"
+      manage: "& dAjouter J'aime ou n'aime pas"
+      settings: "& Modifier les paramètres"
+      admin: Panneau & dAdmin
+      select-island: "& dSélectionnez une île"
+      select-player: "& dSélectionnez un lecteur"
+      edit-view: "& dEdit Island Likes"
+    buttons:
+      cancel: "&cAnnuler"
+      accept: "&aAccepter"
+      previous: |2-
+
+        Précédent
+      next: Suivant
+      return: "&aRetour"
+      view-mode: "&6Type supérieur"
+      name: "[name]"
+      like: "&6Le nombre de likes"
+      like-rank: "&6Classement par Likes"
+      dislike: "&cLe nombre de dislikes"
+      dislike-rank: "&cClassement par dislikes"
+      overall: "&aNuméro de rang"
+      overall-rank: "&aTrier par rang"
+      add-like: "& 6Ajouter / Supprimer J'aime"
+      add-dislike: "& cAjouter / supprimer Je n'aime pas"
+      like-cost: Comme le coût
+      like-remove-cost: Comme Supprimer le coût
+      dislike-cost: N'aime pas le coût
+      dislike-remove-cost: Je n'aime pas supprimer le coût
+      default-icon: Icône par défaut
+      inform-players: Informer les membres de l'île
+      log-history: Historique des journaux
+      reset-likes: Réinitialiser les likes sur la réinitialisation de l'île
+      manage-likes: Gérer l'île aime / n'aime pas / étoiles
+      likes-icon: Changer l'icône de l'île
+      wipe-data: Effacer les données
+      edit-settings: Modifier les paramètres
+      add-dislike-user: Ajouter Je n'aime pas
+      add-like-user: Ajouter comme
+      remove-dislike-user: Supprimer l'aversion
+      remove-like-user: Supprimer comme
+      stars: Et 6 étoiles moyennes
+      stars-rank: "& 6Rank par Stars"
+      add-stars: "& 6Ajouter / supprimer des étoiles"
+      add-stars-user: Ajouter des étoiles
+      remove-stars-user: Supprimer les étoiles
+    descriptions:
+      selected: "& d Sélectionné"
+      view-mode: "& f Permet de choisir | & f quel haut doit | & f s'affiche."
+      mode: Affiche les dix premiers | îles par [type].
+      top-value:
+        likes: "& 6 [rang]. île par likes | & 6 avec [valeur] j'aime."
+        dislikes: "& 6 [rang]. île par déteste | & 6 avec [valeur] n'aime pas."
+        rank: "& 6 [rang]. île par rang | & 6 avec [valeur] points de classement."
+        stars: "& 6 [rang]. île par étoiles | & 6 avec [valeur] étoiles."
+      unknown: "& c joueur inconnu"
+      current-value: 'Valeur actuelle: [valeur].'
+      like: Likes ajoutés par | d'autres joueurs.
+      dislike: Je n'aime pas ajouté par | d'autres joueurs.
+      overall: Valeur de rang calculée | (aime - n'aime pas).
+      like-rank: Placement dans le top par | Likes count.
+      dislike-rank: Placement en haut par | Nombre de détestations.
+      overall-rank: Placement en haut par | Rang.
+      like-next: Montre les prochains joueurs | qui ont aimé votre île.
+      dislike-next: Affiche les prochains joueurs | qui n'ont pas aimé votre île.
+      like-previous: Montre les joueurs précédents | qui ont aimé votre île.
+      dislike-previous: Affiche les joueurs précédents | qui n'aimaient pas votre
+        île.
+      add-like: Permet d'ajouter ou | supprimer comme à cette île.
+      add-dislike: Permet d'ajouter ou de supprimer l'aversion pour cette île.
+      cost: L'opération actuelle a coûté [valeur] $.
+      like-cost: Permet de modifier le coût de l'ajout de nouveaux similaires.
+      like-remove-cost: Permet de modifier le montant de la suppression des coûts.
+      dislike-cost: Permet de modifier le coût en ajoutant une nouvelle aversion.
+      dislike-remove-cost: Permet de modifier le coût de suppression de l'aversion.
+      default-icon: Permet de changer l'icône par défaut | en haut.
+      inform-players: Permet de basculer si les membres de l'île doivent être informés
+        si quelqu'un a aimé / détesté leur île
+      log-history: Permet de basculer si les données d'historique doivent être stockées.
+      reset-likes: Permet de basculer si la réinitialisation de l'île doit réinitialiser
+        les goûts de l'île.
+      manage-likes: Permet d'ajouter / supprimer | des joueurs qui ont aimé ou détesté
+        l'île sélectionnée.
+      likes-icon: Permet de changer une icône d'îlot dans le menu supérieur.
+      wipe-data: Permet de supprimer complètement toutes les données stockées du mode
+        de jeu actuel.
+      edit-settings: Permet de modifier les paramètres de l'addon via l'interface
+        graphique.
+      likes-values: 'L''île a: | [aime] aime.'
+      likes-dislikes-values: 'L''île a: | [aime] aime | [n''aime pas] n''aime pas
+        | [rang] points de rang.'
+      stars-values: 'L''île a: | [étoiles] étoiles | [votes] votes.'
+      stars: Étoiles ajoutées par | d'autres joueurs.
+      stars-rank: Placement dans le top par | étoiles moyennes.
+      stars-next: Affiche les prochains joueurs | qui ont ajouté des étoiles à votre
+        île.
+      stars-previous: Affiche les joueurs précédents | qui ont ajouté des étoiles
+        à votre île.
+      add-stars: Permet d'ajouter ou de supprimer des étoiles sur cette île.
+  types:
+    likes: Aime
+    dislikes: N'aime pas
+    rank: Rang
+    stars: Étoiles
+  messages:
+    add-like: "& aVous avez aimé l'île de [island]."
+    player-add-like: "& un [utilisateur] a aimé votre île."
+    remove-like: "& cVous supprimez l'île de votre [île]."
+    player-remove-like: "& c [utilisateur] a supprimé son semblable de votre île."
+    add-dislike: "& cVous n'aimiez pas l'île de [l'île]."
+    player-add-dislike: "& c [utilisateur] n'a pas aimé votre île."
+    remove-dislike: "& aVous supprimez l'île que vous n'aimez pas."
+    player-remove-dislike: "& un [utilisateur] a supprimé son aversion pour votre
+      île."
+    no-data-about-island: Il n'y a pas de données sur cette île.
+    no-data-about-your-island: Il n'y a aucune donnée sur votre île.
+    add-stars: "& aVous avez ajouté des étoiles à l'île de [île]."
+    player-add-stars: "& un [utilisateur] a ajouté des étoiles à votre île."
+    remove-stars: "& cVous supprimez vos étoiles de l'île de [island]."
+    player-remove-stars: "& c [utilisateur] a retiré ses étoiles de votre île."
+  errors:
+    not-on-island: "& cVous devez être sur l'île pour exécuter cette commande!"
+    your-island: "& cVous ne pouvez pas ajouter comme ou pas à votre propre île!"
+    numeric-only: "& cInput ne doit être que des chiffres!"
+    not-valid-value: "& cNumber doit être supérieur à [min] et inférieur à [max],
+      mais l'entrée est [value]!"
+    top-is-empty: "& désolé, il n'y a personne au sommet!"
+    database-error: "& cDésolé, il y a eu une erreur avec la base de données. Impossible
+      de trouver les données de votre île."
+  questions:
+    prefix: "& c [SERVEUR] & r:"
+    like-cost: "& 5Veuillez saisir le coût par article."
+    like-remove-cost: "& 5Veuillez saisir le coût par retrait comme."
+    dislike-cost: "& 5Veuillez saisir le coût par aversion."
+    dislike-remove-cost: "& 5Veuillez saisir le coût par suppression de l'aversion."
+  commands:
+    admin:
+      help:
+        description: ouvre l'interface graphique d'administration
+      settings:
+        description: ouvre l'interface graphique des paramètres d'administration
+    help:
+      description: ouvre GUI aime
+    top:
+      parameters: "<type>"
+      description: ouvre l'interface graphique supérieure
+    view:
+      parameters: "<joueur>"
+      description: ouvre l'interface graphique où vous pouvez voir vos goûts
