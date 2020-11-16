@@ -17,4 +17,4 @@ This is Likes Addon that allows to give Like and Dislike to other player islands
 
 ## Information
 
-More information can be found in [Wiki Pages](https://docs.bentobox.world/addons/Likes/).
+More information can be found in [Wiki Pages](https://docs.bentobox.world/en/latest/addons/Likes/).
