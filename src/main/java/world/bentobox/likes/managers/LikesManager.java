@@ -1,17 +1,16 @@
-//
+///
 // Created by BONNe
-// Copyright - 2019
-//
+// Copyright - 2021
+///
 
 
 package world.bentobox.likes.managers;
 
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.bukkit.World;
 import org.eclipse.jdt.annotation.NonNull;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.logs.LogEntry;
@@ -39,6 +38,7 @@ public class LikesManager
 
     /**
      * Default constructor.
+     *
      * @param addon Likes Addon instance
      */
     public LikesManager(LikesAddon addon)
@@ -105,6 +105,7 @@ public class LikesManager
 
     /**
      * This method loads given likeObject inside cache.
+     *
      * @param likesObject Object that must be added to cache.
      */
     private void load(LikesObject likesObject)
@@ -160,10 +161,9 @@ public class LikesManager
     }
 
 
-
     /**
-     * This method checks if likes object with given UniqueId exist in database.
-     * If not, it creates new object for that.
+     * This method checks if likes object with given UniqueId exist in database. If not, it creates new object for
+     * that.
      *
      * @param uniqueID - uniqueID to add
      * @param gameMode - gameMode for like object.
@@ -190,13 +190,13 @@ public class LikesManager
                 return data;
             }
             this.addon.logError("Could not load NULL likes data object for " + uniqueID + " in " + gameMode);
-
         }
         return newPlayer(gameMode, uniqueID);
     }
 
 
-    private LikesObject newPlayer(String gameMode, @NonNull String uniqueID) {
+    private LikesObject newPlayer(String gameMode, @NonNull String uniqueID)
+    {
         // Create the likes data
         LikesObject likesObject = new LikesObject();
         likesObject.setUniqueId(uniqueID);
@@ -212,6 +212,7 @@ public class LikesManager
 
     /**
      * This method returns Island Likes Object from cache or create new one.
+     *
      * @param islandId IslandId which LikesObject must be returned.
      * @param world Target world.
      * @return Likes Object for given island.
@@ -224,6 +225,7 @@ public class LikesManager
 
     /**
      * This method returns Island Likes Object from cache or create new one.
+     *
      * @param islandId IslandId which LikesObject must be returned.
      * @param gameModeAddon Target GameMode addon.
      * @return Likes Object for given island.
@@ -236,6 +238,7 @@ public class LikesManager
 
     /**
      * This method skips creating new island objects and return existing ones.
+     *
      * @param uniqueId Island Unique ID.
      * @return Likes Object for current island or null.
      */
@@ -304,6 +307,7 @@ public class LikesManager
 
     /**
      * This method adds like from given user to target island, in given world.
+     *
      * @param user User who adds like.
      * @param island Island which receive like.
      * @param world World where island is located.
@@ -350,6 +354,7 @@ public class LikesManager
 
     /**
      * This method removes like from given user to target island, in given world.
+     *
      * @param user User who removes like.
      * @param island Island which lost like.
      * @param world World where island is located.
@@ -396,6 +401,7 @@ public class LikesManager
 
     /**
      * This method returns if given player has liked target island, in given world.
+     *
      * @param user User which need to be checked.
      * @param islandId Island which need to be checked.
      * @param world World where island is located.
@@ -408,6 +414,7 @@ public class LikesManager
 
     /**
      * This method adds dislike from given user to target island, in given world.
+     *
      * @param user User who adds dislike.
      * @param island Island which receive dislike.
      * @param world World where island is located.
@@ -454,6 +461,7 @@ public class LikesManager
 
     /**
      * This method removes dislike from given user to target island, in given world.
+     *
      * @param user User who adds dislike.
      * @param island Island which lost dislike.
      * @param world World where island is located.
@@ -500,6 +508,7 @@ public class LikesManager
 
     /**
      * This method returns if given player has disliked target island, in given world.
+     *
      * @param user User which need to be checked.
      * @param islandId Island which need to be checked.
      * @param world World where island is located.
@@ -512,6 +521,7 @@ public class LikesManager
 
     /**
      * This method adds number of stars from given user to target island, in given world.
+     *
      * @param user User who adds stars.
      * @param value Value of the stars.
      * @param island Island which receive stars.
@@ -562,6 +572,7 @@ public class LikesManager
 
     /**
      * This method removes like from given user to target island, in given world.
+     *
      * @param user User who removes like.
      * @param island Island which lost like.
      * @param world World where island is located.
@@ -606,6 +617,7 @@ public class LikesManager
 
     /**
      * This method returns if given player has liked target island, in given world.
+     *
      * @param user User which need to be checked.
      * @param islandId Island which need to be checked.
      * @param world World where island is located.
@@ -618,6 +630,7 @@ public class LikesManager
 
     /**
      * This method returns if given player has added starts to target island, in given world.
+     *
      * @param user User which need to be checked.
      * @param islandId Island which need to be checked.
      * @param world World where island is located.
@@ -631,6 +644,7 @@ public class LikesManager
 
     /**
      * This method resets likes and dislikes for current island.
+     *
      * @param user User who reset island.
      * @param islandId Island Id.
      * @param world World where island is located.
@@ -648,7 +662,7 @@ public class LikesManager
 
         if (this.addon.getSettings().isLogHistory())
         {
-            object.addLogRecord( new LogEntry.Builder("RESET_ISLAND").
+            object.addLogRecord(new LogEntry.Builder("RESET_ISLAND").
                 data("user-id", user.toString()).
                 build());
         }
@@ -662,50 +676,59 @@ public class LikesManager
 
     /**
      * This method returns top 10 islands by likes.
+     *
      * @param world World where top list must be found.
      * @return List that contains max 10 elements where ordered by likes.
      */
     public List<LikesObject> getTopByLikes(World world)
     {
-        return this.getSortedLikes(world).stream().limit(10).filter(LikesObject::isNotEmpty).collect(Collectors.toList());
+        return this.getSortedLikes(world).stream().limit(10).filter(LikesObject::isNotEmpty)
+            .collect(Collectors.toList());
     }
 
 
     /**
      * This method returns top 10 islands by dislikes.
+     *
      * @param world World where top list must be found.
      * @return List that contains max 10 elements where ordered by dislikes.
      */
     public List<LikesObject> getTopByDislikes(World world)
     {
-        return this.getSortedDislikes(world).stream().limit(10).filter(LikesObject::isNotEmpty).collect(Collectors.toList());
+        return this.getSortedDislikes(world).stream().limit(10).filter(LikesObject::isNotEmpty)
+            .collect(Collectors.toList());
     }
 
 
     /**
      * This method returns top 10 islands by rank.
+     *
      * @param world World where top list must be found.
      * @return List that contains max 10 elements where ordered by rank.
      */
     public List<LikesObject> getTopByRank(World world)
     {
-        return this.getSortedRank(world).stream().limit(10).filter(LikesObject::isNotEmpty).collect(Collectors.toList());
+        return this.getSortedRank(world).stream().limit(10).filter(LikesObject::isNotEmpty)
+            .collect(Collectors.toList());
     }
 
 
     /**
      * This method returns top 10 islands by stars.
+     *
      * @param world World where top list must be found.
      * @return List that contains max 10 elements where ordered by stars.
      */
     public List<LikesObject> getTopByStars(World world)
     {
-        return this.getSortedStars(world).stream().limit(10).filter(LikesObject::isNotEmpty).collect(Collectors.toList());
+        return this.getSortedStars(world).stream().limit(10).filter(LikesObject::isNotEmpty)
+            .collect(Collectors.toList());
     }
 
 
     /**
      * This method returns Indexed Tree Set with Likes Object ordered by like count.
+     *
      * @param world Target world
      * @return Indexed Tree Set where likes objects are ordered by like count.
      */
@@ -717,6 +740,7 @@ public class LikesManager
 
     /**
      * This method returns Indexed Tree Set with Likes Object ordered by like count.
+     *
      * @param gameMode Target GameMode addon name.
      * @return Indexed Tree Set where likes objects are ordered by like count.
      */
@@ -724,13 +748,14 @@ public class LikesManager
     {
         return !this.addon.getSettings().getMode().equals(Settings.LikeMode.STARS) &&
             this.sortedLikeCache.containsKey(gameMode) ?
-                this.sortedLikeCache.get(gameMode) :
-                    new IndexedTreeSet<>(Comparator.comparing(LikesObject::getLikes));
+            this.sortedLikeCache.get(gameMode) :
+            new IndexedTreeSet<>(Comparator.comparing(LikesObject::getLikes));
     }
 
 
     /**
      * This method returns Indexed Tree Set with Likes Object ordered by dislike count.
+     *
      * @param world Target world
      * @return Indexed Tree Set where likes objects are ordered by dislike count.
      */
@@ -742,6 +767,7 @@ public class LikesManager
 
     /**
      * This method returns Indexed Tree Set with Likes Object ordered by dislike count.
+     *
      * @param gameMode Target GameMode addon name.
      * @return Indexed Tree Set where likes objects are ordered by dislike count.
      */
@@ -749,13 +775,14 @@ public class LikesManager
     {
         return this.addon.getSettings().getMode().equals(Settings.LikeMode.LIKES_DISLIKES) &&
             this.sortedDislikeCache.containsKey(gameMode) ?
-                this.sortedDislikeCache.get(gameMode) :
-                    new IndexedTreeSet<>(Comparator.comparing(LikesObject::getDislikes));
+            this.sortedDislikeCache.get(gameMode) :
+            new IndexedTreeSet<>(Comparator.comparing(LikesObject::getDislikes));
     }
 
 
     /**
      * This method returns Indexed Tree Set with Likes Object ordered by rank.
+     *
      * @param world Target world
      * @return Indexed Tree Set where likes objects are ordered by rank.
      */
@@ -767,6 +794,7 @@ public class LikesManager
 
     /**
      * This method returns Indexed Tree Set with Likes Object ordered by rank.
+     *
      * @param gameMode Target GameMode addon name.
      * @return Indexed Tree Set where likes objects are ordered by rank.
      */
@@ -774,13 +802,14 @@ public class LikesManager
     {
         return this.addon.getSettings().getMode().equals(Settings.LikeMode.LIKES_DISLIKES) &&
             this.sortedRankCache.containsKey(gameMode) ?
-                this.sortedRankCache.get(gameMode) :
-                new IndexedTreeSet<>(Comparator.comparing(LikesObject::getRank));
+            this.sortedRankCache.get(gameMode) :
+            new IndexedTreeSet<>(Comparator.comparing(LikesObject::getRank));
     }
 
 
     /**
      * This method returns Indexed Tree Set with Likes Object ordered by stars.
+     *
      * @param world Target world
      * @return Indexed Tree Set where likes objects are ordered by stars.
      */
@@ -792,6 +821,7 @@ public class LikesManager
 
     /**
      * This method returns Indexed Tree Set with Likes Object ordered by stars value.
+     *
      * @param gameMode Target GameMode addon name.
      * @return Indexed Tree Set where likes objects are ordered by stars value.
      */
@@ -799,8 +829,8 @@ public class LikesManager
     {
         return this.addon.getSettings().getMode().equals(Settings.LikeMode.STARS) &&
             this.sortedStarsCache.containsKey(gameMode) ?
-                this.sortedStarsCache.get(gameMode) :
-                new IndexedTreeSet<>(Comparator.comparing(LikesObject::getStarsValue));
+            this.sortedStarsCache.get(gameMode) :
+            new IndexedTreeSet<>(Comparator.comparing(LikesObject::getStarsValue));
     }
 
 
@@ -812,40 +842,36 @@ public class LikesManager
     /**
      * Likes Addon instance.
      */
-    private LikesAddon addon;
+    private final LikesAddon addon;
 
     /**
      * This config object stores all likes objects.
      */
-    private Database<LikesObject> likesDatabase;
+    private final Database<LikesObject> likesDatabase;
 
     /**
-     * This map contains all likes object linked to their reference island.
-     * This will be faster way how to find out if island has or has not likes.
+     * This map contains all likes object linked to their reference island. This will be faster way how to find out if
+     * island has or has not likes.
      */
-    private Map<String, LikesObject> likesCache;
+    private final Map<String, LikesObject> likesCache;
 
     /**
-     * This map links GameMode's to liked islands sorted by likes.
-     * It should be cached, because of PlaceHolders.
+     * This map links GameMode's to liked islands sorted by likes. It should be cached, because of PlaceHolders.
      */
     private Map<String, IndexedTreeSet<LikesObject>> sortedLikeCache;
 
     /**
-     * This map links GameMode's to liked islands sorted by dislikes.
-     * It should be cached, because of PlaceHolders.
+     * This map links GameMode's to liked islands sorted by dislikes. It should be cached, because of PlaceHolders.
      */
     private Map<String, IndexedTreeSet<LikesObject>> sortedDislikeCache;
 
     /**
-     * This map links GameMode's to liked islands sorted by rank.
-     * It should be cached, because of PlaceHolders.
+     * This map links GameMode's to liked islands sorted by rank. It should be cached, because of PlaceHolders.
      */
     private Map<String, IndexedTreeSet<LikesObject>> sortedRankCache;
 
     /**
-     * This map links GameMode's to liked islands sorted by rank.
-     * It should be cached, because of PlaceHolders.
+     * This map links GameMode's to liked islands sorted by rank. It should be cached, because of PlaceHolders.
      */
     private Map<String, IndexedTreeSet<LikesObject>> sortedStarsCache;
 }

@@ -1,22 +1,20 @@
-//
+///
 // Created by BONNe
-// Copyright - 2019
-//
+// Copyright - 2021
+///
 
 
 package world.bentobox.likes.panels.user;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.eclipse.jdt.annotation.NonNull;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
@@ -36,8 +34,8 @@ import world.bentobox.likes.utils.collections.IndexedTreeSet;
 public class LikesViewPanel
 {
     /**
-     * This is internal constructor. It is used internally in current class to avoid
-     * creating objects everywhere.
+     * This is internal constructor. It is used internally in current class to avoid creating objects everywhere.
+     *
      * @param addon Likes object.
      * @param user User who opens Panel.
      * @param world World where gui is opened
@@ -45,10 +43,10 @@ public class LikesViewPanel
      * @param likesObject LikeObject that will be viewed.
      */
     private LikesViewPanel(@NonNull LikesAddon addon,
-            @NonNull User user,
-            @NonNull World world,
-            String permissionPrefix,
-            @NonNull LikesObject likesObject)
+        @NonNull User user,
+        @NonNull World world,
+        String permissionPrefix,
+        @NonNull LikesObject likesObject)
     {
         this.addon = addon;
         this.user = user;
@@ -64,7 +62,7 @@ public class LikesViewPanel
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
-                initialSearchSet = this.addon.getManager().getSortedLikes(world);
+                initialSearchSet = this.addon.getAddonManager().getSortedLikes(world);
                 break;
             case LIKES_DISLIKES:
                 this.likedByUsers = this.likesObject.getLikedBy().stream().
@@ -76,14 +74,14 @@ public class LikesViewPanel
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
-                initialSearchSet = this.addon.getManager().getSortedLikes(world);
+                initialSearchSet = this.addon.getAddonManager().getSortedLikes(world);
                 break;
             case STARS:
                 this.likedByUsers = this.likesObject.getStarredBy().keySet().stream().
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
-                initialSearchSet = this.addon.getManager().getSortedStars(world);
+                initialSearchSet = this.addon.getAddonManager().getSortedStars(world);
                 break;
             default:
                 initialSearchSet = new IndexedTreeSet<>(Comparator.comparing(LikesObject::getUniqueId));
@@ -98,8 +96,9 @@ public class LikesViewPanel
                     break;
                 case LIKES_DISLIKES:
                     this.likeRank = initialSearchSet.entryIndex(likesObject) + 1L;
-                    this.dislikeRank = this.addon.getManager().getSortedDislikes(world).entryIndex(likesObject) + 1L;
-                    this.overallRank = this.addon.getManager().getSortedRank(world).entryIndex(likesObject) + 1L;
+                    this.dislikeRank =
+                        this.addon.getAddonManager().getSortedDislikes(world).entryIndex(likesObject) + 1L;
+                    this.overallRank = this.addon.getAddonManager().getSortedRank(world).entryIndex(likesObject) + 1L;
                     break;
                 case STARS:
                     this.likeRank = initialSearchSet.entryIndex(likesObject) + 1L;
@@ -115,52 +114,11 @@ public class LikesViewPanel
     }
 
 
-    /**
-     * This method is used to open UserPanel outside this class. It will be much easier
-     * to open panel with single method call then initializing new object.
-     * @param addon Likes Addon object
-     * @param user User who opens panel
-     * @param world World where gui is opened
-     * @param permissionPrefix Permission Prefix
-     * @param island Island which View panel must be opened.
-     */
-    public static void openPanel(@NonNull LikesAddon addon,
-            @NonNull User user,
-            @NonNull World world,
-            String permissionPrefix,
-            @NonNull Island island)
-    {
-        LikesObject likesObject = addon.getManager().getExistingIslandLikes(island.getUniqueId());
-
-        if (likesObject == null)
-        {
-            if (island.getMemberSet().contains(user.getUniqueId()))
-            {
-                user.sendMessage(user.getTranslation(Constants.MESSAGE + "no-data-about-your-island"));
-            }
-            else
-            {
-                user.sendMessage(user.getTranslation(Constants.MESSAGE + "no-data-about-island"));
-            }
-
-            // Do not open gui if there is no data.
-            return;
-        }
-
-        new LikesViewPanel(addon, user, world, permissionPrefix, likesObject).build();
-    }
-
-
-    // ---------------------------------------------------------------------
-    // Section: Methods
-    // ---------------------------------------------------------------------
-
-
     private void build()
     {
         PanelBuilder panelBuilder = new PanelBuilder().
-                name(this.user.getTranslation(Constants.TITLE + "view")).
-                user(this.user);
+            name(this.user.getTranslation(Constants.TITLE + "view")).
+            user(this.user);
 
         switch (this.addon.getSettings().getMode())
         {
@@ -180,8 +138,14 @@ public class LikesViewPanel
     }
 
 
+    // ---------------------------------------------------------------------
+    // Section: Methods
+    // ---------------------------------------------------------------------
+
+
     /**
      * This method builds panel with only Likes in it.
+     *
      * @param panelBuilder PanelBuilder that need to be populated.
      */
     private void buildLikesPanel(PanelBuilder panelBuilder)
@@ -197,6 +161,7 @@ public class LikesViewPanel
 
     /**
      * This method builds panel with Likes, Dislikes and Rank in it.
+     *
      * @param panelBuilder PanelBuilder that need to be populated.
      */
     private void buildLikesDislikesPanel(PanelBuilder panelBuilder)
@@ -220,6 +185,7 @@ public class LikesViewPanel
 
     /**
      * This method builds panel with only Stars in it.
+     *
      * @param panelBuilder PanelBuilder that need to be populated.
      */
     private void buildStarsPanel(PanelBuilder panelBuilder)
@@ -235,6 +201,7 @@ public class LikesViewPanel
 
     /**
      * This method creates PanelItem button based on given button type.
+     *
      * @param button Button that must be created.
      * @return PanelItem object that represents given button.
      */
@@ -319,7 +286,9 @@ public class LikesViewPanel
 
                 description = new ArrayList<>(2);
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "overall"));
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value", "[value]", this.likesObject.getRank() + ""));
+                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
+                    "[value]",
+                    this.likesObject.getRank() + ""));
 
                 clickHandler = null;
 
@@ -465,17 +434,18 @@ public class LikesViewPanel
         }
 
         return new PanelItemBuilder().
-                icon(icon).
-                name(name).
-                description(GuiUtils.stringSplit(description, 999)).
-                glow(false).
-                clickHandler(clickHandler).
-                build();
+            icon(icon).
+            name(name).
+            description(GuiUtils.stringSplit(description, 999)).
+            glow(false).
+            clickHandler(clickHandler).
+            build();
     }
 
 
     /**
      * This method populates all likers into given panel builder.
+     *
      * @param panelBuilder PanelBuilder object.
      */
     private void populateLikers(PanelBuilder panelBuilder)
@@ -497,15 +467,16 @@ public class LikesViewPanel
             String userName = this.likedByUsers.get(startIndex + index);
 
             panelBuilder.item(19 + index, new PanelItemBuilder().
-                    icon(userName).
-                    glow(false).
-                    build());
+                icon(userName).
+                glow(false).
+                build());
         }
     }
 
 
     /**
      * This method populates all dislikers into given panel builder.
+     *
      * @param panelBuilder PanelBuilder object.
      */
     private void populateDislikers(PanelBuilder panelBuilder)
@@ -527,15 +498,16 @@ public class LikesViewPanel
             String userName = this.dislikedByUsers.get(startIndex + index);
 
             panelBuilder.item(37 + index, new PanelItemBuilder().
-                    icon(userName).
-                    glow(false).
-                    build());
+                icon(userName).
+                glow(false).
+                build());
         }
     }
 
 
     /**
      * This method populates all stars into given panel builder.
+     *
      * @param panelBuilder PanelBuilder object.
      */
     private void populateStars(PanelBuilder panelBuilder)
@@ -567,6 +539,43 @@ public class LikesViewPanel
 
             panelBuilder.item(19 + index, panelItem);
         }
+    }
+
+
+    /**
+     * This method is used to open UserPanel outside this class. It will be much easier to open panel with single method
+     * call then initializing new object.
+     *
+     * @param addon Likes Addon object
+     * @param user User who opens panel
+     * @param world World where gui is opened
+     * @param permissionPrefix Permission Prefix
+     * @param island Island which View panel must be opened.
+     */
+    public static void openPanel(@NonNull LikesAddon addon,
+        @NonNull User user,
+        @NonNull World world,
+        String permissionPrefix,
+        @NonNull Island island)
+    {
+        LikesObject likesObject = addon.getAddonManager().getExistingIslandLikes(island.getUniqueId());
+
+        if (likesObject == null)
+        {
+            if (island.getMemberSet().contains(user.getUniqueId()))
+            {
+                user.sendMessage(user.getTranslation(Constants.MESSAGE + "no-data-about-your-island"));
+            }
+            else
+            {
+                user.sendMessage(user.getTranslation(Constants.MESSAGE + "no-data-about-island"));
+            }
+
+            // Do not open gui if there is no data.
+            return;
+        }
+
+        new LikesViewPanel(addon, user, world, permissionPrefix, likesObject).build();
     }
 
 

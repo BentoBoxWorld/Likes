@@ -1,19 +1,18 @@
-//
+///
 // Created by BONNe
-// Copyright - 2019
-//
+// Copyright - 2021
+///
 
 
 package world.bentobox.likes.panels.admin;
 
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.eclipse.jdt.annotation.NonNull;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
@@ -24,7 +23,6 @@ import world.bentobox.likes.database.objects.LikesObject;
 import world.bentobox.likes.panels.CommonPanel;
 import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.panels.user.LikesManagePanel;
-import world.bentobox.likes.panels.user.LikesViewPanel;
 import world.bentobox.likes.panels.util.SelectUserGUI;
 import world.bentobox.likes.utils.Constants;
 import world.bentobox.likes.utils.collections.IndexedTreeSet;
@@ -36,22 +34,22 @@ import world.bentobox.likes.utils.collections.IndexedTreeSet;
 public class AdminViewPanel extends CommonPanel
 {
     /**
-     * This is internal constructor. It is used internally in current class to avoid
-     * creating objects everywhere.
+     * This is internal constructor. It is used internally in current class to avoid creating objects everywhere.
+     *
      * @param parent Parent Panel
      * @param island Island which View panel must be opened.
      */
     private AdminViewPanel(@NonNull CommonPanel parent,
-            @NonNull Island island)
+        @NonNull Island island)
     {
         super(parent);
 
         this.island = island;
 
         // Create new object if it does not exist as admin is editing it.
-        this.likesObject = this.addon.getManager().getIslandLikes(island.getUniqueId(), this.world);
+        this.likesObject = this.addon.getAddonManager().getIslandLikes(island.getUniqueId(), this.world);
 
-        IndexedTreeSet<LikesObject> initialSearchSet = this.addon.getManager().getSortedLikes(this.world);
+        IndexedTreeSet<LikesObject> initialSearchSet = this.addon.getAddonManager().getSortedLikes(this.world);
 
         switch (this.getMode())
         {
@@ -60,7 +58,7 @@ public class AdminViewPanel extends CommonPanel
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
-                initialSearchSet = this.addon.getManager().getSortedLikes(this.world);
+                initialSearchSet = this.addon.getAddonManager().getSortedLikes(this.world);
                 break;
             case LIKES_DISLIKES:
                 this.likedByUsers = this.likesObject.getLikedBy().stream().
@@ -72,14 +70,14 @@ public class AdminViewPanel extends CommonPanel
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
-                initialSearchSet = this.addon.getManager().getSortedLikes(this.world);
+                initialSearchSet = this.addon.getAddonManager().getSortedLikes(this.world);
                 break;
             case STARS:
                 this.likedByUsers = this.likesObject.getStarredBy().keySet().stream().
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
-                initialSearchSet = this.addon.getManager().getSortedStars(this.world);
+                initialSearchSet = this.addon.getAddonManager().getSortedStars(this.world);
                 break;
             default:
                 initialSearchSet = new IndexedTreeSet<>(Comparator.comparing(LikesObject::getUniqueId));
@@ -94,8 +92,10 @@ public class AdminViewPanel extends CommonPanel
                     break;
                 case LIKES_DISLIKES:
                     this.likeRank = initialSearchSet.entryIndex(this.likesObject) + 1L;
-                    this.dislikeRank = this.addon.getManager().getSortedDislikes(this.world).entryIndex(this.likesObject) + 1L;
-                    this.overallRank = this.addon.getManager().getSortedRank(this.world).entryIndex(this.likesObject) + 1L;
+                    this.dislikeRank =
+                        this.addon.getAddonManager().getSortedDislikes(this.world).entryIndex(this.likesObject) + 1L;
+                    this.overallRank =
+                        this.addon.getAddonManager().getSortedRank(this.world).entryIndex(this.likesObject) + 1L;
                     break;
                 case STARS:
                     this.likeRank = initialSearchSet.entryIndex(this.likesObject) + 1L;
@@ -111,30 +111,12 @@ public class AdminViewPanel extends CommonPanel
     }
 
 
-    /**
-     * This method is used to open UserPanel outside this class. It will be much easier
-     * to open panel with single method call then initializing new object.
-     * @param parent Parent Panel
-     * @param island Island which View panel must be opened.
-     */
-    public static void openPanel(@NonNull CommonPanel parent,
-            @NonNull Island island)
-    {
-        new AdminViewPanel(parent, island).build();
-    }
-
-
-    // ---------------------------------------------------------------------
-    // Section: Methods
-    // ---------------------------------------------------------------------
-
-
     @Override
     public void build()
     {
         PanelBuilder panelBuilder = new PanelBuilder().
-                name(this.user.getTranslation(Constants.TITLE + "edit-view")).
-                user(this.user);
+            name(this.user.getTranslation(Constants.TITLE + "edit-view")).
+            user(this.user);
 
         switch (this.addon.getSettings().getMode())
         {
@@ -154,8 +136,14 @@ public class AdminViewPanel extends CommonPanel
     }
 
 
+    // ---------------------------------------------------------------------
+    // Section: Methods
+    // ---------------------------------------------------------------------
+
+
     /**
      * This method builds Likes admin panel.
+     *
      * @param panelBuilder PanelBuilder that need to be populated.
      */
     private void buildLikesPanel(PanelBuilder panelBuilder)
@@ -176,6 +164,7 @@ public class AdminViewPanel extends CommonPanel
 
     /**
      * This method builds Likes and Dislikes admin panel.
+     *
      * @param panelBuilder PanelBuilder that need to be populated.
      */
     private void buildLikesDislikesPanel(PanelBuilder panelBuilder)
@@ -207,6 +196,7 @@ public class AdminViewPanel extends CommonPanel
 
     /**
      * This method builds Stars admin panel.
+     *
      * @param panelBuilder PanelBuilder that need to be populated.
      */
     private void buildStarsPanel(PanelBuilder panelBuilder)
@@ -227,6 +217,7 @@ public class AdminViewPanel extends CommonPanel
 
     /**
      * This method creates PanelItem button based on given button type.
+     *
      * @param button Button that must be created.
      * @return PanelItem object that represents given button.
      */
@@ -247,8 +238,8 @@ public class AdminViewPanel extends CommonPanel
                 description = new ArrayList<>(2);
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "like"));
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                        "[value]",
-                        this.likesObject.getLikes() + ""));
+                    "[value]",
+                    this.likesObject.getLikes() + ""));
 
                 clickHandler = null;
 
@@ -262,8 +253,8 @@ public class AdminViewPanel extends CommonPanel
                 description = new ArrayList<>(2);
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "like-rank"));
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                        "[value]",
-                        this.likeRank + ""));
+                    "[value]",
+                    this.likeRank + ""));
 
                 clickHandler = null;
 
@@ -277,8 +268,8 @@ public class AdminViewPanel extends CommonPanel
                 description = new ArrayList<>(2);
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike"));
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                        "[value]",
-                        this.likesObject.getDislikes() + ""));
+                    "[value]",
+                    this.likesObject.getDislikes() + ""));
 
                 clickHandler = null;
 
@@ -292,8 +283,8 @@ public class AdminViewPanel extends CommonPanel
                 description = new ArrayList<>(2);
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike-rank"));
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                        "[value]",
-                        this.dislikeRank + ""));
+                    "[value]",
+                    this.dislikeRank + ""));
 
                 clickHandler = null;
 
@@ -307,8 +298,8 @@ public class AdminViewPanel extends CommonPanel
                 description = new ArrayList<>(2);
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "overall"));
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                        "[value]",
-                        this.likesObject.getRank() + ""));
+                    "[value]",
+                    this.likesObject.getRank() + ""));
 
                 clickHandler = null;
 
@@ -322,8 +313,8 @@ public class AdminViewPanel extends CommonPanel
                 description = new ArrayList<>(2);
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "overall-rank"));
                 description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                        "[value]",
-                        this.overallRank + ""));
+                    "[value]",
+                    this.overallRank + ""));
 
                 clickHandler = null;
 
@@ -397,22 +388,22 @@ public class AdminViewPanel extends CommonPanel
 
                 clickHandler = (panel, user, clickType, slot) -> {
                     SelectUserGUI.open(user,
-                            this.getOnlineUserList(),
-                            this.convertToUserList(this.likesObject.getLikedBy()),
-                            player -> {
-                                if (player != null)
+                        this.getOnlineUserList(),
+                        this.convertToUserList(this.likesObject.getLikedBy()),
+                        player -> {
+                            if (player != null)
+                            {
+                                if (this.likesObject.hasDisliked(player.getUniqueId()))
                                 {
-                                    if (this.likesObject.hasDisliked(player.getUniqueId()))
-                                    {
-                                        this.dislikedByUsers.remove(player.getName());
-                                    }
-
-                                    this.likesObject.addLike(player.getUniqueId());
-                                    this.likedByUsers.add(player.getName());
+                                    this.dislikedByUsers.remove(player.getName());
                                 }
 
-                                this.build();
-                            });
+                                this.likesObject.addLike(player.getUniqueId());
+                                this.likedByUsers.add(player.getName());
+                            }
+
+                            this.build();
+                        });
                     return true;
                 };
 
@@ -426,16 +417,16 @@ public class AdminViewPanel extends CommonPanel
 
                 clickHandler = (panel, user, clickType, slot) -> {
                     SelectUserGUI.open(user,
-                            this.convertToUserList(this.likesObject.getLikedBy()),
-                            player -> {
-                                if (player != null)
-                                {
-                                    this.likesObject.removeLike(player.getUniqueId());
-                                    this.likedByUsers.remove(player.getName());
-                                }
+                        this.convertToUserList(this.likesObject.getLikedBy()),
+                        player -> {
+                            if (player != null)
+                            {
+                                this.likesObject.removeLike(player.getUniqueId());
+                                this.likedByUsers.remove(player.getName());
+                            }
 
-                                this.build();
-                            });
+                            this.build();
+                        });
                     return true;
                 };
 
@@ -449,22 +440,22 @@ public class AdminViewPanel extends CommonPanel
 
                 clickHandler = (panel, user, clickType, slot) -> {
                     SelectUserGUI.open(user,
-                            this.getOnlineUserList(),
-                            this.convertToUserList(this.likesObject.getDislikedBy()),
-                            player -> {
-                                if (player != null)
+                        this.getOnlineUserList(),
+                        this.convertToUserList(this.likesObject.getDislikedBy()),
+                        player -> {
+                            if (player != null)
+                            {
+                                if (this.likesObject.hasLiked(player.getUniqueId()))
                                 {
-                                    if (this.likesObject.hasLiked(player.getUniqueId()))
-                                    {
-                                        this.likedByUsers.remove(player.getName());
-                                    }
-
-                                    this.likesObject.addDislike(player.getUniqueId());
-                                    this.dislikedByUsers.add(player.getName());
+                                    this.likedByUsers.remove(player.getName());
                                 }
 
-                                this.build();
-                            });
+                                this.likesObject.addDislike(player.getUniqueId());
+                                this.dislikedByUsers.add(player.getName());
+                            }
+
+                            this.build();
+                        });
                     return true;
                 };
 
@@ -478,16 +469,16 @@ public class AdminViewPanel extends CommonPanel
 
                 clickHandler = (panel, user, clickType, slot) -> {
                     SelectUserGUI.open(user,
-                            this.convertToUserList(this.likesObject.getDislikedBy()),
-                            player -> {
-                                if (player != null)
-                                {
-                                    this.likesObject.removeDislike(player.getUniqueId());
-                                    this.dislikedByUsers.remove(player.getName());
-                                }
+                        this.convertToUserList(this.likesObject.getDislikedBy()),
+                        player -> {
+                            if (player != null)
+                            {
+                                this.likesObject.removeDislike(player.getUniqueId());
+                                this.dislikedByUsers.remove(player.getName());
+                            }
 
-                                this.build();
-                            });
+                            this.build();
+                        });
                     return true;
                 };
 
@@ -606,17 +597,18 @@ public class AdminViewPanel extends CommonPanel
         }
 
         return new PanelItemBuilder().
-                icon(icon).
-                name(name).
-                description(GuiUtils.stringSplit(description, 999)).
-                glow(false).
-                clickHandler(clickHandler).
-                build();
+            icon(icon).
+            name(name).
+            description(GuiUtils.stringSplit(description, 999)).
+            glow(false).
+            clickHandler(clickHandler).
+            build();
     }
 
 
     /**
      * This method populates all likers into given panel builder.
+     *
      * @param panelBuilder PanelBuilder object.
      */
     private void populateLikers(PanelBuilder panelBuilder)
@@ -638,15 +630,16 @@ public class AdminViewPanel extends CommonPanel
             String userName = this.likedByUsers.get(startIndex + index);
 
             panelBuilder.item(19 + index, new PanelItemBuilder().
-                    icon(userName).
-                    glow(false).
-                    build());
+                icon(userName).
+                glow(false).
+                build());
         }
     }
 
 
     /**
      * This method populates all dislikers into given panel builder.
+     *
      * @param panelBuilder PanelBuilder object.
      */
     private void populateDislikers(PanelBuilder panelBuilder)
@@ -668,15 +661,16 @@ public class AdminViewPanel extends CommonPanel
             String userName = this.dislikedByUsers.get(startIndex + index);
 
             panelBuilder.item(37 + index, new PanelItemBuilder().
-                    icon(userName).
-                    glow(false).
-                    build());
+                icon(userName).
+                glow(false).
+                build());
         }
     }
 
 
     /**
      * This method populates all stars into given panel builder.
+     *
      * @param panelBuilder PanelBuilder object.
      */
     private void populateStars(PanelBuilder panelBuilder)
@@ -713,6 +707,7 @@ public class AdminViewPanel extends CommonPanel
 
     /**
      * This method returns list that contains all online users.
+     *
      * @return Online User List.
      */
     private List<User> getOnlineUserList()
@@ -723,12 +718,27 @@ public class AdminViewPanel extends CommonPanel
 
     /**
      * This method converts and returns given set with UUIDs to User list.
+     *
      * @param userSet Set that must be converted.
      * @return Converted User List.
      */
     private List<User> convertToUserList(Set<UUID> userSet)
     {
         return userSet.stream().map(User::getInstance).collect(Collectors.toList());
+    }
+
+
+    /**
+     * This method is used to open UserPanel outside this class. It will be much easier to open panel with single method
+     * call then initializing new object.
+     *
+     * @param parent Parent Panel
+     * @param island Island which View panel must be opened.
+     */
+    public static void openPanel(@NonNull CommonPanel parent,
+        @NonNull Island island)
+    {
+        new AdminViewPanel(parent, island).build();
     }
 
 

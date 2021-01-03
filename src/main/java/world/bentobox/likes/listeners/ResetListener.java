@@ -1,7 +1,7 @@
-//
+///
 // Created by BONNe
-// Copyright - 2019
-//
+// Copyright - 2021
+///
 
 
 package world.bentobox.likes.listeners;
@@ -21,45 +21,46 @@ import world.bentobox.likes.LikesAddon;
  */
 public class ResetListener implements Listener
 {
-	/**
-	 * Default constructor.
-	 * @param addon Likes Addon
-	 */
-	public ResetListener(LikesAddon addon)
-	{
-		this.addon = addon;
-	}
+    /**
+     * Default constructor.
+     *
+     * @param addon Likes Addon
+     */
+    public ResetListener(LikesAddon addon)
+    {
+        this.addon = addon;
+    }
 
 
-	/**
-	 * This method handles Island Created event.
-	 *
-	 * @param event Event that must be handled.
-	 */
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onIslandCreated(IslandCreatedEvent event)
-	{
-		this.addon.getManager().resetLikes(event.getPlayerUUID(),
-			event.getIsland().getUniqueId(),
-			event.getIsland().getWorld());
-	}
+    /**
+     * This method handles Island Created event.
+     *
+     * @param event Event that must be handled.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onIslandCreated(IslandCreatedEvent event)
+    {
+        this.addon.getAddonManager().resetLikes(event.getPlayerUUID(),
+            event.getIsland().getUniqueId(),
+            event.getIsland().getWorld());
+    }
 
 
-	/**
-	 * This method handles Island Resetted event.
-	 *
-	 * @param event Event that must be handled.
-	 */
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onIslandCreated(IslandResettedEvent event)
-	{
-		if (this.addon.getSettings().isResetLikes())
-		{
-			this.addon.getManager().resetLikes(event.getPlayerUUID(),
-				event.getIsland().getUniqueId(),
-				event.getIsland().getWorld());
-		}
-	}
+    /**
+     * This method handles Island Resetted event.
+     *
+     * @param event Event that must be handled.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onIslandCreated(IslandResettedEvent event)
+    {
+        if (this.addon.getSettings().isResetLikes())
+        {
+            this.addon.getAddonManager().resetLikes(event.getPlayerUUID(),
+                event.getIsland().getUniqueId(),
+                event.getIsland().getWorld());
+        }
+    }
 
 
 // ---------------------------------------------------------------------
@@ -67,8 +68,8 @@ public class ResetListener implements Listener
 // ---------------------------------------------------------------------
 
 
-	/**
-	 * Likes addon instance
-	 */
-	private final LikesAddon addon;
+    /**
+     * Likes addon instance
+     */
+    private final LikesAddon addon;
 }

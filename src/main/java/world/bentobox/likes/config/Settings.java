@@ -1,12 +1,16 @@
+///
+// Created by BONNe
+// Copyright - 2021
+///
+
 package world.bentobox.likes.config;
 
 
+import org.bukkit.Material;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.bukkit.Material;
 
 import world.bentobox.bentobox.api.configuration.ConfigComment;
 import world.bentobox.bentobox.api.configuration.ConfigEntry;
@@ -15,15 +19,16 @@ import world.bentobox.bentobox.api.configuration.StoreAt;
 
 
 /**
- * Settings that implements ConfigObject is powerful and dynamic Config Objects that
- * does not need custom parsing. If it is correctly loaded, all its values will be available.
- *
+ * Settings that implements ConfigObject is powerful and dynamic Config Objects that does not need custom parsing. If it
+ * is correctly loaded, all its values will be available.
+ * <p>
  * Without Getter and Setter this class will not work.
- *
- * To specify location for config object to be stored, you should use @StoreAt(filename="{config file name}", path="{Path to your addon}")
- * To save comments in config file you should use @ConfigComment("{message}") that adds any message you want to be in file.
+ * <p>
+ * To specify location for config object to be stored, you should use @StoreAt(filename="{config file name}",
+ * path="{Path to your addon}") To save comments in config file you should use @ConfigComment("{message}") that adds any
+ * message you want to be in file.
  */
-@StoreAt(filename="config.yml", path="addons/Likes")
+@StoreAt(filename = "config.yml", path = "addons/Likes")
 @ConfigComment("LikesAddon Configuration [version]")
 @ConfigComment("This config file is dynamic and saved when the server is shutdown.")
 @ConfigComment("")
@@ -113,8 +118,8 @@ public class Settings implements ConfigObject
 
     /**
      * Method Settings#setResetLikes sets new value for the resetLikes of this object.
-     * @param resetLikes new value for this object.
      *
+     * @param resetLikes new value for this object.
      */
     public void setResetLikes(boolean resetLikes)
     {
@@ -135,8 +140,8 @@ public class Settings implements ConfigObject
 
     /**
      * Method Settings#setLikeAddCost sets new value for the likeAddCost of this object.
-     * @param likeAddCost new value for this object.
      *
+     * @param likeAddCost new value for this object.
      */
     public void setLikeAddCost(double likeAddCost)
     {
@@ -157,8 +162,8 @@ public class Settings implements ConfigObject
 
     /**
      * Method Settings#setLikeRemoveCost sets new value for the likeRemoveCost of this object.
-     * @param likeRemoveCost new value for this object.
      *
+     * @param likeRemoveCost new value for this object.
      */
     public void setLikeRemoveCost(double likeRemoveCost)
     {
@@ -179,8 +184,8 @@ public class Settings implements ConfigObject
 
     /**
      * Method Settings#setDislikeAddCost sets new value for the dislikeAddCost of this object.
-     * @param dislikeAddCost new value for this object.
      *
+     * @param dislikeAddCost new value for this object.
      */
     public void setDislikeAddCost(double dislikeAddCost)
     {
@@ -201,8 +206,8 @@ public class Settings implements ConfigObject
 
     /**
      * Method Settings#setDislikeRemoveCost sets new value for the dislikeRemoveCost of this object.
-     * @param dislikeRemoveCost new value for this object.
      *
+     * @param dislikeRemoveCost new value for this object.
      */
     public void setDislikeRemoveCost(double dislikeRemoveCost)
     {
@@ -223,8 +228,8 @@ public class Settings implements ConfigObject
 
     /**
      * Method Settings#setInformPlayers sets new value for the informPlayers of this object.
-     * @param informPlayers new value for this object.
      *
+     * @param informPlayers new value for this object.
      */
     public void setInformPlayers(boolean informPlayers)
     {
@@ -234,6 +239,7 @@ public class Settings implements ConfigObject
 
     /**
      * This method returns the mode value.
+     *
      * @return the value of mode.
      */
     public LikeMode getMode()
@@ -244,8 +250,8 @@ public class Settings implements ConfigObject
 
     /**
      * This method sets the mode value.
-     * @param mode the mode new value.
      *
+     * @param mode the mode new value.
      */
     public void setMode(LikeMode mode)
     {
@@ -257,6 +263,65 @@ public class Settings implements ConfigObject
     // Section: Variables
     // ---------------------------------------------------------------------
 
+
+    /**
+     * This enum holds all possible values for Addon Like Storage Mode.
+     */
+    public enum LikeMode
+    {
+        /**
+         * Store only Likes. Dislikes and rank is disabled.
+         */
+        LIKES,
+        /**
+         * Stores Likes and Dislikes.
+         */
+        LIKES_DISLIKES,
+        /**
+         * Stores Stars which has value from 1 to 5.
+         */
+        STARS
+    }
+
+    /**
+     * Allows to select different Modes for viewing or choosing tops
+     */
+    public enum VIEW_MODE
+    {
+        LIKES,
+        DISLIKES,
+        RANK,
+        STARS;
+
+
+        /**
+         * This method returns stored parameter from string.
+         *
+         * @param parameter String of object that must be returned
+         * @return CommandParameters object or null.
+         */
+        public static VIEW_MODE getMode(String parameter)
+        {
+            return BY_NAME.get(parameter);
+        }
+
+
+        /**
+         * This map allows to access all enum values via their string.
+         */
+        private static final Map<String, VIEW_MODE> BY_NAME = new HashMap<>();
+
+        /*
+         * This static method populated BY_NAME map.
+         */
+        static
+        {
+            for (VIEW_MODE mode : VIEW_MODE.values())
+            {
+                BY_NAME.put(mode.name(), mode);
+            }
+        }
+    }
 
     @ConfigComment("")
     @ConfigComment("Default icon for Top Island panel.")
@@ -303,6 +368,11 @@ public class Settings implements ConfigObject
     @ConfigEntry(path = "reset-on-reset")
     private boolean resetLikes;
 
+
+    // ---------------------------------------------------------------------
+    // Section: Enums
+    // ---------------------------------------------------------------------
+
     @ConfigComment("")
     @ConfigComment("Allows to store history data about added and removed likes and dislikes.")
     @ConfigEntry(path = "log-history")
@@ -315,68 +385,4 @@ public class Settings implements ConfigObject
     @ConfigComment(" - BSkyBlock")
     @ConfigEntry(path = "disabled-gamemodes")
     private Set<String> disabledGameModes = new HashSet<>();
-
-
-    // ---------------------------------------------------------------------
-    // Section: Enums
-    // ---------------------------------------------------------------------
-
-
-    /**
-     * This enum holds all possible values for Addon Like Storage Mode.
-     */
-    public enum LikeMode
-    {
-        /**
-         * Store only Likes. Dislikes and rank is disabled.
-         */
-        LIKES,
-        /**
-         * Stores Likes and Dislikes.
-         */
-        LIKES_DISLIKES,
-        /**
-         * Stores Stars which has value from 1 to 5.
-         */
-        STARS
-    }
-
-
-    /**
-     * Allows to select different Modes for viewing or choosing tops
-     */
-    public enum VIEW_MODE
-    {
-        LIKES,
-        DISLIKES,
-        RANK,
-        STARS;
-
-
-        /**
-         * This method returns stored parameter from string.
-         * @param parameter String of object that must be returned
-         * @return CommandParameters object or null.
-         */
-        public static VIEW_MODE getMode(String parameter)
-        {
-            return BY_NAME.get(parameter);
-        }
-
-        /**
-         * This map allows to access all enum values via their string.
-         */
-        private static final Map<String, VIEW_MODE> BY_NAME = new HashMap<>();
-
-        /*
-         * This static method populated BY_NAME map.
-         */
-        static
-        {
-            for (VIEW_MODE mode : VIEW_MODE.values())
-            {
-                BY_NAME.put(mode.name(), mode);
-            }
-        }
-    }
 }

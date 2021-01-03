@@ -1,15 +1,19 @@
+///
+// Created by BONNe
+// Copyright - 2021
+///
+
 package world.bentobox.likes.panels.util;
 
 
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
-
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
@@ -20,13 +24,16 @@ import world.bentobox.likes.utils.Constants;
 
 
 /**
- * This class contains all necessary things that allows to select single block from all ingame blocks. Selected
- * block will be returned via BiConsumer.
+ * This class contains all necessary things that allows to select single block from all ingame blocks. Selected block
+ * will be returned via BiConsumer.
  */
 public class SelectBlocksGUI
 {
     @SuppressWarnings("deprecation")
-    private SelectBlocksGUI(User user, boolean singleSelect, Set<Material> excludedMaterial, BiConsumer<Boolean, Set<Material>> consumer)
+    private SelectBlocksGUI(User user,
+        boolean singleSelect,
+        Set<Material> excludedMaterial,
+        BiConsumer<Boolean, Set<Material>> consumer)
     {
         this.consumer = consumer;
         this.user = user;
@@ -57,24 +64,13 @@ public class SelectBlocksGUI
     }
 
 
-    public static void open(User user, BiConsumer<Boolean, Set<Material>> consumer)
-    {
-        new SelectBlocksGUI(user, true, new HashSet<>(), consumer).build(0);
-    }
-
-
-    // ---------------------------------------------------------------------
-    // Section: Methods
-    // ---------------------------------------------------------------------
-
-
     /**
      * This method builds all necessary elements in GUI panel.
      */
     private void build(int pageIndex)
     {
         PanelBuilder panelBuilder = new PanelBuilder().user(this.user).
-                name(this.user.getTranslation(Constants.TITLE + "select-block"));
+            name(this.user.getTranslation(Constants.TITLE + "select-block"));
 
         GuiUtils.fillBorder(panelBuilder, Material.BLUE_STAINED_GLASS_PANE);
 
@@ -100,7 +96,7 @@ public class SelectBlocksGUI
         int index = 10;
 
         while (entitiesIndex < ((correctPage + 1) * MAX_ELEMENTS) &&
-                entitiesIndex < this.elements.size())
+            entitiesIndex < this.elements.size())
         {
             if (!panelBuilder.slotOccupied(index))
             {
@@ -111,10 +107,10 @@ public class SelectBlocksGUI
         }
 
         panelBuilder.item(3,
-                new PanelItemBuilder().
+            new PanelItemBuilder().
                 icon(Material.RED_STAINED_GLASS_PANE).
                 name(this.user.getTranslation(Constants.BUTTON + "cancel")).
-                clickHandler( (panel, user1, clickType, slot) -> {
+                clickHandler((panel, user1, clickType, slot) -> {
                     this.consumer.accept(false, null);
                     return true;
                 }).build());
@@ -128,11 +124,11 @@ public class SelectBlocksGUI
         }
 
         panelBuilder.item(5,
-                new PanelItemBuilder().
+            new PanelItemBuilder().
                 icon(Material.GREEN_STAINED_GLASS_PANE).
                 name(this.user.getTranslation(Constants.BUTTON + "accept")).
                 description(description).
-                clickHandler( (panel, user1, clickType, slot) -> {
+                clickHandler((panel, user1, clickType, slot) -> {
                     this.consumer.accept(true, this.selectedMaterials);
                     return true;
                 }).build());
@@ -142,7 +138,7 @@ public class SelectBlocksGUI
             // Navigation buttons if necessary
 
             panelBuilder.item(18,
-                    new PanelItemBuilder().
+                new PanelItemBuilder().
                     icon(Material.OAK_SIGN).
                     name(this.user.getTranslation(Constants.BUTTON + "previous")).
                     clickHandler((panel, user1, clickType, slot) -> {
@@ -151,7 +147,7 @@ public class SelectBlocksGUI
                     }).build());
 
             panelBuilder.item(26,
-                    new PanelItemBuilder().
+                new PanelItemBuilder().
                     icon(Material.OAK_SIGN).
                     name(this.user.getTranslation(Constants.BUTTON + "next")).
                     clickHandler((panel, user1, clickType, slot) -> {
@@ -161,10 +157,10 @@ public class SelectBlocksGUI
         }
 
         panelBuilder.item(44,
-                new PanelItemBuilder().
+            new PanelItemBuilder().
                 icon(Material.OAK_DOOR).
                 name(this.user.getTranslation(Constants.BUTTON + "return")).
-                clickHandler( (panel, user1, clickType, slot) -> {
+                clickHandler((panel, user1, clickType, slot) -> {
                     this.consumer.accept(false, null);
                     return true;
                 }).build());
@@ -173,9 +169,15 @@ public class SelectBlocksGUI
     }
 
 
+    // ---------------------------------------------------------------------
+    // Section: Methods
+    // ---------------------------------------------------------------------
+
+
     /**
-     * This method creates PanelItem that represents given material.
-     * Some materials is not displayable in Inventory GUI, so they are replaced with "placeholder" items.
+     * This method creates PanelItem that represents given material. Some materials is not displayable in Inventory GUI,
+     * so they are replaced with "placeholder" items.
+     *
      * @param material Material which icon must be created.
      * @return PanelItem that represents given material.
      */
@@ -184,30 +186,36 @@ public class SelectBlocksGUI
         ItemStack itemStack = GuiUtils.getMaterialItem(material);
 
         return new PanelItemBuilder().
-                name(WordUtils.capitalize(material.name().toLowerCase().replace("_", " "))).
-                description(this.selectedMaterials.contains(material) ?
-                        this.user.getTranslation(Constants.DESCRIPTION + "selected") : "").
-                icon(itemStack).
-                clickHandler((panel, user1, clickType, slot) -> {
-                    if (!this.singleSelect && clickType.isRightClick())
+            name(WordUtils.capitalize(material.name().toLowerCase().replace("_", " "))).
+            description(this.selectedMaterials.contains(material) ?
+                this.user.getTranslation(Constants.DESCRIPTION + "selected") : "").
+            icon(itemStack).
+            clickHandler((panel, user1, clickType, slot) -> {
+                if (!this.singleSelect && clickType.isRightClick())
+                {
+                    if (!this.selectedMaterials.add(material))
                     {
-                        if (!this.selectedMaterials.add(material))
-                        {
-                            this.selectedMaterials.remove(material);
-                        }
-
-                        panel.getInventory().setItem(slot, this.createMaterialButton(material).getItem());
-                    }
-                    else
-                    {
-                        this.selectedMaterials.add(material);
-                        this.consumer.accept(true, this.selectedMaterials);
+                        this.selectedMaterials.remove(material);
                     }
 
-                    return true;
-                }).
-                glow(!itemStack.getType().equals(material)).
-                build();
+                    panel.getInventory().setItem(slot, this.createMaterialButton(material).getItem());
+                }
+                else
+                {
+                    this.selectedMaterials.add(material);
+                    this.consumer.accept(true, this.selectedMaterials);
+                }
+
+                return true;
+            }).
+            glow(!itemStack.getType().equals(material)).
+            build();
+    }
+
+
+    public static void open(User user, BiConsumer<Boolean, Set<Material>> consumer)
+    {
+        new SelectBlocksGUI(user, true, new HashSet<>(), consumer).build(0);
     }
 
 
@@ -218,25 +226,25 @@ public class SelectBlocksGUI
     /**
      * List with elements that will be displayed in current GUI.
      */
-    private List<Material> elements;
+    private final List<Material> elements;
 
     /**
      * Set that contains selected materials.
      */
-    private Set<Material> selectedMaterials;
+    private final Set<Material> selectedMaterials;
 
     /**
      * This variable stores consumer.
      */
-    private BiConsumer<Boolean, Set<Material>> consumer;
+    private final BiConsumer<Boolean, Set<Material>> consumer;
 
     /**
      * User who runs GUI.
      */
-    private User user;
+    private final User user;
 
     /**
      * This indicate that return set must contain only single item.
      */
-    private boolean singleSelect;
+    private final boolean singleSelect;
 }

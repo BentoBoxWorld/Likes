@@ -1,3 +1,8 @@
+///
+// Created by BONNe
+// Copyright - 2021
+///
+
 package world.bentobox.likes.commands.user;
 
 
@@ -20,6 +25,7 @@ public class PlayerCommand extends CompositeCommand
 {
     /**
      * This is simple constructor for initializing /{gamemode_player_command} example command.
+     *
      * @param addon Our Example addon.
      * @param parentCommand Parent Command where we hook our command into.
      */
@@ -30,8 +36,8 @@ public class PlayerCommand extends CompositeCommand
 
 
     /**
-     * Setups anything that is needed for this command. <br/><br/> It is recommended you
-     * do the following in this method:
+     * Setups anything that is needed for this command. <br/><br/> It is recommended you do the following in this
+     * method:
      * <ul>
      * <li>Register any of the sub-commands of this command;</li>
      * <li>Define the permission required to use this command using {@link
@@ -48,19 +54,19 @@ public class PlayerCommand extends CompositeCommand
         this.setParametersHelp(Constants.COMMANDS + "help.parameters");
         this.setDescription(Constants.COMMANDS + "help.description");
 
-        new PlayerTopCommand((LikesAddon) this.getAddon(), this);
-        new PlayerViewCommand((LikesAddon) this.getAddon(), this);
+        new PlayerTopCommand(this.getAddon(), this);
+        new PlayerViewCommand(this.getAddon(), this);
     }
 
 
     /**
-     * Returns whether the command can be executed by this user or not. It is recommended
-     * to send messages to let this user know why they could not execute the command. Note
-     * that this is run previous to {@link #execute(User, String, List)}.
+     * Returns whether the command can be executed by this user or not. It is recommended to send messages to let this
+     * user know why they could not execute the command. Note that this is run previous to {@link #execute(User, String,
+     * List)}.
      *
      * @param user the {@link User} who is executing this command.
-     * @param label the label which has been used to execute this command. It can be
-     * {@link CompositeCommand#getLabel()} or an alias.
+     * @param label the label which has been used to execute this command. It can be {@link CompositeCommand#getLabel()}
+     * or an alias.
      * @param args the command arguments.
      * @return {@code true} if this command can be executed, {@code false} otherwise.
      * @since 1.3.0
@@ -85,8 +91,8 @@ public class PlayerCommand extends CompositeCommand
      * Defines what will be executed when this command is run.
      *
      * @param user the {@link User} who is executing this command.
-     * @param label the label which has been used to execute this command. It can be
-     * {@link CompositeCommand#getLabel()} or an alias.
+     * @param label the label which has been used to execute this command. It can be {@link CompositeCommand#getLabel()}
+     * or an alias.
      * @param args the command arguments.
      * @return {@code true} if the command executed successfully, {@code false} otherwise.
      */
@@ -97,19 +103,19 @@ public class PlayerCommand extends CompositeCommand
 
             if (island.getMemberSet().contains(user.getUniqueId()))
             {
-                LikesViewPanel.openPanel((LikesAddon) this.getAddon(),
-                        user,
-                        this.getWorld(),
-                        this.getPermissionPrefix(),
-                        island);
+                LikesViewPanel.openPanel(this.getAddon(),
+                    user,
+                    this.getWorld(),
+                    this.getPermissionPrefix(),
+                    island);
             }
             else
             {
-                LikesManagePanel.openPanel((LikesAddon) this.getAddon(),
-                        user,
-                        this.getWorld(),
-                        this.getPermissionPrefix(),
-                        island);
+                LikesManagePanel.openPanel(this.getAddon(),
+                    user,
+                    this.getWorld(),
+                    this.getPermissionPrefix(),
+                    island);
             }
         });
         return true;

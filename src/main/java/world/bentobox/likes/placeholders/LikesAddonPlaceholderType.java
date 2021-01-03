@@ -1434,7 +1434,7 @@ public enum LikesAddonPlaceholderType
      */
     private static LikesObject getObject(LikesAddon addon, GameModeAddon gameModeAddon, Island island)
     {
-        return addon.getManager().getIslandLikes(island.getUniqueId(), gameModeAddon);
+        return addon.getAddonManager().getIslandLikes(island.getUniqueId(), gameModeAddon);
     }
 
 
@@ -1447,7 +1447,7 @@ public enum LikesAddonPlaceholderType
      */
     private static IndexedTreeSet<LikesObject> getSortedLikes(LikesAddon addon, GameModeAddon gameModeAddon)
     {
-        return addon.getManager().getSortedLikes(gameModeAddon.getDescription().getName());
+        return addon.getAddonManager().getSortedLikes(gameModeAddon.getDescription().getName());
     }
 
 
@@ -1460,7 +1460,7 @@ public enum LikesAddonPlaceholderType
      */
     private static IndexedTreeSet<LikesObject> getSortedDislikes(LikesAddon addon, GameModeAddon gameModeAddon)
     {
-        return addon.getManager().getSortedDislikes(gameModeAddon.getDescription().getName());
+        return addon.getAddonManager().getSortedDislikes(gameModeAddon.getDescription().getName());
     }
 
 
@@ -1473,7 +1473,7 @@ public enum LikesAddonPlaceholderType
      */
     private static IndexedTreeSet<LikesObject> getSortedRank(LikesAddon addon, GameModeAddon gameModeAddon)
     {
-        return addon.getManager().getSortedRank(gameModeAddon.getDescription().getName());
+        return addon.getAddonManager().getSortedRank(gameModeAddon.getDescription().getName());
     }
 
 
@@ -1486,7 +1486,7 @@ public enum LikesAddonPlaceholderType
      */
     private static IndexedTreeSet<LikesObject> getSortedStars(LikesAddon addon, GameModeAddon gameModeAddon)
     {
-        return addon.getManager().getSortedStars(gameModeAddon.getDescription().getName());
+        return addon.getAddonManager().getSortedStars(gameModeAddon.getDescription().getName());
     }
 
 

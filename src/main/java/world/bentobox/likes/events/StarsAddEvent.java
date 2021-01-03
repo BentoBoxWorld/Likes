@@ -1,3 +1,8 @@
+///
+// Created by BONNe
+// Copyright - 2021
+///
+
 package world.bentobox.likes.events;
 
 
@@ -17,19 +22,19 @@ public class StarsAddEvent extends BentoBoxEvent
 // ---------------------------------------------------------------------
 
 
-	/**
-	 * Constructor LikeAddEvent creates a new LikeAddEvent instance.
-	 *
-	 * @param user of type User
-	 * @param value of type int
-	 * @param islandId of type String
-	 */
-	public StarsAddEvent(UUID user, int value, String islandId)
-	{
-		this.user = user;
-		this.value = value;
-		this.islandId = islandId;
-	}
+    /**
+     * Constructor LikeAddEvent creates a new LikeAddEvent instance.
+     *
+     * @param user of type User
+     * @param value of type int
+     * @param islandId of type String
+     */
+    public StarsAddEvent(UUID user, int value, String islandId)
+    {
+        this.user = user;
+        this.value = value;
+        this.islandId = islandId;
+    }
 
 
 // ---------------------------------------------------------------------
@@ -37,69 +42,70 @@ public class StarsAddEvent extends BentoBoxEvent
 // ---------------------------------------------------------------------
 
 
-	/**
-	 * Method LikeAddEvent#getUser returns the user of this object.
-	 *
-	 * @return the user (type UUID) of this object.
-	 */
-	public UUID getUser()
-	{
-		return user;
-	}
+    /**
+     * Method LikeAddEvent#getUser returns the user of this object.
+     *
+     * @return the user (type UUID) of this object.
+     */
+    public UUID getUser()
+    {
+        return user;
+    }
 
 
-	/**
-	 * Method LikeAddEvent#setUser sets new value for the user of this object.
-	 * @param user new value for this object.
-	 *
-	 */
-	public void setUser(UUID user)
-	{
-		this.user = user;
-	}
+    /**
+     * Method LikeAddEvent#setUser sets new value for the user of this object.
+     *
+     * @param user new value for this object.
+     */
+    public void setUser(UUID user)
+    {
+        this.user = user;
+    }
 
 
-	/**
-	 * Method LikeAddEvent#getIslandId returns the islandId of this object.
-	 *
-	 * @return the islandId (type String) of this object.
-	 */
-	public String getIslandId()
-	{
-		return islandId;
-	}
+    /**
+     * Method LikeAddEvent#getIslandId returns the islandId of this object.
+     *
+     * @return the islandId (type String) of this object.
+     */
+    public String getIslandId()
+    {
+        return islandId;
+    }
 
 
-	/**
-	 * Method LikeAddEvent#setIslandId sets new value for the islandId of this object.
-	 * @param islandId new value for this object.
-	 *
-	 */
-	public void setIslandId(String islandId)
-	{
-		this.islandId = islandId;
-	}
+    /**
+     * Method LikeAddEvent#setIslandId sets new value for the islandId of this object.
+     *
+     * @param islandId new value for this object.
+     */
+    public void setIslandId(String islandId)
+    {
+        this.islandId = islandId;
+    }
 
 
-	/**
-	 * This method returns the value value.
-	 * @return the value of value.
-	 */
-	public int getValue()
-	{
-		return value;
-	}
+    /**
+     * This method returns the value value.
+     *
+     * @return the value of value.
+     */
+    public int getValue()
+    {
+        return value;
+    }
 
 
-	/**
-	 * This method sets the value value.
-	 * @param value the value new value.
-	 *
-	 */
-	public void setValue(int value)
-	{
-		this.value = value;
-	}
+    /**
+     * This method sets the value value.
+     *
+     * @param value the value new value.
+     */
+    public void setValue(int value)
+    {
+        this.value = value;
+    }
 
 
 // ---------------------------------------------------------------------
@@ -107,27 +113,27 @@ public class StarsAddEvent extends BentoBoxEvent
 // ---------------------------------------------------------------------
 
 
-	/**
-	 * Gets handlers.
-	 *
-	 * @return the handlers
-	 */
-	@Override
-	public HandlerList getHandlers()
-	{
-		return StarsAddEvent.handlers;
-	}
+    /**
+     * Gets handlers.
+     *
+     * @return the handlers
+     */
+    @Override
+    public HandlerList getHandlers()
+    {
+        return StarsAddEvent.handlers;
+    }
 
 
-	/**
-	 * Gets handlers.
-	 *
-	 * @return the handlers
-	 */
-	public static HandlerList getHandlerList()
-	{
-		return StarsAddEvent.handlers;
-	}
+    /**
+     * Gets handlers.
+     *
+     * @return the handlers
+     */
+    public static HandlerList getHandlerList()
+    {
+        return StarsAddEvent.handlers;
+    }
 
 
 // ---------------------------------------------------------------------
@@ -135,23 +141,23 @@ public class StarsAddEvent extends BentoBoxEvent
 // ---------------------------------------------------------------------
 
 
-	/**
-	 * User who triggered event.
-	 */
-	private UUID user;
+    /**
+     * User who triggered event.
+     */
+    private UUID user;
 
-	/**
-	 * Value of added stars.
-	 */
-	private int value;
+    /**
+     * Value of added stars.
+     */
+    private int value;
 
-	/**
-	 * Island that was affected.
-	 */
-	private String islandId;
+    /**
+     * Island that was affected.
+     */
+    private String islandId;
 
-	/**
-	 * Event listener list for current
-	 */
-	private static final HandlerList handlers = new HandlerList();
+    /**
+     * Event listener list for current
+     */
+    private static final HandlerList handlers = new HandlerList();
 }
