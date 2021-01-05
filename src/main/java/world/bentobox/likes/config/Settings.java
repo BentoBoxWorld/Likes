@@ -302,7 +302,7 @@ public class Settings implements ConfigObject
          */
         public static VIEW_MODE getMode(String parameter)
         {
-            return BY_NAME.get(parameter);
+            return BY_NAME.get(parameter.toUpperCase());
         }
 
 

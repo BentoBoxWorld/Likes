@@ -67,10 +67,10 @@ public class LikesRequestHandler extends AddonRequestHandler
         returnMap.put("rank", likesObject.getRank());
         returnMap.put("stars", likesObject.getStarsValue());
 
-        returnMap.put("placeByLikes", this.addon.getAddonManager().getSortedLikes(world).entryIndex(likesObject));
-        returnMap.put("placeByDislikes", this.addon.getAddonManager().getSortedDislikes(world).entryIndex(likesObject));
-        returnMap.put("placeByRank", this.addon.getAddonManager().getSortedRank(world).entryIndex(likesObject));
-        returnMap.put("placeByStars", this.addon.getAddonManager().getSortedStars(world).entryIndex(likesObject));
+        returnMap.put("placeByLikes", this.addon.getAddonManager().getIslandRankByLikes(world, likesObject));
+        returnMap.put("placeByDislikes", this.addon.getAddonManager().getIslandRankByDislikes(world, likesObject));
+        returnMap.put("placeByRank", this.addon.getAddonManager().getIslandRankByRank(world, likesObject));
+        returnMap.put("placeByStars", this.addon.getAddonManager().getIslandRankByStars(world, likesObject));
 
         returnMap.put("likedBy", likesObject.getLikedBy());
         returnMap.put("dislikedBy", likesObject.getDislikedBy());
