@@ -45,3 +45,7 @@ permissions:
   '[gamemode].likes.admin.settings':
     description: Let the admin use the '/bsb likes settings' command
     default: op
+
+  '[gamemode].likes.icon.STONE':
+    description: Allows to change owned island icon in Top GUIs.
+    default: false

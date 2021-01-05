@@ -47,8 +47,8 @@ public class EditSettingsCommand extends CompositeCommand
     public void setup()
     {
         this.setPermission("likes.admin.settings");
-        this.setParametersHelp(Constants.COMMANDS + "admin.settings.parameters");
-        this.setDescription(Constants.COMMANDS + "admin.settings.description");
+        this.setParametersHelp(Constants.ADMIN_COMMANDS + "settings.parameters");
+        this.setDescription(Constants.ADMIN_COMMANDS + "settings.description");
         this.setOnlyPlayer(true);
     }
 

@@ -52,8 +52,8 @@ public class PlayerTopCommand extends CompositeCommand
     {
         this.setPermission("likes.top");
         this.setOnlyPlayer(true);
-        this.setParametersHelp(Constants.COMMANDS + "top.parameters");
-        this.setDescription(Constants.COMMANDS + "top.description");
+        this.setParametersHelp(Constants.PLAYER_COMMANDS + "top.parameters");
+        this.setDescription(Constants.PLAYER_COMMANDS + "top.description");
     }
 
 

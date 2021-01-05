@@ -16,6 +16,7 @@ import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.panels.user.LikesManagePanel;
 import world.bentobox.likes.panels.user.LikesViewPanel;
 import world.bentobox.likes.utils.Constants;
+import world.bentobox.likes.utils.Utils;
 
 
 /**
@@ -51,8 +52,8 @@ public class PlayerCommand extends CompositeCommand
     {
         this.setPermission("likes");
         this.setOnlyPlayer(true);
-        this.setParametersHelp(Constants.COMMANDS + "help.parameters");
-        this.setDescription(Constants.COMMANDS + "help.description");
+        this.setParametersHelp(Constants.PLAYER_COMMANDS + "main.parameters");
+        this.setDescription(Constants.PLAYER_COMMANDS + "main.description");
 
         new PlayerTopCommand(this.getAddon(), this);
         new PlayerViewCommand(this.getAddon(), this);
@@ -79,7 +80,7 @@ public class PlayerCommand extends CompositeCommand
 
         if (!island.isPresent())
         {
-            user.sendMessage(Constants.ERRORS + "not-on-island");
+            Utils.sendMessage(user, user.getTranslation(Constants.ERRORS + "not-on-island"));
             return false;
         }
 

@@ -11,14 +11,20 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.panels.CommonPanel;
+import world.bentobox.likes.panels.ConversationUtils;
 import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.utils.Constants;
+import world.bentobox.likes.utils.Utils;
 
 
 /**
@@ -45,18 +51,18 @@ public class AdminPanel extends CommonPanel
     {
         PanelBuilder panelBuilder = new PanelBuilder().
             user(this.user).
-            name(this.user.getTranslation(Constants.TITLE + "admin"));
+            name(this.user.getTranslation(Constants.TITLES + "admin"));
 
         GuiUtils.fillBorder(panelBuilder);
 
-        panelBuilder.item(19, this.createButton(Button.ADD_REMOVE_LIKE));
-        panelBuilder.item(22, this.createButton(Button.LIKES_ICON));
+        panelBuilder.item(10, this.createButton(Button.MANAGE_LIKES));
+        panelBuilder.item(11, this.createButton(Button.LIKES_ICON));
 
         // Add All Player Data removal.
         panelBuilder.item(28, this.createButton(Button.WIPE_DATA));
 
         // Edit Addon Settings
-        panelBuilder.item(16, this.createButton(Button.EDIT_SETTINGS));
+        panelBuilder.item(16, this.createButton(Button.SETTINGS));
 
         // Add Return Button
         panelBuilder.item(44, this.returnButton);
@@ -79,16 +85,21 @@ public class AdminPanel extends CommonPanel
     private PanelItem createButton(Button button)
     {
         ItemStack icon;
-        String name;
-        String description;
         PanelItem.ClickHandler clickHandler;
+
+        final String reference = Constants.BUTTONS + button.name().toLowerCase();
+        String name = this.user.getTranslation(reference + ".name");
+
+        List<String> description = new ArrayList<>(3);
+        description.add(this.user.getTranslation(reference + ".description"));
+        description.add("");
 
         switch (button)
         {
-            case ADD_REMOVE_LIKE:
+            case MANAGE_LIKES:
             {
-                name = this.user.getTranslation(Constants.BUTTON + "manage-likes");
-                description = this.user.getTranslation(Constants.DESCRIPTION + "manage-likes");
+                description.add(this.user.getTranslation(Constants.TIPS + "click-to-manage"));
+
                 icon = new ItemStack(Material.WRITABLE_BOOK);
                 clickHandler = (panel, user, clickType, slot) -> {
                     ListIslandsPanel.open(this, ListIslandsPanel.Type.MANAGE);
@@ -99,8 +110,8 @@ public class AdminPanel extends CommonPanel
             }
             case LIKES_ICON:
             {
-                name = this.user.getTranslation(Constants.BUTTON + "likes-icon");
-                description = this.user.getTranslation(Constants.DESCRIPTION + "likes-icon");
+                description.add(this.user.getTranslation(Constants.TIPS + "click-to-change"));
+
                 icon = new ItemStack(Material.ENCHANTING_TABLE);
                 clickHandler = (panel, user, clickType, slot) -> {
                     ListIslandsPanel.open(this, ListIslandsPanel.Type.ICON);
@@ -111,23 +122,44 @@ public class AdminPanel extends CommonPanel
             }
             case WIPE_DATA:
             {
-                name = this.user.getTranslation(Constants.BUTTON + "wipe-data");
-                description = this.user.getTranslation(Constants.DESCRIPTION + "wipe-data");
+                description.add(this.user.getTranslation(Constants.TIPS + "click-to-wipe"));
+
                 icon = new ItemStack(Material.TNT);
-                clickHandler = (panel, user, clickType, slot) -> {
-                    this.addon.getAddonManager().wipeData(this.world);
+                clickHandler = (panel, user, clickType, slot) ->
+                {
+                    // Create consumer that accepts value from conversation.
+                    Consumer<Boolean> consumer = value ->
+                    {
+                        if (value)
+                        {
+                            this.addon.getAddonManager().wipeData(this.world);
+                        }
+
+                        this.build();
+                    };
+
+                    // Create conversation that gets user acceptance to delete island data.
+                    ConversationUtils.createConfirmation(
+                        consumer,
+                        this.user,
+                        this.user.getTranslation(Constants.CONVERSATIONS + "confirm-island-data-deletion",
+                            Constants.PARAMETER_GAMEMODE, Utils.getGameMode(this.world)),
+                        this.user.getTranslation(Constants.CONVERSATIONS + "user-data-removed",
+                            Constants.PARAMETER_GAMEMODE, Utils.getGameMode(this.world)));
+
                     return true;
                 };
 
                 break;
             }
-            case EDIT_SETTINGS:
+            case SETTINGS:
             {
-                name = this.user.getTranslation(Constants.BUTTON + "edit-settings");
-                description = this.user.getTranslation(Constants.DESCRIPTION + "edit-settings");
+                description.add(this.user.getTranslation(Constants.TIPS + "click-to-open"));
+
                 icon = new ItemStack(Material.CRAFTING_TABLE);
-                clickHandler = (panel, user, clickType, slot) -> {
-                    EditSettingsPanel.openPanel(this.addon, this.user, this.world, this.permissionPrefix);
+                clickHandler = (panel, user, clickType, slot) ->
+                {
+                    EditSettingsPanel.openPanel(this);
                     return true;
                 };
 
@@ -140,7 +172,7 @@ public class AdminPanel extends CommonPanel
         return new PanelItemBuilder().
             icon(icon).
             name(name).
-            description(GuiUtils.stringSplit(description, 999)).
+            description(description).
             glow(false).
             clickHandler(clickHandler).
             build();
@@ -174,7 +206,7 @@ public class AdminPanel extends CommonPanel
     {
         LIKES_ICON,
         WIPE_DATA,
-        EDIT_SETTINGS,
-        ADD_REMOVE_LIKE
+        SETTINGS,
+        MANAGE_LIKES
     }
 }

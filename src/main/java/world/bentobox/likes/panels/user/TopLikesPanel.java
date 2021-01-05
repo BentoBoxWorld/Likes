@@ -6,14 +6,12 @@
 package world.bentobox.likes.panels.user;
 
 
-import com.google.common.collect.ImmutableSet;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
@@ -54,15 +52,13 @@ public class TopLikesPanel
         this.user = user;
         this.world = world;
 
-        /*
-         * Permission prefix
-         */
-        String permissionPrefix1 = permissionPrefix;
-
-        this.iconPermission = permissionPrefix1 + "likes.icon";
+        this.iconPermission = permissionPrefix + "likes.icon";
         this.viewMode = mode;
 
         this.topPlayerList = new ArrayList<>(10);
+
+        this.hundredsFormat = (DecimalFormat) NumberFormat.getNumberInstance(this.user.getLocale());
+        this.hundredsFormat.applyPattern("###.##");
     }
 
 
@@ -74,11 +70,9 @@ public class TopLikesPanel
     {
         // PanelBuilder is a BentoBox API that provides ability to easy create Panels.
         PanelBuilder panelBuilder = new PanelBuilder().
-            // Each panel must have panel name.
-                name(this.user.getTranslation(Constants.TITLE + "top",
-                "[type]", this.user.getTranslation(Constants.TYPES + this.viewMode.name().toLowerCase()))).
-            // Each panel must have target user who opens it.
-                user(this.user);
+            name(this.user.getTranslation(Constants.TITLES + "top",
+                Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + this.viewMode.name().toLowerCase()))).
+            user(this.user);
 
         // Clear list each build time.
         this.topPlayerList.clear();
@@ -144,6 +138,7 @@ public class TopLikesPanel
         }
 
         this.populatePlayerButtons(panelBuilder);
+        this.createViewerButton(panelBuilder, rowCount * 9 - 5);
 
         // At the end we just call build method that creates and opens panel.
         panelBuilder.build();
@@ -166,20 +161,31 @@ public class TopLikesPanel
 
         // To get button name in different languages we can use user object to get correct
         // translation string.
-        builder.name(this.user.getTranslation(Constants.BUTTON + "view-mode"));
+        builder.name(this.user.getTranslation(Constants.BUTTONS + "view_mode.name"));
 
         List<String> description = new ArrayList<>(5);
-        description.add(this.user.getTranslation(Constants.DESCRIPTION + "view-mode"));
+        description.add(this.user.getTranslation(Constants.BUTTONS + "view_mode.description"));
 
-        List<VIEW_MODE> values = new ArrayList<>(3);
-        values.add(VIEW_MODE.LIKES);
-        values.add(VIEW_MODE.DISLIKES);
-        values.add(VIEW_MODE.RANK);
+        VIEW_MODE[] values = new VIEW_MODE[3];
+        values[0] = VIEW_MODE.LIKES;
+        values[1] = VIEW_MODE.DISLIKES;
+        values[2] = VIEW_MODE.RANK;
 
-        values.stream().map(value -> (this.viewMode.equals(value) ? "&2" : "&c") +
-            this.user.getTranslation(Constants.DESCRIPTION + "mode",
-                "[type]", this.user.getTranslation(Constants.TYPES + value.name().toLowerCase()))).
-            forEach(description::add);
+        for (VIEW_MODE mode : values)
+        {
+            if (this.viewMode.equals(mode))
+            {
+                description.add(this.user.getTranslation(Constants.BUTTONS + "view_mode.active",
+                    Constants.PARAMETER_TYPE,
+                    this.user.getTranslation(Constants.TYPES + mode.name().toLowerCase())));
+            }
+            else
+            {
+                description.add(this.user.getTranslation(Constants.BUTTONS + "view_mode.inactive",
+                    Constants.PARAMETER_TYPE,
+                    this.user.getTranslation(Constants.TYPES + mode.name().toLowerCase())));
+            }
+        }
 
         switch (this.viewMode)
         {
@@ -194,23 +200,27 @@ public class TopLikesPanel
                 break;
         }
 
+        description.add("");
+        description.add(this.user.getTranslation(Constants.TIPS + "click-to-change"));
+
         // We can modify PanelItem icon.
 
         // And even add lore to it.
         // We can do the same as in button name, to change its lore in lang file without
         // changing it in code.
-        builder.description(GuiUtils.stringSplit(description, 999));
+        builder.description(description);
 
         // Click handler allows to define action what will happen when player clicks on
         // this PanelItem.
-        builder.clickHandler((panel, user, clickType, slot) -> {
+        builder.clickHandler((panel, user, clickType, slot) ->
+        {
             if (clickType.isRightClick())
             {
-                this.viewMode = Utils.getPreviousValue(VIEW_MODE.values(), this.viewMode);
+                this.viewMode = Utils.getPreviousValue(values, this.viewMode);
             }
             else
             {
-                this.viewMode = Utils.getNextValue(VIEW_MODE.values(), this.viewMode);
+                this.viewMode = Utils.getNextValue(values, this.viewMode);
             }
 
             // Rebuild just this icon
@@ -249,127 +259,424 @@ public class TopLikesPanel
      */
     private PanelItem createPlayerButton(LikesObject likesObject, int rank)
     {
-        Optional<Island> island = this.addon.getIslands().getIslandById(likesObject.getUniqueId());
+        Optional<Island> optionalIsland = this.addon.getIslands().getIslandById(likesObject.getUniqueId());
 
-        Material icon;
-        String name;
-        List<String> description = new ArrayList<>();
-
-        switch (this.viewMode)
+        if (!optionalIsland.isPresent())
         {
-            case LIKES:
-                description.add(this.user
-                    .getTranslation(Constants.DESCRIPTION + "top-value." + this.viewMode.name().toLowerCase(),
-                        "[rank]", rank + "", "[value]", Long.toString(likesObject.getLikes())));
-                break;
-            case DISLIKES:
-                description.add(this.user
-                    .getTranslation(Constants.DESCRIPTION + "top-value." + this.viewMode.name().toLowerCase(),
-                        "[rank]", rank + "", "[value]", Long.toString(likesObject.getDislikes())));
-                break;
-            case RANK:
-                description.add(this.user
-                    .getTranslation(Constants.DESCRIPTION + "top-value." + this.viewMode.name().toLowerCase(),
-                        "[rank]", rank + "", "[value]", Long.toString(likesObject.getRank())));
-                break;
-            case STARS:
-                description.add(this.user
-                    .getTranslation(Constants.DESCRIPTION + "top-value." + this.viewMode.name().toLowerCase(),
-                        "[rank]", rank + "", "[value]", Double.toString(likesObject.getStarsValue())));
-                break;
+            // Return empty panel item, as something definitely went wrong.
+            return PanelItem.empty();
         }
+
+        Island island = optionalIsland.get();
+        User owner = User.getInstance(island.getOwner());
+
+        final String reference = Constants.BUTTONS + "island.";
+
+        // Get Island Name
+        String nameText;
+
+        if (island.getName() == null || island.getName().isEmpty())
+        {
+            nameText = this.user.getTranslation(reference + "owners-island",
+                Constants.PARAMETER_PLAYER,
+                owner == null ? this.user.getTranslation(reference + "unknown") : owner.getName());
+        }
+        else
+        {
+            nameText = island.getName();
+        }
+
+        nameText = this.user.getTranslation(reference + "name",
+            Constants.PARAMETER_NAME, nameText);
+
+        // Get Owner Name
+        String ownerText = this.user.getTranslation(reference + "owner",
+            Constants.PARAMETER_PLAYER,
+            owner == null ? this.user.getTranslation(reference + "unknown") : owner.getName());
+
+        // Get Members Text
+        String memberText;
+
+        if (island.getMemberSet().size() > 1)
+        {
+            StringBuilder memberBuilder = new StringBuilder(
+                this.user.getTranslationOrNothing(Constants.BUTTONS + "island.members-title"));
+
+            for (UUID uuid : island.getMemberSet())
+            {
+                User user = User.getInstance(uuid);
+
+                if (memberBuilder.length() > 0)
+                {
+                    memberBuilder.append("\n");
+                }
+
+                if (user != null)
+                {
+                    memberBuilder.append(
+                        this.user.getTranslationOrNothing(Constants.BUTTONS + "island.member",
+                            Constants.PARAMETER_PLAYER, user.getName()));
+                }
+            }
+
+            memberText = memberBuilder.toString();
+        }
+        else
+        {
+            memberText = "";
+        }
+
+        // Get Numbers Text
+        String numbersText;
 
         switch (this.addon.getSettings().getMode())
         {
             case LIKES:
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "likes-values",
-                    "[likes]", "" + likesObject.getLikes()));
+                numbersText = this.user.getTranslation(reference + "numbers_likes",
+                    Constants.PARAMETER_LIKES, String.valueOf(likesObject.getLikes()));
                 break;
             case LIKES_DISLIKES:
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "likes-dislikes-values",
-                    "[likes]", "" + likesObject.getLikes(),
-                    "[dislikes]", "" + likesObject.getDislikes(),
-                    "[rank]", "" + likesObject.getRank()));
+                numbersText = this.user.getTranslation(reference + "numbers_likes_dislikes",
+                    Constants.PARAMETER_LIKES, String.valueOf(likesObject.getLikes()),
+                    Constants.PARAMETER_DISLIKES, String.valueOf(likesObject.getDislikes()),
+                    Constants.PARAMETER_RANK, String.valueOf(likesObject.getRank()));
                 break;
             case STARS:
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "stars-values",
-                    "[stars]", "" + likesObject.getStarsValue(),
-                    "[votes]", "" + likesObject.numberOfStars()));
+                numbersText = this.user.getTranslation(reference + "numbers_stars",
+                    Constants.PARAMETER_STARS, this.hundredsFormat.format(likesObject.getStarsValue()),
+                    Constants.PARAMETER_NUMBER, String.valueOf(likesObject.numberOfStars()));
+
                 break;
+            default:
+                numbersText = "";
         }
 
+        // Now combine everything.
+        String descriptionText = this.user.getTranslation(reference + "description",
+            Constants.PARAMETER_OWNER, ownerText,
+            Constants.PARAMETER_MEMBERS, memberText,
+            Constants.PARAMETER_PLACE, "",
+            Constants.PARAMETER_NUMBERS, numbersText);
+        List<String> description = Arrays.stream(descriptionText.replaceAll("(?m)^[ \\t]*\\r?\\n", "").
+            split("\n")).
+            collect(Collectors.toList());
+
+        // Warp Function
         PanelItem.ClickHandler clickHandler;
 
-        if (island.isPresent() && island.get().getOwner() != null)
+        if (island.getOwner() != null &&
+            this.addon.getWarpHook() != null &&
+            this.addon.getWarpHook().getWarpSignsManager().hasWarp(this.world, island.getOwner()))
         {
-            UUID ownerId = island.get().getOwner();
-
-            icon = Material.matchMaterial(Utils.getPermissionValue(User.getInstance(ownerId),
-                this.iconPermission,
-                this.addon.getSettings().getDefaultIcon().name()));
-
-            name = this.addon.getPlayers().getName(ownerId);
-
-            ImmutableSet<UUID> members = island.get().getMemberSet();
-
-            if (members.size() > 1)
+            clickHandler = (panel, user, clickType, slot) ->
             {
-                members.forEach(uuid -> {
-                    if (uuid != ownerId)
-                    {
-                        description.add(ChatColor.AQUA + this.addon.getPlayers().getName(uuid));
-                    }
-                });
-            }
+                this.user.closeInventory();
+                this.addon.getWarpHook().getWarpSignsManager().warpPlayer(this.world, this.user, island.getOwner());
+                return true;
+            };
 
-            // Warp Function
-            if (this.addon.getWarpHook() != null &&
-                this.addon.getWarpHook().getWarpSignsManager().hasWarp(this.world, ownerId))
-            {
-                clickHandler = (
-                    (panel, user, clickType, slot) -> {
-                        this.user.closeInventory();
-                        this.addon.getWarpHook().getWarpSignsManager().warpPlayer(this.world, this.user, ownerId);
-                        return true;
-                    });
-            }
-            else
-            {
-                clickHandler = null;
-            }
+            description.add("");
+            description.add(this.user.getTranslation(Constants.TIPS + "click-to-warp"));
         }
         else
         {
-            icon = this.addon.getSettings().getDefaultIcon();
-            name = this.user.getTranslation(Constants.DESCRIPTION + "unknown");
             clickHandler = null;
         }
 
-        PanelItem panelItem;
+        String permissionIcon = Utils.getPermissionValue(owner, this.iconPermission, null);
 
-        if (icon == null || icon.equals(Material.PLAYER_HEAD))
+        Material material;
+
+        if (permissionIcon != null && !permissionIcon.equals("*"))
         {
-            panelItem = new PanelItemBuilder().
-                name(this.user.getTranslation(Constants.BUTTON + "name", "[name]", name)).
-                icon(name).
-                description(GuiUtils.stringSplit(description, 999)).
-                clickHandler(clickHandler).
-                build();
+            material = Material.matchMaterial(permissionIcon);
         }
         else
         {
-            panelItem = new PanelItemBuilder().
-                name(this.user.getTranslation(Constants.BUTTON + "name", "[name]", name)).
-                icon(icon).
-                description(GuiUtils.stringSplit(description, 999)).
-                clickHandler(clickHandler).
-                build();
+            material = null;
         }
 
-        // Set rank amount
-        panelItem.getItem().setAmount(rank);
+        if (material == null &&
+            island.getMetaData() != null &&
+            island.getMetaData().containsKey(Constants.METADATA_ICON))
+        {
+            material = Material.matchMaterial(island.getMetaData(Constants.METADATA_ICON).asString());
+        }
 
-        return panelItem;
+        if (material == null)
+        {
+            material = this.addon.getSettings().getDefaultIcon();
+        }
+
+        PanelItemBuilder itemBuilder = new PanelItemBuilder().
+            name(nameText).
+            description(description).
+            amount(rank).
+            clickHandler(clickHandler);
+
+        if (material == null || material.equals(Material.PLAYER_HEAD))
+        {
+            if (owner == null)
+            {
+                itemBuilder.icon(Material.PLAYER_HEAD);
+            }
+            else
+            {
+                itemBuilder.icon(owner.getName());
+            }
+        }
+        else
+        {
+            itemBuilder.icon(material);
+        }
+
+        return itemBuilder.build();
+    }
+
+
+    /**
+     * Create viewer button panel item.
+     *
+     * @param panelBuilder the panel builder
+     * @param slotIndex the slot
+     */
+    private void createViewerButton(PanelBuilder panelBuilder, int slotIndex)
+    {
+        Island island = this.addon.getIslands().getIsland(this.world, this.user);
+
+        if (island == null)
+        {
+            // Player do not have an island.
+            return;
+        }
+
+        LikesObject likesObject =
+            this.addon.getAddonManager().getExistingIslandLikes(island.getUniqueId());
+
+        if (likesObject == null)
+        {
+            // Island do not have any valid data. It is empty. Do not show.
+            return;
+        }
+
+        User owner = User.getInstance(island.getOwner());
+
+        final String reference = Constants.BUTTONS + "island.";
+
+        // Get Island Name
+        String nameText;
+
+        if (island.getName() == null || island.getName().isEmpty())
+        {
+            nameText = this.user.getTranslation(reference + "owners-island",
+                Constants.PARAMETER_PLAYER,
+                owner == null ? this.user.getTranslation(reference + "unknown") : owner.getName());
+        }
+        else
+        {
+            nameText = island.getName();
+        }
+
+        nameText = this.user.getTranslation(reference + "name",
+            Constants.PARAMETER_NAME, nameText);
+
+        // Get Owner Name
+        String ownerText = this.user.getTranslation(reference + "owner",
+            Constants.PARAMETER_PLAYER,
+            owner == null ? this.user.getTranslation(reference + "unknown") : owner.getName());
+
+        // Get Members Text
+        String memberText;
+
+        if (island.getMemberSet().size() > 1)
+        {
+            StringBuilder memberBuilder = new StringBuilder(
+                this.user.getTranslationOrNothing(Constants.BUTTONS + "island.members-title"));
+
+            for (UUID uuid : island.getMemberSet())
+            {
+                User user = User.getInstance(uuid);
+
+                if (memberBuilder.length() > 0)
+                {
+                    memberBuilder.append("\n");
+                }
+
+                if (user != null)
+                {
+                    memberBuilder.append(
+                        this.user.getTranslationOrNothing(Constants.BUTTONS + "island.member",
+                            Constants.PARAMETER_PLAYER, user.getName()));
+                }
+            }
+
+            memberText = memberBuilder.toString();
+        }
+        else
+        {
+            memberText = "";
+        }
+
+        // Get Place Text
+        String placeText = "";
+
+        int rank = -1;
+
+        switch (this.addon.getSettings().getMode())
+        {
+            case LIKES:
+                rank = this.addon.getAddonManager().getIslandRankByLikes(this.world, likesObject);
+
+                if (rank != -1)
+                {
+                    placeText = this.user.getTranslation(reference + "place",
+                        Constants.PARAMETER_NUMBER, String.valueOf(rank + 1),
+                        Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes"));
+                }
+
+                break;
+            case LIKES_DISLIKES:
+
+                int byLikes = this.addon.getAddonManager().getIslandRankByLikes(this.world, likesObject);
+                int byDislikes = this.addon.getAddonManager().getIslandRankByDislikes(this.world, likesObject);
+                int byRank = this.addon.getAddonManager().getIslandRankByRank(this.world, likesObject);
+
+                switch (this.viewMode)
+                {
+                    case LIKES:
+                        rank = byLikes;
+                        break;
+                    case DISLIKES:
+                        rank = byDislikes;
+                        break;
+                    case RANK:
+                        rank = byRank;
+                        break;
+                }
+
+                if (byLikes != -1)
+                {
+                    placeText = this.user.getTranslation(reference + "place",
+                        Constants.PARAMETER_NUMBER, String.valueOf(byLikes + 1),
+                        Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes"));
+                }
+
+                if (byDislikes != -1)
+                {
+                    placeText += "\n" + this.user.getTranslation(reference + "place",
+                        Constants.PARAMETER_NUMBER, String.valueOf(byDislikes + 1),
+                        Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "dislikes"));
+                }
+
+                if (byRank != -1)
+                {
+                    placeText += "\n" + this.user.getTranslation(reference + "place",
+                        Constants.PARAMETER_NUMBER, String.valueOf(byRank + 1),
+                        Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "rank"));
+                }
+                break;
+            case STARS:
+                rank = this.addon.getAddonManager().getIslandRankByStars(this.world, likesObject);
+
+                if (rank != -1)
+                {
+                    placeText = this.user.getTranslation(reference + "place",
+                        Constants.PARAMETER_NUMBER, String.valueOf(rank + 1),
+                        Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "stars"));
+                }
+                break;
+        }
+
+        // Get Numbers Text
+        String numbersText;
+
+        switch (this.addon.getSettings().getMode())
+        {
+            case LIKES:
+                numbersText = this.user.getTranslation(reference + "numbers_likes",
+                    Constants.PARAMETER_LIKES, String.valueOf(likesObject.getLikes()));
+                break;
+            case LIKES_DISLIKES:
+                numbersText = this.user.getTranslation(reference + "numbers_likes_dislikes",
+                    Constants.PARAMETER_LIKES, String.valueOf(likesObject.getLikes()),
+                    Constants.PARAMETER_DISLIKES, String.valueOf(likesObject.getDislikes()),
+                    Constants.PARAMETER_RANK, String.valueOf(likesObject.getRank()));
+                break;
+            case STARS:
+                numbersText = this.user.getTranslation(reference + "numbers_stars",
+                    Constants.PARAMETER_STARS, this.hundredsFormat.format(likesObject.getStarsValue()),
+                    Constants.PARAMETER_NUMBER, String.valueOf(likesObject.numberOfStars()));
+                break;
+            default:
+                numbersText = "";
+        }
+
+        // Now combine everything.
+        String descriptionText = this.user.getTranslation(reference + "description",
+            Constants.PARAMETER_OWNER, ownerText,
+            Constants.PARAMETER_MEMBERS, memberText,
+            Constants.PARAMETER_PLACE, placeText,
+            Constants.PARAMETER_NUMBERS, numbersText);
+        List<String> description = Arrays.stream(descriptionText.replaceAll("(?m)^[ \\t]*\\r?\\n", "").
+            split("\n")).
+            collect(Collectors.toList());
+
+        // Detailed view Function
+        PanelItem.ClickHandler clickHandler = (panel, user, clickType, slot) ->
+        {
+            LikesViewPanel.openPanel(this.addon, this.user, this.world, this.iconPermission, island);
+            return true;
+        };
+
+        PanelItemBuilder itemBuilder = new PanelItemBuilder().
+            name(nameText).
+            description(description).
+            amount(rank < 1 || rank > 64 ? 1 : rank).
+            clickHandler(clickHandler);
+
+        String permissionIcon = Utils.getPermissionValue(owner, this.iconPermission, null);
+
+        Material material;
+
+        if (permissionIcon != null && !permissionIcon.equals("*"))
+        {
+            material = Material.matchMaterial(permissionIcon);
+        }
+        else
+        {
+            material = null;
+        }
+
+        if (material == null &&
+            island.getMetaData() != null &&
+            island.getMetaData().containsKey(Constants.METADATA_ICON))
+        {
+            material = Material.matchMaterial(island.getMetaData(Constants.METADATA_ICON).asString());
+        }
+
+        if (material == null)
+        {
+            material = this.addon.getSettings().getDefaultIcon();
+        }
+
+        if (material == null || material.equals(Material.PLAYER_HEAD))
+        {
+            if (owner == null)
+            {
+                itemBuilder.icon(Material.PLAYER_HEAD);
+            }
+            else
+            {
+                itemBuilder.icon(owner.getName());
+            }
+        }
+        else
+        {
+            itemBuilder.icon(material);
+        }
+
+        // At last add item to the panel builder
+        panelBuilder.item(slotIndex, itemBuilder.build());
     }
 
 
@@ -422,6 +729,11 @@ public class TopLikesPanel
      * This list contains all currently displayed top players.
      */
     private final List<LikesObject> topPlayerList;
+
+    /**
+     * Stores decimal format object for two digit after separator.
+     */
+    private final DecimalFormat hundredsFormat;
 
 // ---------------------------------------------------------------------
 // Section: Instance Constants

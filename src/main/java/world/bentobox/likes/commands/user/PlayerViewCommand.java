@@ -54,8 +54,8 @@ public class PlayerViewCommand extends CompositeCommand
     {
         this.setPermission("likes.view");
         this.setOnlyPlayer(true);
-        this.setParametersHelp(Constants.COMMANDS + "view.parameters");
-        this.setDescription(Constants.COMMANDS + "view.description");
+        this.setParametersHelp(Constants.PLAYER_COMMANDS + "view.parameters");
+        this.setDescription(Constants.PLAYER_COMMANDS + "view.description");
     }
 
 
@@ -76,7 +76,8 @@ public class PlayerViewCommand extends CompositeCommand
     {
         if (!args.isEmpty() && !user.hasPermission(this.getPermission() + "others"))
         {
-            user.sendMessage("general.errors.no-permission", "[permission]", this.getPermission() + "others");
+            user.sendMessage("general.errors.no-permission",
+                Constants.PARAMETER_PERMISSION, this.getPermission() + "others");
             return false;
         }
 

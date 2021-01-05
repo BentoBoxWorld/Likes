@@ -11,6 +11,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.eclipse.jdt.annotation.NonNull;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -25,6 +27,7 @@ import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.database.objects.LikesObject;
 import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.utils.Constants;
+import world.bentobox.likes.utils.Utils;
 import world.bentobox.likes.utils.collections.IndexedTreeSet;
 
 
@@ -96,9 +99,10 @@ public class LikesViewPanel
                     break;
                 case LIKES_DISLIKES:
                     this.likeRank = initialSearchSet.entryIndex(likesObject) + 1L;
-                    this.dislikeRank =
-                        this.addon.getAddonManager().getSortedDislikes(world).entryIndex(likesObject) + 1L;
-                    this.overallRank = this.addon.getAddonManager().getSortedRank(world).entryIndex(likesObject) + 1L;
+                    this.dislikeRank = this.addon.getAddonManager().
+                        getSortedDislikes(world).entryIndex(likesObject) + 1L;
+                    this.overallRank = this.addon.getAddonManager().
+                        getSortedRank(world).entryIndex(likesObject) + 1L;
                     break;
                 case STARS:
                     this.likeRank = initialSearchSet.entryIndex(likesObject) + 1L;
@@ -111,24 +115,32 @@ public class LikesViewPanel
             this.dislikeRank = -1;
             this.overallRank = -1;
         }
+
+        this.hundredsFormat = (DecimalFormat) NumberFormat.getNumberInstance(this.user.getLocale());
+        this.hundredsFormat.applyPattern("###.##");
     }
 
 
     private void build()
     {
         PanelBuilder panelBuilder = new PanelBuilder().
-            name(this.user.getTranslation(Constants.TITLE + "view")).
             user(this.user);
 
         switch (this.addon.getSettings().getMode())
         {
             case LIKES:
+                panelBuilder.name(this.user.getTranslation(Constants.TITLES + "view",
+                    Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes")));
                 this.buildLikesPanel(panelBuilder);
                 break;
             case LIKES_DISLIKES:
+                panelBuilder.name(this.user.getTranslation(Constants.TITLES + "view",
+                    Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes")));
                 this.buildLikesDislikesPanel(panelBuilder);
                 break;
             case STARS:
+                panelBuilder.name(this.user.getTranslation(Constants.TITLES + "view",
+                    Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "stars")));
                 this.buildStarsPanel(panelBuilder);
                 break;
         }
@@ -156,6 +168,8 @@ public class LikesViewPanel
         panelBuilder.item(11, this.createButton(Button.LIKE_RANK));
 
         this.populateLikers(panelBuilder);
+
+        panelBuilder.item(35, this.createButton(Action.RETURN, true));
     }
 
 
@@ -180,6 +194,8 @@ public class LikesViewPanel
         panelBuilder.item(29, this.createButton(Button.DISLIKE_RANK));
 
         this.populateDislikers(panelBuilder);
+
+        panelBuilder.item(53, this.createButton(Action.RETURN, true));
     }
 
 
@@ -196,6 +212,8 @@ public class LikesViewPanel
         panelBuilder.item(11, this.createButton(Button.STARS_RANK));
 
         this.populateStars(panelBuilder);
+
+        panelBuilder.item(35, this.createButton(Action.RETURN, true));
     }
 
 
@@ -208,222 +226,200 @@ public class LikesViewPanel
     private PanelItem createButton(Button button)
     {
         ItemStack icon;
-        String name;
-        List<String> description;
-        PanelItem.ClickHandler clickHandler;
+        final String reference = Constants.BUTTONS + button.name().toLowerCase();
+        String name = this.user.getTranslation(reference + ".name");
+
+        List<String> description = new ArrayList<>(4);
+        description.add(this.user.getTranslationOrNothing(reference + ".description"));
 
         switch (button)
         {
             case LIKE:
             {
                 icon = new ItemStack(Material.GOLD_INGOT);
-                name = this.user.getTranslation(Constants.BUTTON + "like");
-
-                description = new ArrayList<>(2);
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "like"));
-                description
-                    .add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                        "[value]",
-                        this.likesObject.getLikes() + ""));
-
-                clickHandler = null;
-
+                description.add(this.user.getTranslation(reference + ".likes",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getLikes())));
                 break;
             }
             case LIKE_RANK:
             {
                 icon = new ItemStack(Material.GOLD_BLOCK);
-                name = this.user.getTranslation(Constants.BUTTON + "like-rank");
 
-                description = new ArrayList<>(2);
-                description
-                    .add(this.user.getTranslation(Constants.DESCRIPTION + "like-rank"));
-                description
-                    .add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                        "[value]",
-                        this.likeRank + ""));
-
-                clickHandler = null;
+                if (this.likesObject.getLikes() == 0 && this.likesObject.getDislikes() == 0)
+                {
+                    description.add(this.user.getTranslation(reference + ".not-ranked"));
+                }
+                else
+                {
+                    description.add(this.user.getTranslation(reference + ".rank",
+                        Constants.PARAMETER_NUMBER, String.valueOf(this.likeRank)));
+                }
 
                 break;
             }
             case DISLIKE:
             {
                 icon = new ItemStack(Material.IRON_INGOT);
-                name = this.user.getTranslation(Constants.BUTTON + "dislike");
-
-                description = new ArrayList<>(2);
-                description
-                    .add(this.user.getTranslation(Constants.DESCRIPTION + "dislike"));
-                description
-                    .add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                        "[value]",
-                        this.likesObject.getDislikes() + ""));
-
-                clickHandler = null;
-
+                description.add(this.user.getTranslation(reference + ".dislikes",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getDislikes())));
                 break;
             }
             case DISLIKE_RANK:
             {
                 icon = new ItemStack(Material.IRON_BLOCK);
-                name = this.user.getTranslation(Constants.BUTTON + "dislike-rank");
 
-                description = new ArrayList<>(2);
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike-rank"));
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                    "[value]",
-                    this.dislikeRank + ""));
-
-                clickHandler = null;
-
+                if (this.likesObject.getLikes() == 0 && this.likesObject.getDislikes() == 0)
+                {
+                    description.add(this.user.getTranslation(reference + ".not-ranked"));
+                }
+                else
+                {
+                    description.add(this.user.getTranslation(reference + ".rank",
+                        Constants.PARAMETER_NUMBER, String.valueOf(this.dislikeRank)));
+                }
                 break;
             }
             case OVERALL:
             {
                 icon = new ItemStack(Material.DIAMOND);
-                name = this.user.getTranslation(Constants.BUTTON + "overall");
-
-                description = new ArrayList<>(2);
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "overall"));
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                    "[value]",
-                    this.likesObject.getRank() + ""));
-
-                clickHandler = null;
-
+                description.add(this.user.getTranslation(reference + ".value",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getRank())));
                 break;
             }
             case OVERALL_RANK:
             {
                 icon = new ItemStack(Material.DIAMOND_BLOCK);
-                name = this.user.getTranslation(Constants.BUTTON + "overall-rank");
 
-                description = new ArrayList<>(2);
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "overall-rank"));
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                    "[value]",
-                    this.overallRank + ""));
-
-                clickHandler = null;
-
+                if (this.likesObject.getLikes() == 0 && this.likesObject.getDislikes() == 0)
+                {
+                    description.add(this.user.getTranslation(reference + ".not-ranked"));
+                }
+                else
+                {
+                    description.add(this.user.getTranslation(reference + ".rank",
+                        Constants.PARAMETER_NUMBER, String.valueOf(this.overallRank)));
+                }
                 break;
             }
             case STARS:
             {
                 icon = new ItemStack(Material.NETHER_STAR);
-                name = this.user.getTranslation(Constants.BUTTON + "stars");
-
-                description = new ArrayList<>(2);
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "stars"));
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                    "[value]",
-                    this.likesObject.getStarsValue() + ""));
-
-                clickHandler = null;
-
+                description.add(this.user.getTranslation(reference + ".stars",
+                    Constants.PARAMETER_NUMBER, this.hundredsFormat.format(this.likesObject.getStarsValue())));
                 break;
             }
             case STARS_RANK:
             {
                 icon = new ItemStack(Material.BEACON);
-                name = this.user.getTranslation(Constants.BUTTON + "stars-rank");
 
-                description = new ArrayList<>(2);
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "stars-rank"));
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "current-value",
-                    "[value]",
-                    this.likeRank + ""));
-
-                clickHandler = null;
+                if (this.likesObject.getStars() == 0)
+                {
+                    description.add(this.user.getTranslation(reference + ".not-ranked"));
+                }
+                else
+                {
+                    description.add(this.user.getTranslation(reference + ".rank",
+                        Constants.PARAMETER_NUMBER, String.valueOf(this.likeRank)));
+                }
 
                 break;
             }
-            case NEXT_LIKE:
-            {
-                icon = new ItemStack(Material.OAK_SIGN);
-                name = this.user.getTranslation(Constants.BUTTON + "next");
-                description = new ArrayList<>(1);
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "like-next"));
+            default:
+                return null;
+        }
 
-                clickHandler = (panel, user, clickType, slot) -> {
-                    this.likeOffset++;
+        return new PanelItemBuilder().
+            icon(icon).
+            name(name).
+            description(description).
+            glow(false).
+            build();
+    }
+
+
+    /**
+     * This method creates PanelItem button based on given action type.
+     *
+     * @param button Action that must be created.
+     * @param byLike Indicates if likes/dislikes number must be adjusted
+     * @return PanelItem object that represents given action.
+     */
+    private PanelItem createButton(Action button, boolean byLike)
+    {
+        ItemStack icon;
+        PanelItem.ClickHandler clickHandler;
+
+        final String reference = Constants.BUTTONS + button.name().toLowerCase();
+        String name = this.user.getTranslation(reference + ".name");
+
+        List<String> description = new ArrayList<>(3);
+        int count;
+
+        switch (button)
+        {
+            case NEXT:
+            {
+                count = byLike ? this.likeOffset + 2 : this.dislikeOffset + 2;
+
+                icon = new ItemStack(Material.TIPPED_ARROW);
+                description.add(this.user.getTranslationOrNothing(reference + ".description",
+                    Constants.PARAMETER_NUMBER, String.valueOf(count)));
+                description.add("");
+                description.add(this.user.getTranslation(Constants.TIPS + "click-to-next"));
+
+                clickHandler = (panel, user, clickType, slot) ->
+                {
+                    if (byLike)
+                    {
+                        this.likeOffset++;
+                    }
+                    else
+                    {
+                        this.dislikeOffset++;
+                    }
                     this.build();
                     return true;
                 };
 
                 break;
             }
-            case PREVIOUS_LIKE:
+            case PREVIOUS:
             {
-                icon = new ItemStack(Material.OAK_SIGN);
-                name = this.user.getTranslation(Constants.BUTTON + "previous");
-                description = new ArrayList<>(1);
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "like-previous"));
+                count = byLike ? this.likeOffset : this.dislikeOffset;
 
-                clickHandler = (panel, user, clickType, slot) -> {
-                    this.likeOffset--;
+                icon = new ItemStack(Material.TIPPED_ARROW);
+                description.add(this.user.getTranslationOrNothing(reference + ".description",
+                    Constants.PARAMETER_NUMBER, String.valueOf(count)));
+                description.add("");
+                description.add(this.user.getTranslation(Constants.TIPS + "click-to-previous"));
+
+                clickHandler = (panel, user, clickType, slot) ->
+                {
+                    if (byLike)
+                    {
+                        this.likeOffset--;
+                    }
+                    else
+                    {
+                        this.dislikeOffset--;
+                    }
+
                     this.build();
                     return true;
                 };
 
                 break;
             }
-            case NEXT_DISLIKE:
+            case RETURN:
             {
-                icon = new ItemStack(Material.OAK_SIGN);
-                name = this.user.getTranslation(Constants.BUTTON + "next");
-                description = new ArrayList<>(1);
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike-next"));
+                count = 1;
+
+                icon = new ItemStack(Material.OAK_DOOR);
+                description.add("");
+                description.add(this.user.getTranslation(Constants.TIPS + "click-to-quit"));
 
                 clickHandler = (panel, user, clickType, slot) -> {
-                    this.dislikeOffset++;
-                    this.build();
-                    return true;
-                };
-
-                break;
-            }
-            case PREVIOUS_DISLIKE:
-            {
-                icon = new ItemStack(Material.OAK_SIGN);
-                name = this.user.getTranslation(Constants.BUTTON + "previous");
-                description = new ArrayList<>(1);
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "dislike-previous"));
-
-                clickHandler = (panel, user, clickType, slot) -> {
-                    this.dislikeOffset--;
-                    this.build();
-                    return true;
-                };
-
-                break;
-            }
-            case NEXT_STARS:
-            {
-                icon = new ItemStack(Material.OAK_SIGN);
-                name = this.user.getTranslation(Constants.BUTTON + "next");
-                description = new ArrayList<>(1);
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "stars-next"));
-
-                clickHandler = (panel, user, clickType, slot) -> {
-                    this.likeOffset++;
-                    this.build();
-                    return true;
-                };
-
-                break;
-            }
-            case PREVIOUS_STARS:
-            {
-                icon = new ItemStack(Material.OAK_SIGN);
-                name = this.user.getTranslation(Constants.BUTTON + "previous");
-                description = new ArrayList<>(1);
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "stars-previous"));
-
-                clickHandler = (panel, user, clickType, slot) -> {
-                    this.likeOffset--;
-                    this.build();
+                    user.closeInventory();
                     return true;
                 };
 
@@ -436,8 +432,8 @@ public class LikesViewPanel
         return new PanelItemBuilder().
             icon(icon).
             name(name).
-            description(GuiUtils.stringSplit(description, 999)).
-            glow(false).
+            description(description).
+            amount(count).
             clickHandler(clickHandler).
             build();
     }
@@ -452,12 +448,12 @@ public class LikesViewPanel
     {
         if (this.likeOffset > 0)
         {
-            panelBuilder.item(18, this.createButton(Button.PREVIOUS_LIKE));
+            panelBuilder.item(18, this.createButton(Action.PREVIOUS, true));
         }
 
         if ((this.likeOffset + 1) * 7 < this.likesObject.getLikes())
         {
-            panelBuilder.item(26, this.createButton(Button.NEXT_LIKE));
+            panelBuilder.item(26, this.createButton(Action.NEXT, true));
         }
 
         final int startIndex = this.likeOffset * 7;
@@ -465,11 +461,7 @@ public class LikesViewPanel
         for (int index = 0; index < 7 && startIndex + index < this.likesObject.getLikes(); index++)
         {
             String userName = this.likedByUsers.get(startIndex + index);
-
-            panelBuilder.item(19 + index, new PanelItemBuilder().
-                icon(userName).
-                glow(false).
-                build());
+            panelBuilder.item(19 + index, this.createUserButton(userName));
         }
     }
 
@@ -483,12 +475,12 @@ public class LikesViewPanel
     {
         if (this.dislikeOffset > 0)
         {
-            panelBuilder.item(36, this.createButton(Button.PREVIOUS_DISLIKE));
+            panelBuilder.item(36, this.createButton(Action.PREVIOUS, false));
         }
 
         if ((this.dislikeOffset + 1) * 7 < this.likesObject.getDislikes())
         {
-            panelBuilder.item(44, this.createButton(Button.NEXT_DISLIKE));
+            panelBuilder.item(44, this.createButton(Action.NEXT, false));
         }
 
         final int startIndex = this.dislikeOffset * 7;
@@ -497,10 +489,7 @@ public class LikesViewPanel
         {
             String userName = this.dislikedByUsers.get(startIndex + index);
 
-            panelBuilder.item(37 + index, new PanelItemBuilder().
-                icon(userName).
-                glow(false).
-                build());
+            panelBuilder.item(37 + index, this.createUserButton(userName));
         }
     }
 
@@ -514,12 +503,12 @@ public class LikesViewPanel
     {
         if (this.likeOffset > 0)
         {
-            panelBuilder.item(18, this.createButton(Button.PREVIOUS_STARS));
+            panelBuilder.item(18, this.createButton(Action.PREVIOUS, true));
         }
 
         if ((this.likeOffset + 1) * 7 < this.likesObject.numberOfStars())
         {
-            panelBuilder.item(26, this.createButton(Button.NEXT_STARS));
+            panelBuilder.item(26, this.createButton(Action.NEXT, true));
         }
 
         final int startIndex = this.likeOffset * 7;
@@ -530,15 +519,37 @@ public class LikesViewPanel
         {
             String userName = this.likedByUsers.get(startIndex + index);
 
-            PanelItem panelItem = new PanelItemBuilder().
-                icon(userName).
-                glow(false).
-                build();
-            panelItem.getItem().setAmount(this.likesObject.getStarredBy().get(
-                this.addon.getPlayers().getUUID(userName)));
-
-            panelBuilder.item(19 + index, panelItem);
+            panelBuilder.item(19 + index,
+                this.createUserButton(userName,
+                    this.likesObject.getStarredBy().get(this.addon.getPlayers().getUUID(userName))));
         }
+    }
+
+
+    /**
+     * This method creates User Button.
+     * @param userName Username who button must be created.
+     * @return instance PanelItem
+     */
+    private PanelItem createUserButton(String userName)
+    {
+        return this.createUserButton(userName, 1);
+    }
+
+
+    /**
+     * This method creates User Button.
+     * @param userName Username who button must be created.
+     * @param amount ItemStack amount.
+     * @return instance PanelItem
+     */
+    private PanelItem createUserButton(String userName, int amount)
+    {
+        return new PanelItemBuilder().
+            icon(userName).
+            amount(amount).
+            name(this.user.getTranslation(Constants.BUTTONS + "user.name", Constants.PARAMETER_NAME, userName)).
+            build();
     }
 
 
@@ -564,11 +575,13 @@ public class LikesViewPanel
         {
             if (island.getMemberSet().contains(user.getUniqueId()))
             {
-                user.sendMessage(user.getTranslation(Constants.MESSAGE + "no-data-about-your-island"));
+                Utils.sendMessage(user,
+                    user.getTranslation(Constants.CONVERSATIONS + "no-data-about-your-island"));
             }
             else
             {
-                user.sendMessage(user.getTranslation(Constants.MESSAGE + "no-data-about-island"));
+                Utils.sendMessage(user,
+                    user.getTranslation(Constants.CONVERSATIONS + "no-data-about-island"));
             }
 
             // Do not open gui if there is no data.
@@ -597,15 +610,17 @@ public class LikesViewPanel
         OVERALL_RANK,
         STARS,
         STARS_RANK,
+    }
 
-        NEXT_LIKE,
-        PREVIOUS_LIKE,
 
-        NEXT_DISLIKE,
-        PREVIOUS_DISLIKE,
-
-        NEXT_STARS,
-        PREVIOUS_STARS
+    /**
+     * This enum holds action buttons in GUI.
+     */
+    private enum Action
+    {
+        NEXT,
+        PREVIOUS,
+        RETURN,
     }
 
 
@@ -662,4 +677,9 @@ public class LikesViewPanel
      * This variable holds island rank by rank.
      */
     private long overallRank;
+
+    /**
+     * Stores decimal format object for two digit after separator.
+     */
+    private final DecimalFormat hundredsFormat;
 }

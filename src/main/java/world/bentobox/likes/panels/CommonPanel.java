@@ -11,6 +11,11 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.eclipse.jdt.annotation.NonNull;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
@@ -66,18 +71,37 @@ public abstract class CommonPanel
         this.permissionPrefix = permissionPrefix;
         this.parent = parent;
 
-        this.returnButton = new PanelItemBuilder().
-            name(this.user.getTranslation(Constants.BUTTON + "return")).
-            icon(Material.OAK_DOOR).
-            clickHandler((panel, user1, clickType, i) -> {
+        List<String> description = new ArrayList<>();
+        description.add(this.user.getTranslation(Constants.BUTTONS + "return.description"));
+        description.add("");
 
+        if (this.parent != null)
+        {
+            description.add(this.user.getTranslation(Constants.TIPS + "click-to-return"));
+        }
+        else
+        {
+            description.add(this.user.getTranslation(Constants.TIPS + "click-to-quit"));
+        }
+
+        this.hundredsFormat = (DecimalFormat) NumberFormat.getNumberInstance(this.user.getLocale());
+        this.hundredsFormat.applyPattern("###.##");
+
+        this.returnButton = new PanelItemBuilder().
+            name(this.user.getTranslation(Constants.BUTTONS + "return.name")).
+            description(description).
+            icon(Material.OAK_DOOR).
+            clickHandler((panel, user1, clickType, i) ->
+            {
                 if (this.parent == null)
                 {
                     this.user.closeInventory();
-                    return true;
+                }
+                else
+                {
+                    this.parent.build();
                 }
 
-                this.parent.build();
                 return true;
             }).build();
     }
@@ -144,4 +168,9 @@ public abstract class CommonPanel
      * Variable stores return button to avoid creating it in every panel.
      */
     protected final PanelItem returnButton;
+
+    /**
+     * Stores decimal format object for two digit after separator.
+     */
+    protected final DecimalFormat hundredsFormat;
 }

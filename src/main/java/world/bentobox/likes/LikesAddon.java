@@ -202,12 +202,19 @@ public class LikesAddon extends Addon
         // onDisable we would like to save exisitng settings. It is not necessary for
         // addons that does not have interface for settings editing!
 
+        this.manager.save();
+    }
+
+
+    /**
+     * This method saves settings file from memory.
+     */
+    public void saveSettings()
+    {
         if (this.settings != null)
         {
             new Config<>(this, Settings.class).saveConfigObject(this.settings);
         }
-
-        this.manager.save();
     }
 
 

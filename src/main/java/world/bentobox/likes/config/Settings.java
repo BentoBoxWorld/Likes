@@ -34,9 +34,9 @@ import world.bentobox.bentobox.api.configuration.StoreAt;
 @ConfigComment("")
 public class Settings implements ConfigObject
 {
-    // ---------------------------------------------------------------------
-    // Section: Getters and Setters
-    // ---------------------------------------------------------------------
+// ---------------------------------------------------------------------
+// Section: Getters and Setters
+// ---------------------------------------------------------------------
 
 
     /**
@@ -259,9 +259,9 @@ public class Settings implements ConfigObject
     }
 
 
-    // ---------------------------------------------------------------------
-    // Section: Variables
-    // ---------------------------------------------------------------------
+// ---------------------------------------------------------------------
+// Section: Enums
+// ---------------------------------------------------------------------
 
 
     /**
@@ -323,6 +323,11 @@ public class Settings implements ConfigObject
         }
     }
 
+
+// ---------------------------------------------------------------------
+// Section: Variables
+// ---------------------------------------------------------------------
+
     @ConfigComment("")
     @ConfigComment("Default icon for Top Island panel.")
     @ConfigComment("Should be valid Material")
@@ -367,11 +372,6 @@ public class Settings implements ConfigObject
     @ConfigComment("Allows reset likes and dislikes after resetting island.")
     @ConfigEntry(path = "reset-on-reset")
     private boolean resetLikes;
-
-
-    // ---------------------------------------------------------------------
-    // Section: Enums
-    // ---------------------------------------------------------------------
 
     @ConfigComment("")
     @ConfigComment("Allows to store history data about added and removed likes and dislikes.")

@@ -48,8 +48,8 @@ public class AdminCommand extends CompositeCommand
     public void setup()
     {
         this.setPermission("likes.admin");
-        this.setParametersHelp(Constants.COMMANDS + "admin.help.parameters");
-        this.setDescription(Constants.COMMANDS + "admin.help.description");
+        this.setParametersHelp(Constants.ADMIN_COMMANDS + "main.parameters");
+        this.setDescription(Constants.ADMIN_COMMANDS + "main.description");
         this.setOnlyPlayer(true);
 
         new PlayerViewCommand(this.getAddon(), this);

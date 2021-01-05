@@ -12,7 +12,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import world.bentobox.bentobox.api.events.island.IslandCreatedEvent;
+import world.bentobox.bentobox.api.events.island.IslandDeletedEvent;
 import world.bentobox.bentobox.api.events.island.IslandResettedEvent;
+import world.bentobox.bentobox.api.events.island.IslandUnregisteredEvent;
 import world.bentobox.likes.LikesAddon;
 
 
@@ -60,6 +62,35 @@ public class ResetListener implements Listener
                 event.getIsland().getUniqueId(),
                 event.getIsland().getWorld());
         }
+    }
+
+
+    /**
+     * This method handles Island Unregister event.
+     *
+     * @param event Event that must be handled.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onIslandUnregister(IslandUnregisteredEvent event)
+    {
+        if (this.addon.getSettings().isResetLikes())
+        {
+            this.addon.getAddonManager().resetLikes(event.getPlayerUUID(),
+                event.getIsland().getUniqueId(),
+                event.getIsland().getWorld());
+        }
+    }
+
+
+    /**
+     * This method handles Island Deletion
+     *
+     * @param event Event that must be handled.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onIslandDelete(IslandDeletedEvent event)
+    {
+        this.addon.getAddonManager().removeObject(event.getIsland().getUniqueId());
     }
 
 

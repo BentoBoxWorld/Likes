@@ -7,14 +7,21 @@
 package world.bentobox.likes.utils;
 
 
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.util.Util;
 
 
 public class Utils
@@ -146,5 +153,222 @@ public class Utils
         }
 
         return currentValue;
+    }
+
+
+// ---------------------------------------------------------------------
+// Section: Input sanitization
+// ---------------------------------------------------------------------
+
+
+    /**
+     * Sanitizes the provided input. It replaces spaces and hyphens with underscores and lower cases the input.
+     *
+     * @param input input to sanitize
+     * @return sanitized input
+     */
+    public static String sanitizeInput(String input)
+    {
+        return input.toLowerCase(Locale.ENGLISH).replace(" ", "_").replace("-", "_");
+    }
+
+
+    /**
+     * This method prettify given Biome name to more friendly name.
+     *
+     * @param user User which translation set will be used.
+     * @param biome Biome that requires prettifying.
+     * @return Clean and readable biome name.
+     */
+    public static String prettifyObject(User user, Biome biome)
+    {
+        // Find addon structure with:
+        // [addon]:
+        //   biomes:
+        //     [biome]:
+        //       name: [name]
+        String translation = user.getTranslationOrNothing(Constants.BIOMES + biome.name().toLowerCase() + ".name");
+
+        if (!translation.isEmpty())
+        {
+            // We found our translation.
+            return translation;
+        }
+
+        // Find addon structure with:
+        // [addon]:
+        //   biomes:
+        //     [biome]: [name]
+
+        translation = user.getTranslationOrNothing(Constants.BIOMES + biome.name().toLowerCase());
+
+        if (!translation.isEmpty())
+        {
+            // We found our translation.
+            return translation;
+        }
+
+        // Find general structure with:
+        // biomes:
+        //   [biome]: [name]
+
+        translation = user.getTranslationOrNothing("biomes." + biome.name().toLowerCase());
+
+        if (!translation.isEmpty())
+        {
+            // We found our translation.
+            return translation;
+        }
+
+        // Nothing was found. Use just a prettify text function.
+        return Util.prettifyText(biome.name());
+    }
+
+
+    /**
+     * This method prettify given material name to more friendly name.
+     *
+     * @param user User which translation set will be used.
+     * @param material material that requires prettifying.
+     * @return Clean and readable material name.
+     */
+    public static String prettifyObject(User user, Material material)
+    {
+        // Find addon structure with:
+        // [addon]:
+        //   materials:
+        //     [material]:
+        //       name: [name]
+        String translation =
+            user.getTranslationOrNothing(Constants.MATERIALS + material.name().toLowerCase() + ".name");
+
+        if (!translation.isEmpty())
+        {
+            // We found our translation.
+            return translation;
+        }
+
+        // Find addon structure with:
+        // [addon]:
+        //   materials:
+        //     [material]: [name]
+
+        translation = user.getTranslationOrNothing(Constants.MATERIALS + material.name().toLowerCase());
+
+        if (!translation.isEmpty())
+        {
+            // We found our translation.
+            return translation;
+        }
+
+        // Find general structure with:
+        // biomes:
+        //   [material]: [name]
+
+        translation = user.getTranslationOrNothing("materials." + material.name().toLowerCase());
+
+        if (!translation.isEmpty())
+        {
+            // We found our translation.
+            return translation;
+        }
+
+        // Nothing was found. Use just a prettify text function.
+        return Util.prettifyText(material.name());
+    }
+
+
+    /**
+     * This method prettify given itemStack name to more friendly name.
+     *
+     * @param user User which translation set will be used.
+     * @param itemStack material that requires prettifying.
+     * @return Clean and readable material name.
+     */
+    public static String prettifyObject(User user, ItemStack itemStack)
+    {
+        if (itemStack.hasItemMeta() && itemStack.getItemMeta() != null)
+        {
+            // If item has a valid display name, return it.
+
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            return itemMeta.getDisplayName().isEmpty() ?
+                Utils.prettifyObject(user, itemStack.getType()) :
+                itemMeta.getDisplayName();
+        }
+        else
+        {
+            // Otherwise return material object name:
+            return Utils.prettifyObject(user, itemStack.getType());
+        }
+    }
+
+
+    /**
+     * This method prettify given entity name to more friendly name.
+     *
+     * @param user User which translation set will be used.
+     * @param entity entity that requires prettifying.
+     * @return Clean and readable entity name.
+     */
+    public static String prettifyObject(User user, EntityType entity)
+    {
+        // Find addon structure with:
+        // [addon]:
+        //   biomes:
+        //     [entity]:
+        //       name: [name]
+        String translation = user.getTranslationOrNothing(Constants.ENTITIES + entity.name().toLowerCase() + ".name");
+
+        if (!translation.isEmpty())
+        {
+            // We found our translation.
+            return translation;
+        }
+
+        // Find addon structure with:
+        // [addon]:
+        //   biomes:
+        //     [entity]: [name]
+
+        translation = user.getTranslationOrNothing(Constants.ENTITIES + entity.name().toLowerCase());
+
+        if (!translation.isEmpty())
+        {
+            // We found our translation.
+            return translation;
+        }
+
+        // Find general structure with:
+        // biomes:
+        //   [entity]: [name]
+
+        translation = user.getTranslationOrNothing("entities." + entity.name().toLowerCase());
+
+        if (!translation.isEmpty())
+        {
+            // We found our translation.
+            return translation;
+        }
+
+        // Nothing was found. Use just a prettify text function.
+        return Util.prettifyText(entity.name());
+    }
+
+
+// ---------------------------------------------------------------------
+// Section: Messaging
+// ---------------------------------------------------------------------
+
+
+    /**
+     * Send given message to user and add prefix to the start of the message.
+     *
+     * @param user User who need to receive message.
+     * @param message String of message that must be send.
+     */
+    public static void sendMessage(User user, String message)
+    {
+        user.sendMessage(user.getTranslation(Constants.CONVERSATIONS + "prefix") + message);
     }
 }

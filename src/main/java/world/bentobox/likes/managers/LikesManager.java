@@ -332,7 +332,8 @@ public class LikesManager
             String name = island.getName() == null || island.getName().isEmpty() ?
                 this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
-            user.sendMessage(user.getTranslation(Constants.MESSAGE + "add-like", "[island]", name));
+            Utils.sendMessage(user,
+                user.getTranslation(Constants.CONVERSATIONS + "add-like", Constants.PARAMETER_NAME, name));
 
             // Send message to users
             if (this.addon.getSettings().isInformPlayers())
@@ -340,10 +341,9 @@ public class LikesManager
                 island.getMemberSet().stream().
                     map(User::getInstance).
                     filter(User::isOnline).
-                    forEach(member -> member.sendMessage(
-                        member.getTranslation(Constants.MESSAGE + "player-add-like",
-                            "[user]",
-                            user.getName())));
+                    forEach(member -> Utils.sendMessage(member,
+                        member.getTranslation(Constants.CONVERSATIONS + "player-add-like",
+                            Constants.PARAMETER_NAME, user.getName())));
             }
 
             // Fire event
@@ -379,7 +379,8 @@ public class LikesManager
             String name = island.getName() == null || island.getName().isEmpty() ?
                 this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
-            user.sendMessage(user.getTranslation(Constants.MESSAGE + "remove-like", "[island]", name));
+            Utils.sendMessage(user,
+                user.getTranslation(Constants.CONVERSATIONS + "remove-like", Constants.PARAMETER_NAME, name));
 
             // Send message to users
             if (this.addon.getSettings().isInformPlayers())
@@ -387,10 +388,9 @@ public class LikesManager
                 island.getMemberSet().stream().
                     map(User::getInstance).
                     filter(User::isOnline).
-                    forEach(member -> member.sendMessage(
-                        member.getTranslation(Constants.MESSAGE + "player-remove-like",
-                            "[user]",
-                            user.getName())));
+                    forEach(member -> Utils.sendMessage(member,
+                        member.getTranslation(Constants.CONVERSATIONS + "player-remove-like",
+                            Constants.PARAMETER_NAME, user.getName())));
             }
 
             // Fire event
@@ -439,7 +439,8 @@ public class LikesManager
             String name = island.getName() == null || island.getName().isEmpty() ?
                 this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
-            user.sendMessage(user.getTranslation(Constants.MESSAGE + "add-dislike", "[island]", name));
+            Utils.sendMessage(user,
+                user.getTranslation(Constants.CONVERSATIONS + "add-dislike", Constants.PARAMETER_NAME, name));
 
             // Send message to users
             if (this.addon.getSettings().isInformPlayers())
@@ -447,10 +448,9 @@ public class LikesManager
                 island.getMemberSet().stream().
                     map(User::getInstance).
                     filter(User::isOnline).
-                    forEach(member -> member.sendMessage(
-                        member.getTranslation(Constants.MESSAGE + "player-add-dislike",
-                            "[user]",
-                            user.getName())));
+                    forEach(member -> Utils.sendMessage(member,
+                        member.getTranslation(Constants.CONVERSATIONS + "player-add-dislike",
+                            Constants.PARAMETER_NAME, user.getName())));
             }
 
             // Fire event
@@ -486,7 +486,8 @@ public class LikesManager
             String name = island.getName() == null || island.getName().isEmpty() ?
                 this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
-            user.sendMessage(user.getTranslation(Constants.MESSAGE + "remove-dislike", "[island]", name));
+            Utils.sendMessage(user,
+                user.getTranslation(Constants.CONVERSATIONS + "remove-dislike", Constants.PARAMETER_NAME, name));
 
             // Send message to users
             if (this.addon.getSettings().isInformPlayers())
@@ -494,10 +495,9 @@ public class LikesManager
                 island.getMemberSet().stream().
                     map(User::getInstance).
                     filter(User::isOnline).
-                    forEach(member -> member.sendMessage(
-                        member.getTranslation(Constants.MESSAGE + "player-remove-dislike",
-                            "[user]",
-                            user.getName())));
+                    forEach(member -> Utils.sendMessage(member,
+                        member.getTranslation(Constants.CONVERSATIONS + "player-remove-dislike",
+                            Constants.PARAMETER_NAME, user.getName())));
             }
 
             // Fire event
@@ -548,9 +548,10 @@ public class LikesManager
             String name = island.getName() == null || island.getName().isEmpty() ?
                 this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
-            user.sendMessage(user.getTranslation(Constants.MESSAGE + "add-stars",
-                "[island]", name,
-                "[stars]", Integer.toString(value)));
+            Utils.sendMessage(user,
+                user.getTranslation(Constants.CONVERSATIONS + "add-stars",
+                Constants.PARAMETER_NAME, name,
+                Constants.PARAMETER_NUMBER, String.valueOf(value)));
 
             // Send message to users
             if (this.addon.getSettings().isInformPlayers())
@@ -558,10 +559,10 @@ public class LikesManager
                 island.getMemberSet().stream().
                     map(User::getInstance).
                     filter(User::isOnline).
-                    forEach(member -> member.sendMessage(
-                        member.getTranslation(Constants.MESSAGE + "player-add-stars",
-                            "[user]", user.getName(),
-                            "[stars]", Integer.toString(value))));
+                    forEach(member -> Utils.sendMessage(member,
+                        member.getTranslation(Constants.CONVERSATIONS + "player-add-stars",
+                            Constants.PARAMETER_NAME, user.getName(),
+                            Constants.PARAMETER_NUMBER, Integer.toString(value))));
             }
 
             // Fire event
@@ -597,7 +598,8 @@ public class LikesManager
             String name = island.getName() == null || island.getName().isEmpty() ?
                 this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
-            user.sendMessage(user.getTranslation(Constants.MESSAGE + "remove-stars", "[island]", name));
+            Utils.sendMessage(user,
+                user.getTranslation(Constants.CONVERSATIONS + "remove-stars", Constants.PARAMETER_NAME, name));
 
             // Send message to users
             if (this.addon.getSettings().isInformPlayers())
@@ -605,8 +607,9 @@ public class LikesManager
                 island.getMemberSet().stream().
                     map(User::getInstance).
                     filter(User::isOnline).
-                    forEach(member -> member.sendMessage(
-                        member.getTranslation(Constants.MESSAGE + "player-remove-stars", "[user]", user.getName())));
+                    forEach(member -> Utils.sendMessage(member,
+                        member.getTranslation(Constants.CONVERSATIONS + "player-remove-stars",
+                            Constants.PARAMETER_NAME, user.getName())));
             }
 
             // Fire event
@@ -669,6 +672,23 @@ public class LikesManager
     }
 
 
+    /**
+     * Remove object from database.
+     *
+     * @param islandId the island id
+     */
+    public void removeObject(String islandId)
+    {
+        LikesObject object = this.getExistingIslandLikes(islandId);
+
+        if (object != null)
+        {
+            this.likesCache.remove(islandId);
+            this.likesDatabase.deleteObject(object);
+        }
+    }
+
+
     // ---------------------------------------------------------------------
     // Section: Methods to get data
     // ---------------------------------------------------------------------
@@ -682,8 +702,10 @@ public class LikesManager
      */
     public List<LikesObject> getTopByLikes(World world)
     {
-        return this.getSortedLikes(world).stream().limit(10).filter(LikesObject::isNotEmpty)
-            .collect(Collectors.toList());
+        return this.getSortedLikes(world).stream().
+            filter(LikesObject::isNotEmpty).
+            limit(10).
+            collect(Collectors.toList());
     }
 
 
@@ -695,8 +717,10 @@ public class LikesManager
      */
     public List<LikesObject> getTopByDislikes(World world)
     {
-        return this.getSortedDislikes(world).stream().limit(10).filter(LikesObject::isNotEmpty)
-            .collect(Collectors.toList());
+        return this.getSortedDislikes(world).stream().
+            filter(LikesObject::isNotEmpty).
+            limit(10).
+            collect(Collectors.toList());
     }
 
 
@@ -708,8 +732,10 @@ public class LikesManager
      */
     public List<LikesObject> getTopByRank(World world)
     {
-        return this.getSortedRank(world).stream().limit(10).filter(LikesObject::isNotEmpty)
-            .collect(Collectors.toList());
+        return this.getSortedRank(world).stream().
+            filter(LikesObject::isNotEmpty).
+            limit(10).
+            collect(Collectors.toList());
     }
 
 
@@ -721,8 +747,10 @@ public class LikesManager
      */
     public List<LikesObject> getTopByStars(World world)
     {
-        return this.getSortedStars(world).stream().limit(10).filter(LikesObject::isNotEmpty)
-            .collect(Collectors.toList());
+        return this.getSortedStars(world).stream().
+            filter(LikesObject::isNotEmpty).
+            limit(10).
+            collect(Collectors.toList());
     }
 
 
@@ -831,6 +859,62 @@ public class LikesManager
             this.sortedStarsCache.containsKey(gameMode) ?
             this.sortedStarsCache.get(gameMode) :
             new IndexedTreeSet<>(Comparator.comparing(LikesObject::getStarsValue));
+    }
+
+
+    /**
+     * Gets island rank by likes.
+     *
+     * @param world the world
+     * @param likesObject the likes object
+     * @return the island rank by likes
+     */
+    public int getIslandRankByLikes(World world, LikesObject likesObject)
+    {
+        IndexedTreeSet<LikesObject> sorted = this.getSortedLikes(world);
+        return sorted.contains(likesObject) ? sorted.entryIndex(likesObject) : -1;
+    }
+
+
+    /**
+     * Gets island rank by dislikes.
+     *
+     * @param world the world
+     * @param likesObject the likes object
+     * @return the island rank by dislikes
+     */
+    public int getIslandRankByDislikes(World world, LikesObject likesObject)
+    {
+        IndexedTreeSet<LikesObject> sorted = this.getSortedDislikes(world);
+        return sorted.contains(likesObject) ? sorted.entryIndex(likesObject) : -1;
+    }
+
+
+    /**
+     * Gets island rank by rank.
+     *
+     * @param world the world
+     * @param likesObject the likes object
+     * @return the island rank by rank
+     */
+    public int getIslandRankByRank(World world, LikesObject likesObject)
+    {
+        IndexedTreeSet<LikesObject> sorted = this.getSortedRank(world);
+        return sorted.contains(likesObject) ? sorted.entryIndex(likesObject) : -1;
+    }
+
+
+    /**
+     * Gets island rank by stars.
+     *
+     * @param world the world
+     * @param likesObject the likes object
+     * @return the island rank by stars
+     */
+    public int getIslandRankByStars(World world, LikesObject likesObject)
+    {
+        IndexedTreeSet<LikesObject> sorted = this.getSortedStars(world);
+        return sorted.contains(likesObject) ? sorted.entryIndex(likesObject) : -1;
     }
 
 

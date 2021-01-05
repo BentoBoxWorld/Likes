@@ -22,8 +22,8 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.config.Settings;
 import world.bentobox.likes.panels.CommonPanel;
-import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.utils.Constants;
+import world.bentobox.likes.utils.Utils;
 
 
 /**
@@ -73,20 +73,27 @@ public class LikesManagePanel extends CommonPanel
     public void build()
     {
         PanelBuilder panelBuilder = new PanelBuilder().
-            name(this.user.getTranslation(Constants.TITLE + "manage")).
             type(Panel.Type.HOPPER).
             user(this.user);
 
         switch (this.settings.getMode())
         {
             case LIKES:
+                panelBuilder.name(this.user.getTranslation(Constants.TITLES + "manage",
+                    Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes")));
+
                 panelBuilder.item(2, this.createLikeButton());
                 break;
             case LIKES_DISLIKES:
+                panelBuilder.name(this.user.getTranslation(Constants.TITLES + "manage",
+                    Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes")));
+
                 panelBuilder.item(1, this.createLikeButton());
                 panelBuilder.item(3, this.createDislikeButton());
                 break;
             case STARS:
+                panelBuilder.name(this.user.getTranslation(Constants.TITLES + "manage",
+                    Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "stars")));
 
                 final int starCount = this.addon.getAddonManager().getStarred(
                     this.target.getUniqueId(),
@@ -122,30 +129,40 @@ public class LikesManagePanel extends CommonPanel
         final boolean hasLiked =
             this.addon.getAddonManager().hasLiked(this.target.getUniqueId(), this.island.getUniqueId(), this.world);
 
-        List<String> description = new ArrayList<>();
-
-        description.add(this.user.getTranslation(Constants.DESCRIPTION + "add-like"));
+        List<String> description = new ArrayList<>(4);
+        description.add(this.user.getTranslationOrNothing(Constants.BUTTONS + "add_like.description"));
 
         if (this.addon.isEconomyProvided())
         {
             if (hasLiked && this.settings.getLikeRemoveCost() > 0)
             {
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "cost",
-                    "[value]", this.settings.getLikeRemoveCost() + ""));
+                description.add(this.user.getTranslation(Constants.BUTTONS + "add_like.cost",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeRemoveCost())));
             }
             else if (!hasLiked && this.settings.getLikeAddCost() > 0)
             {
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "cost",
-                    "[value]", this.settings.getLikeAddCost() + ""));
+                description.add(this.user.getTranslation(Constants.BUTTONS + "add_like.cost",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeAddCost())));
             }
         }
 
-        return new PanelItemBuilder().
-            name(this.user.getTranslation(Constants.BUTTON + "add-like")).
-            icon(Material.GOLD_INGOT).
-            description(GuiUtils.stringSplit(description, 999)).
-            clickHandler((panel, user, clickType, slot) -> {
+        description.add("");
 
+        if (hasLiked)
+        {
+            description.add(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
+        }
+        else
+        {
+            description.add(this.user.getTranslation(Constants.TIPS + "click-to-add"));
+        }
+
+        return new PanelItemBuilder().
+            name(this.user.getTranslation(Constants.BUTTONS + "add_like.name")).
+            icon(Material.GOLD_INGOT).
+            description(description).
+            clickHandler((panel, user, clickType, slot) ->
+            {
                 if (hasLiked)
                 {
                     if (this.hasPaid(this.settings.getLikeRemoveCost()))
@@ -192,29 +209,40 @@ public class LikesManagePanel extends CommonPanel
         final boolean hasDisliked =
             this.addon.getAddonManager().hasDisliked(this.target.getUniqueId(), this.island.getUniqueId(), this.world);
 
-        List<String> description = new ArrayList<>();
-
-        description.add(this.user.getTranslation(Constants.DESCRIPTION + "add-dislike"));
+        List<String> description = new ArrayList<>(4);
+        description.add(this.user.getTranslationOrNothing(Constants.BUTTONS + "add_dislike.description"));
 
         if (this.addon.isEconomyProvided())
         {
             if (hasDisliked && this.settings.getDislikeRemoveCost() > 0)
             {
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "cost",
-                    "[value]", this.settings.getDislikeRemoveCost() + ""));
+                description.add(this.user.getTranslation(Constants.BUTTONS + "add_dislike.cost",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getDislikeRemoveCost())));
             }
             else if (!hasDisliked && this.settings.getDislikeAddCost() > 0)
             {
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "cost",
-                    "[value]", this.settings.getDislikeAddCost() + ""));
+                description.add(this.user.getTranslation(Constants.BUTTONS + "add_dislike.cost",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getDislikeAddCost())));
             }
         }
 
+        description.add("");
+
+        if (hasDisliked)
+        {
+            description.add(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
+        }
+        else
+        {
+            description.add(this.user.getTranslation(Constants.TIPS + "click-to-add"));
+        }
+
         return new PanelItemBuilder().
-            name(this.user.getTranslation(Constants.BUTTON + "add-dislike")).
+            name(this.user.getTranslation(Constants.BUTTONS + "add_dislike.name")).
             icon(Material.IRON_INGOT).
-            description(GuiUtils.stringSplit(description, 999)).
-            clickHandler((panel, user, clickType, slot) -> {
+            description(description).
+            clickHandler((panel, user, clickType, slot) ->
+            {
 
                 if (hasDisliked)
                 {
@@ -256,28 +284,39 @@ public class LikesManagePanel extends CommonPanel
      */
     private PanelItem createStarsButton(int value, boolean hasStarred)
     {
-        List<String> description = new ArrayList<>();
-
-        description.add(this.user.getTranslation(Constants.DESCRIPTION + "add-stars"));
+        List<String> description = new ArrayList<>(4);
+        description.add(this.user.getTranslationOrNothing(Constants.BUTTONS + "add_star.description"));
 
         if (this.addon.isEconomyProvided())
         {
-            if (hasStarred && this.settings.getLikeRemoveCost() > 0)
+            if (hasStarred && this.settings.getLikeAddCost() > 0)
             {
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "cost",
-                    "[value]", this.settings.getLikeRemoveCost() + ""));
+                description.add(this.user.getTranslation(Constants.BUTTONS + "add_star.cost",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeAddCost())));
             }
-            else if (!hasStarred && this.settings.getLikeAddCost() > 0)
+            else if (!hasStarred && this.settings.getLikeRemoveCost() > 0)
             {
-                description.add(this.user.getTranslation(Constants.DESCRIPTION + "cost",
-                    "[value]", this.settings.getLikeAddCost() + ""));
+                description.add(this.user.getTranslation(Constants.BUTTONS + "add_star.cost",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeRemoveCost())));
             }
         }
 
+        description.add("");
+
+        if (hasStarred)
+        {
+            description.add(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
+        }
+        else
+        {
+            description.add(this.user.getTranslation(Constants.TIPS + "click-to-set"));
+        }
+
         return new PanelItemBuilder().
-            name(this.user.getTranslation(Constants.BUTTON + "add-stars")).
+            name(this.user.getTranslation(Constants.BUTTONS + "add_star.name",
+                Constants.PARAMETER_NUMBER, String.valueOf(value))).
             icon(new ItemStack(Material.NETHER_STAR, value)).
-            description(GuiUtils.stringSplit(description, 999)).
+            description(description).
             clickHandler((panel, user, clickType, slot) -> {
 
                 if (hasStarred)
@@ -333,7 +372,8 @@ public class LikesManagePanel extends CommonPanel
         }
         else
         {
-            this.user.sendMessage(Constants.ERRORS + "not-enough-money");
+            Utils.sendMessage(this.user,
+                this.user.getTranslation(Constants.ERRORS + "not-enough-money"));
             return false;
         }
     }
