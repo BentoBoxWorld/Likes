@@ -119,9 +119,11 @@ public class LikesManager
             {
                 // Add object into GameMode to sorted by likes cache.
                 this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
-                    gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getLikes).reversed().
-                        thenComparing(LikesObject::getDislikes).
-                        thenComparing(LikesObject::getUniqueId))).add(likesObject);
+                    gameMode -> new IndexedTreeSet<>(Comparator.
+                        comparingLong(LikesObject::getLikes).
+                        thenComparing(LikesObject::getUniqueId).
+                        reversed())).
+                    add(likesObject);
 
                 break;
             }
@@ -129,22 +131,31 @@ public class LikesManager
             {
                 // Add object into GameMode to sorted by likes cache.
                 this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
-                    gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getLikes).reversed().
-                        thenComparing(LikesObject::getDislikes).
-                        thenComparing(LikesObject::getUniqueId))).add(likesObject);
+                    gameMode -> new IndexedTreeSet<>(Comparator.
+                        comparingLong(LikesObject::getLikes).
+                        thenComparing(Comparator.comparingLong(LikesObject::getDislikes).reversed()).
+                        thenComparing(LikesObject::getUniqueId).
+                        reversed())).
+                    add(likesObject);
 
                 // Add object into GameMode to sorted by dislikes cache.
                 this.sortedDislikeCache.computeIfAbsent(likesObject.getGameMode(),
-                    gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getDislikes).reversed().
-                        thenComparing(LikesObject::getLikes).
-                        thenComparing(LikesObject::getUniqueId))).add(likesObject);
+                    gameMode -> new IndexedTreeSet<>(Comparator.
+                        comparingLong(LikesObject::getDislikes).
+                        thenComparing(Comparator.comparingLong(LikesObject::getLikes).reversed()).
+                        thenComparing(LikesObject::getUniqueId).
+                        reversed())).
+                    add(likesObject);
 
                 // Add object into GameMode to sorted by rank cache.
                 this.sortedRankCache.computeIfAbsent(likesObject.getGameMode(),
-                    gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getRank).reversed().
-                        thenComparing(LikesObject::getLikes).reversed().
-                        thenComparing(LikesObject::getDislikes).reversed().
-                        thenComparing(LikesObject::getUniqueId))).add(likesObject);
+                    gameMode -> new IndexedTreeSet<>(Comparator.
+                        comparingLong(LikesObject::getRank).
+                        thenComparingLong(LikesObject::getLikes).
+                        thenComparing(Comparator.comparingLong(LikesObject::getDislikes).reversed()).
+                        thenComparing(LikesObject::getUniqueId).
+                        reversed())).
+                    add(likesObject);
 
                 break;
             }
@@ -152,8 +163,12 @@ public class LikesManager
             {
                 // Add object into GameMode to sorted by likes cache.
                 this.sortedStarsCache.computeIfAbsent(likesObject.getGameMode(),
-                    gameMode -> new IndexedTreeSet<>(Comparator.comparing(LikesObject::getStarsValue).reversed().
-                        thenComparing(LikesObject::numberOfStars).reversed())).add(likesObject);
+                    gameMode -> new IndexedTreeSet<>(Comparator.
+                        comparingDouble(LikesObject::getStarsValue).
+                        thenComparingInt(LikesObject::numberOfStars).
+                        thenComparing(LikesObject::getUniqueId).
+                        reversed())).
+                    add(likesObject);
 
                 break;
             }
@@ -191,6 +206,7 @@ public class LikesManager
             }
             this.addon.logError("Could not load NULL likes data object for " + uniqueID + " in " + gameMode);
         }
+
         return newPlayer(gameMode, uniqueID);
     }
 
@@ -777,7 +793,10 @@ public class LikesManager
         return !this.addon.getSettings().getMode().equals(Settings.LikeMode.STARS) &&
             this.sortedLikeCache.containsKey(gameMode) ?
             this.sortedLikeCache.get(gameMode) :
-            new IndexedTreeSet<>(Comparator.comparing(LikesObject::getLikes));
+            new IndexedTreeSet<>(Comparator.
+                comparingLong(LikesObject::getLikes).
+                thenComparing(LikesObject::getUniqueId).
+                reversed());
     }
 
 
@@ -804,7 +823,11 @@ public class LikesManager
         return this.addon.getSettings().getMode().equals(Settings.LikeMode.LIKES_DISLIKES) &&
             this.sortedDislikeCache.containsKey(gameMode) ?
             this.sortedDislikeCache.get(gameMode) :
-            new IndexedTreeSet<>(Comparator.comparing(LikesObject::getDislikes));
+            new IndexedTreeSet<>(Comparator.
+                comparingLong(LikesObject::getDislikes).
+                thenComparing(Comparator.comparingLong(LikesObject::getLikes).reversed()).
+                thenComparing(LikesObject::getUniqueId).
+                reversed());
     }
 
 
@@ -831,7 +854,12 @@ public class LikesManager
         return this.addon.getSettings().getMode().equals(Settings.LikeMode.LIKES_DISLIKES) &&
             this.sortedRankCache.containsKey(gameMode) ?
             this.sortedRankCache.get(gameMode) :
-            new IndexedTreeSet<>(Comparator.comparing(LikesObject::getRank));
+            new IndexedTreeSet<>(Comparator.
+                comparingLong(LikesObject::getRank).
+                thenComparingLong(LikesObject::getLikes).
+                thenComparing(Comparator.comparingLong(LikesObject::getDislikes).reversed()).
+                thenComparing(LikesObject::getUniqueId).
+                reversed());
     }
 
 
@@ -858,7 +886,11 @@ public class LikesManager
         return this.addon.getSettings().getMode().equals(Settings.LikeMode.STARS) &&
             this.sortedStarsCache.containsKey(gameMode) ?
             this.sortedStarsCache.get(gameMode) :
-            new IndexedTreeSet<>(Comparator.comparing(LikesObject::getStarsValue));
+            new IndexedTreeSet<>(Comparator.
+                comparingDouble(LikesObject::getStarsValue).
+                thenComparingInt(LikesObject::numberOfStars).
+                thenComparing(LikesObject::getUniqueId).
+                reversed());
     }
 
 
