@@ -42,7 +42,7 @@ public enum LikesAddonPlaceholderType
         return island != null ?
             String.valueOf(addon.getAddonManager().getIslandRankByLikes(
                 gameModeAddon.getOverWorld(),
-                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) + 1 : "";
+                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island)))  : "";
     }),
 
     /**
@@ -64,7 +64,7 @@ public enum LikesAddonPlaceholderType
         return island != null ?
             String.valueOf(addon.getAddonManager().getIslandRankByDislikes(
                 gameModeAddon.getOverWorld(),
-                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) + 1 : "";
+                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) : "";
     }),
 
     /**
@@ -86,7 +86,7 @@ public enum LikesAddonPlaceholderType
         return island != null ?
             String.valueOf(addon.getAddonManager().getIslandRankByRank(
                 gameModeAddon.getOverWorld(),
-                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) + 1 : "";
+                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) : "";
     }),
 
     /**
@@ -108,7 +108,7 @@ public enum LikesAddonPlaceholderType
         return island != null ?
             String.valueOf(addon.getAddonManager().getIslandRankByStars(
                 gameModeAddon.getOverWorld(),
-                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) + 1 : "";
+                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) : "";
     }),
 
 // ---------------------------------------------------------------------
@@ -134,7 +134,7 @@ public enum LikesAddonPlaceholderType
         return island != null ?
             String.valueOf(addon.getAddonManager().getIslandRankByLikes(
                 gameModeAddon.getOverWorld(),
-                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) + 1 : "";
+                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) : "";
     }),
 
     /**
@@ -156,7 +156,7 @@ public enum LikesAddonPlaceholderType
         return island != null ?
             String.valueOf(addon.getAddonManager().getIslandRankByDislikes(
                 gameModeAddon.getOverWorld(),
-                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) + 1 : "";
+                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) : "";
     }),
 
     /**
@@ -178,7 +178,7 @@ public enum LikesAddonPlaceholderType
         return island != null ?
             String.valueOf(addon.getAddonManager().getIslandRankByRank(
                 gameModeAddon.getOverWorld(),
-                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) + 1 : "";
+                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) : "";
     }),
 
     /**
@@ -200,7 +200,7 @@ public enum LikesAddonPlaceholderType
         return island != null ?
             String.valueOf(addon.getAddonManager().getIslandRankByStars(
                 gameModeAddon.getOverWorld(),
-                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) + 1 : "";
+                LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island))) : "";
     }),
 
 // ---------------------------------------------------------------------

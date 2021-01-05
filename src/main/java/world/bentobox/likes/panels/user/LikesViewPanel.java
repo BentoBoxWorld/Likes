@@ -14,7 +14,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,6 @@ import world.bentobox.likes.database.objects.LikesObject;
 import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.utils.Constants;
 import world.bentobox.likes.utils.Utils;
-import world.bentobox.likes.utils.collections.IndexedTreeSet;
 
 
 /**
@@ -56,8 +54,6 @@ public class LikesViewPanel
 
         this.likesObject = likesObject;
 
-        IndexedTreeSet<LikesObject> initialSearchSet;
-
         switch (this.addon.getSettings().getMode())
         {
             case LIKES:
@@ -65,7 +61,6 @@ public class LikesViewPanel
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
-                initialSearchSet = this.addon.getAddonManager().getSortedLikes(world);
                 break;
             case LIKES_DISLIKES:
                 this.likedByUsers = this.likesObject.getLikedBy().stream().
@@ -77,43 +72,28 @@ public class LikesViewPanel
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
-                initialSearchSet = this.addon.getAddonManager().getSortedLikes(world);
                 break;
             case STARS:
                 this.likedByUsers = this.likesObject.getStarredBy().keySet().stream().
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
-                initialSearchSet = this.addon.getAddonManager().getSortedStars(world);
                 break;
-            default:
-                initialSearchSet = new IndexedTreeSet<>(Comparator.comparing(LikesObject::getUniqueId));
         }
 
-        if (initialSearchSet.contains(this.likesObject))
+        switch (this.addon.getSettings().getMode())
         {
-            switch (this.addon.getSettings().getMode())
-            {
-                case LIKES:
-                    this.likeRank = initialSearchSet.entryIndex(likesObject) + 1L;
-                    break;
-                case LIKES_DISLIKES:
-                    this.likeRank = initialSearchSet.entryIndex(likesObject) + 1L;
-                    this.dislikeRank = this.addon.getAddonManager().
-                        getSortedDislikes(world).entryIndex(likesObject) + 1L;
-                    this.overallRank = this.addon.getAddonManager().
-                        getSortedRank(world).entryIndex(likesObject) + 1L;
-                    break;
-                case STARS:
-                    this.likeRank = initialSearchSet.entryIndex(likesObject) + 1L;
-                    break;
-            }
-        }
-        else
-        {
-            this.likeRank = -1;
-            this.dislikeRank = -1;
-            this.overallRank = -1;
+            case LIKES:
+                this.likeRank = this.addon.getAddonManager().getIslandRankByLikes(world, likesObject);
+                break;
+            case LIKES_DISLIKES:
+                this.likeRank = this.addon.getAddonManager().getIslandRankByLikes(world, likesObject);
+                this.dislikeRank = this.addon.getAddonManager().getIslandRankByDislikes(world, likesObject);
+                this.overallRank = this.addon.getAddonManager().getIslandRankByRank(world, likesObject);
+                break;
+            case STARS:
+                this.likeRank = this.addon.getAddonManager().getIslandRankByStars(world, likesObject);
+                break;
         }
 
         this.hundredsFormat = (DecimalFormat) NumberFormat.getNumberInstance(this.user.getLocale());

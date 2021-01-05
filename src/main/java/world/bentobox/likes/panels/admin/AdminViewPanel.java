@@ -24,7 +24,6 @@ import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.panels.user.LikesManagePanel;
 import world.bentobox.likes.panels.util.SelectUserPanel;
 import world.bentobox.likes.utils.Constants;
-import world.bentobox.likes.utils.collections.IndexedTreeSet;
 
 
 /**
@@ -48,8 +47,6 @@ public class AdminViewPanel extends CommonPanel
         // Create new object if it does not exist as admin is editing it.
         this.likesObject = this.addon.getAddonManager().getIslandLikes(island.getUniqueId(), this.world);
 
-        IndexedTreeSet<LikesObject> initialSearchSet;
-
         switch (this.getMode())
         {
             case LIKES:
@@ -57,7 +54,6 @@ public class AdminViewPanel extends CommonPanel
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
-                initialSearchSet = this.addon.getAddonManager().getSortedLikes(this.world);
                 break;
             case LIKES_DISLIKES:
                 this.likedByUsers = this.likesObject.getLikedBy().stream().
@@ -69,43 +65,28 @@ public class AdminViewPanel extends CommonPanel
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
-                initialSearchSet = this.addon.getAddonManager().getSortedLikes(this.world);
                 break;
             case STARS:
                 this.likedByUsers = this.likesObject.getStarredBy().keySet().stream().
                     map(uuid -> this.addon.getPlayers().getName(uuid)).
                     sorted(String::compareToIgnoreCase).
                     collect(Collectors.toList());
-                initialSearchSet = this.addon.getAddonManager().getSortedStars(this.world);
                 break;
-            default:
-                initialSearchSet = new IndexedTreeSet<>(Comparator.comparing(LikesObject::getUniqueId));
         }
 
-        if (initialSearchSet.contains(this.likesObject))
+        switch (this.addon.getSettings().getMode())
         {
-            switch (this.addon.getSettings().getMode())
-            {
-                case LIKES:
-                    this.likeRank = initialSearchSet.entryIndex(this.likesObject) + 1L;
-                    break;
-                case LIKES_DISLIKES:
-                    this.likeRank = initialSearchSet.entryIndex(this.likesObject) + 1L;
-                    this.dislikeRank =
-                        this.addon.getAddonManager().getSortedDislikes(this.world).entryIndex(this.likesObject) + 1L;
-                    this.overallRank =
-                        this.addon.getAddonManager().getSortedRank(this.world).entryIndex(this.likesObject) + 1L;
-                    break;
-                case STARS:
-                    this.likeRank = initialSearchSet.entryIndex(this.likesObject) + 1L;
-                    break;
-            }
-        }
-        else
-        {
-            this.likeRank = -1;
-            this.dislikeRank = -1;
-            this.overallRank = -1;
+            case LIKES:
+                this.likeRank = this.addon.getAddonManager().getIslandRankByLikes(this.world, this.likesObject);
+                break;
+            case LIKES_DISLIKES:
+                this.likeRank = this.addon.getAddonManager().getIslandRankByLikes(this.world, this.likesObject);
+                this.dislikeRank = this.addon.getAddonManager().getIslandRankByDislikes(this.world, this.likesObject);
+                this.overallRank = this.addon.getAddonManager().getIslandRankByRank(this.world, this.likesObject);
+                break;
+            case STARS:
+                this.likeRank = this.addon.getAddonManager().getIslandRankByStars(this.world, this.likesObject);
+                break;
         }
     }
 
@@ -165,7 +146,7 @@ public class AdminViewPanel extends CommonPanel
 
         this.populateLikers(panelBuilder);
 
-        panelBuilder.item(53, this.returnButton);
+        panelBuilder.item(35, this.returnButton);
     }
 
 
@@ -210,15 +191,15 @@ public class AdminViewPanel extends CommonPanel
     {
         GuiUtils.fillBorder(panelBuilder, 4, Material.MAGENTA_STAINED_GLASS_PANE);
 
-        panelBuilder.item(2, this.createButton(Button.ADD_STARS_USER));
-        panelBuilder.item(3, this.createButton(Button.REMOVE_STARS_USER));
+        panelBuilder.item(2, this.createButton(Button.ADD_STAR_USER));
+        panelBuilder.item(3, this.createButton(Button.REMOVE_STAR_USER));
 
         panelBuilder.item(10, this.createButton(Icon.STARS));
         panelBuilder.item(11, this.createButton(Icon.STARS_RANK));
 
         this.populateStars(panelBuilder);
 
-        panelBuilder.item(53, this.returnButton);
+        panelBuilder.item(35, this.returnButton);
     }
 
 
@@ -592,7 +573,7 @@ public class AdminViewPanel extends CommonPanel
 
                 break;
             }
-            case ADD_STARS_USER:
+            case ADD_STAR_USER:
             {
                 description.add("");
                 description.add(this.user.getTranslation(Constants.TIPS + "click-to-add"));
@@ -611,13 +592,15 @@ public class AdminViewPanel extends CommonPanel
                                 LikesManagePanel.openPanel(this, player, this.island);
                                 this.likedByUsers.add(player.getName());
                             }
+
+                            this.build();
                         });
                     return true;
                 };
 
                 break;
             }
-            case REMOVE_STARS_USER:
+            case REMOVE_STAR_USER:
             {
                 final boolean canRemove = !this.likesObject.getStarredBy().isEmpty();
 
@@ -854,8 +837,8 @@ public class AdminViewPanel extends CommonPanel
         REMOVE_LIKE_USER,
         ADD_DISLIKE_USER,
         REMOVE_DISLIKE_USER,
-        ADD_STARS_USER,
-        REMOVE_STARS_USER
+        ADD_STAR_USER,
+        REMOVE_STAR_USER
     }
 
 

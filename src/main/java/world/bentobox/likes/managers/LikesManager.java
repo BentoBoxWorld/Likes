@@ -703,7 +703,7 @@ public class LikesManager
     public List<LikesObject> getTopByLikes(World world)
     {
         return this.getSortedLikes(world).stream().
-            filter(LikesObject::isNotEmpty).
+//            filter(LikesObject::isNotEmpty).
             limit(10).
             collect(Collectors.toList());
     }
@@ -718,7 +718,7 @@ public class LikesManager
     public List<LikesObject> getTopByDislikes(World world)
     {
         return this.getSortedDislikes(world).stream().
-            filter(LikesObject::isNotEmpty).
+//            filter(LikesObject::isNotEmpty).
             limit(10).
             collect(Collectors.toList());
     }
@@ -733,7 +733,7 @@ public class LikesManager
     public List<LikesObject> getTopByRank(World world)
     {
         return this.getSortedRank(world).stream().
-            filter(LikesObject::isNotEmpty).
+//            filter(LikesObject::isNotEmpty).
             limit(10).
             collect(Collectors.toList());
     }
@@ -748,7 +748,7 @@ public class LikesManager
     public List<LikesObject> getTopByStars(World world)
     {
         return this.getSortedStars(world).stream().
-            filter(LikesObject::isNotEmpty).
+//            filter(LikesObject::isNotEmpty).
             limit(10).
             collect(Collectors.toList());
     }
@@ -872,7 +872,7 @@ public class LikesManager
     public int getIslandRankByLikes(World world, LikesObject likesObject)
     {
         IndexedTreeSet<LikesObject> sorted = this.getSortedLikes(world);
-        return sorted.contains(likesObject) ? sorted.entryIndex(likesObject) : -1;
+        return sorted.contains(likesObject) ? sorted.entryIndex(likesObject) + 1 : -1;
     }
 
 
@@ -886,7 +886,7 @@ public class LikesManager
     public int getIslandRankByDislikes(World world, LikesObject likesObject)
     {
         IndexedTreeSet<LikesObject> sorted = this.getSortedDislikes(world);
-        return sorted.contains(likesObject) ? sorted.entryIndex(likesObject) : -1;
+        return sorted.contains(likesObject) ? sorted.entryIndex(likesObject) + 1 : -1;
     }
 
 
@@ -900,7 +900,7 @@ public class LikesManager
     public int getIslandRankByRank(World world, LikesObject likesObject)
     {
         IndexedTreeSet<LikesObject> sorted = this.getSortedRank(world);
-        return sorted.contains(likesObject) ? sorted.entryIndex(likesObject) : -1;
+        return sorted.contains(likesObject) ? sorted.entryIndex(likesObject) + 1 : -1;
     }
 
 
@@ -914,7 +914,7 @@ public class LikesManager
     public int getIslandRankByStars(World world, LikesObject likesObject)
     {
         IndexedTreeSet<LikesObject> sorted = this.getSortedStars(world);
-        return sorted.contains(likesObject) ? sorted.entryIndex(likesObject) : -1;
+        return sorted.contains(likesObject) ? sorted.entryIndex(likesObject) + 1 : -1;
     }
 
 

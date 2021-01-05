@@ -6,7 +6,6 @@
 package world.bentobox.likes.panels.util;
 
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import java.util.*;
 import java.util.function.Consumer;
@@ -16,12 +15,9 @@ import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
-import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.panels.ConversationUtils;
 import world.bentobox.likes.panels.GuiUtils;
-import world.bentobox.likes.panels.admin.ListIslandsPanel;
 import world.bentobox.likes.utils.Constants;
-import world.bentobox.likes.utils.Utils;
 
 
 /**

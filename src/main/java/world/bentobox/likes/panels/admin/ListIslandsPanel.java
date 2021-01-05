@@ -260,7 +260,7 @@ public class ListIslandsPanel extends CommonPanel
                     if (rank != -1)
                     {
                         placeText = this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(rank + 1),
+                            Constants.PARAMETER_NUMBER, String.valueOf(rank),
                             Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes"));
                     }
 
@@ -275,21 +275,21 @@ public class ListIslandsPanel extends CommonPanel
                     if (byLikes != -1)
                     {
                         placeText = this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(byLikes + 1),
+                            Constants.PARAMETER_NUMBER, String.valueOf(byLikes),
                             Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes"));
                     }
 
                     if (byDislikes != -1)
                     {
                         placeText += "\n" + this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(byDislikes + 1),
+                            Constants.PARAMETER_NUMBER, String.valueOf(byDislikes),
                             Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "dislikes"));
                     }
 
                     if (byRank != -1)
                     {
                         placeText += "\n" + this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(byRank + 1),
+                            Constants.PARAMETER_NUMBER, String.valueOf(byRank),
                             Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "rank"));
                     }
                     break;
@@ -301,7 +301,7 @@ public class ListIslandsPanel extends CommonPanel
                     if (byStars != -1)
                     {
                         placeText = this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(byStars + 1),
+                            Constants.PARAMETER_NUMBER, String.valueOf(byStars),
                             Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "stars"));
                     }
                     break;
