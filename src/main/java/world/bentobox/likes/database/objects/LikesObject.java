@@ -7,8 +7,15 @@
 package world.bentobox.likes.database.objects;
 
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
 import com.google.gson.annotations.Expose;
-import java.util.*;
 
 import world.bentobox.bentobox.api.logs.LogEntry;
 import world.bentobox.bentobox.database.objects.DataObject;
@@ -48,6 +55,7 @@ public class LikesObject implements DataObject
 
         this.likedBy.add(user);
         this.likes++;
+        setChanged();
     }
 
 
@@ -62,6 +70,7 @@ public class LikesObject implements DataObject
         {
             // Reduce only if player is in likedBy set.
             this.likes--;
+            setChanged();
         }
     }
 
@@ -77,6 +86,7 @@ public class LikesObject implements DataObject
 
         this.dislikedBy.add(user);
         this.dislikes++;
+        setChanged();
     }
 
 
@@ -91,6 +101,7 @@ public class LikesObject implements DataObject
         {
             // Reduce only if player is in dislikedBy set.
             this.dislikes--;
+            setChanged();
         }
     }
 
@@ -105,6 +116,7 @@ public class LikesObject implements DataObject
     {
         this.starredBy.put(user, value);
         this.stars += value;
+        setChanged();
     }
 
 
@@ -121,6 +133,7 @@ public class LikesObject implements DataObject
         {
             // Reduce only if player is in staredBy map.
             this.stars -= value;
+            setChanged();
         }
     }
 
@@ -155,6 +168,7 @@ public class LikesObject implements DataObject
     public void addLogRecord(LogEntry entry)
     {
         this.history.add(entry);
+        setChanged();
     }
 
 
@@ -225,6 +239,7 @@ public class LikesObject implements DataObject
         this.likedBy.clear();
         this.dislikedBy.clear();
         this.starredBy.clear();
+        setChanged();
     }
 
 
@@ -250,6 +265,7 @@ public class LikesObject implements DataObject
     public void setUniqueId(String uniqueId)
     {
         this.uniqueId = uniqueId;
+        setChanged();
     }
 
 
@@ -272,6 +288,7 @@ public class LikesObject implements DataObject
     public void setLikes(long likes)
     {
         this.likes = likes;
+        setChanged();
     }
 
 
@@ -294,6 +311,7 @@ public class LikesObject implements DataObject
     public void setDislikes(long dislikes)
     {
         this.dislikes = dislikes;
+        setChanged();
     }
 
 
@@ -316,6 +334,7 @@ public class LikesObject implements DataObject
     public void setLikedBy(Set<UUID> likedBy)
     {
         this.likedBy = likedBy;
+        setChanged();
     }
 
 
@@ -338,6 +357,7 @@ public class LikesObject implements DataObject
     public void setDislikedBy(Set<UUID> dislikedBy)
     {
         this.dislikedBy = dislikedBy;
+        setChanged();
     }
 
 
@@ -360,6 +380,7 @@ public class LikesObject implements DataObject
     public void setGameMode(String gameMode)
     {
         this.gameMode = gameMode;
+        setChanged();
     }
 
 
@@ -382,6 +403,7 @@ public class LikesObject implements DataObject
     public void setHistory(List<LogEntry> history)
     {
         this.history = history;
+        setChanged();
     }
 
 
@@ -415,6 +437,7 @@ public class LikesObject implements DataObject
     public void setStars(long stars)
     {
         this.stars = stars;
+        setChanged();
     }
 
 
@@ -437,9 +460,31 @@ public class LikesObject implements DataObject
     public void setStarredBy(Map<UUID, Integer> starredBy)
     {
         this.starredBy = starredBy;
+        setChanged();
+    }
+
+    /**
+     * @return the changed
+     */
+    public boolean isChanged() {
+        return changed;
     }
 
 
+    /**
+     * @param changed the changed to set
+     */
+    public void setChanged(boolean changed) {
+        this.changed = changed;
+    }
+    
+    /**
+     * Mark as changed
+     */
+    private void setChanged() {
+        this.changed = true;
+    }
+    
 // ---------------------------------------------------------------------
 // Section: Variables
 // ---------------------------------------------------------------------
@@ -499,4 +544,9 @@ public class LikesObject implements DataObject
     @Adapter(LogEntryListAdapter.class)
     @Expose
     private List<LogEntry> history = new LinkedList<>();
+    
+    /**
+     * Indicates whether this object has changed data or not. Used when saving.
+     */
+    private boolean changed;
 }

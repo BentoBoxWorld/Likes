@@ -7,10 +7,15 @@
 package world.bentobox.likes.managers;
 
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.bukkit.World;
 import org.eclipse.jdt.annotation.NonNull;
-import java.util.*;
-import java.util.stream.Collectors;
 
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.logs.LogEntry;
@@ -20,7 +25,12 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.config.Settings;
 import world.bentobox.likes.database.objects.LikesObject;
-import world.bentobox.likes.events.*;
+import world.bentobox.likes.events.DislikeAddEvent;
+import world.bentobox.likes.events.DislikeRemoveEvent;
+import world.bentobox.likes.events.LikeAddEvent;
+import world.bentobox.likes.events.LikeRemoveEvent;
+import world.bentobox.likes.events.StarsAddEvent;
+import world.bentobox.likes.events.StarsRemoveEvent;
 import world.bentobox.likes.utils.Constants;
 import world.bentobox.likes.utils.Utils;
 import world.bentobox.likes.utils.collections.IndexedTreeSet;
@@ -274,7 +284,7 @@ public class LikesManager
      */
     public void save()
     {
-        this.likesCache.values().forEach(this.likesDatabase::saveObjectAsync);
+        this.likesCache.values().stream().filter(LikesObject::isChanged).forEach(this.likesDatabase::saveObjectAsync);
     }
 
 
