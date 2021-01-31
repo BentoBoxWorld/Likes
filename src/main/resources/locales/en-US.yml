@@ -44,13 +44,13 @@ likes:
       add_like:
         name: "&f&l Like"
         description: |-
-          &7 Allows to add or remove
+          &7 Add or remove
           &7 a like for this island.
         cost: "&7 It will cost &b&o $[number]"
       add_dislike:
         name: "&f&l Dislike"
         description: |-
-          &7 Allows to add or remove
+          &7 Add or remove
           &7 a dislike for this island.
         cost: "&7 It will cost &b&o $[number]"
       add_star:
@@ -66,11 +66,11 @@ likes:
           &7 Shows number of likes
         likes: "&o&b [number] likes"
       like_rank:
-        name: "&f&l Place by Likes"
+        name: "&f&l Rank by Likes"
         description: |-
-          &7 Shows island place
-          &7 in top by likes
-        rank: "&o&b [number]. place"
+          &7 Rank islands
+          &7 by likes
+        rank: "&o&b [number]. "
         not-ranked: "&o&b Not in the top."
       dislike:
         name: "&f&l Dislikes Count"
@@ -78,11 +78,11 @@ likes:
           &7 Shows number of dislikes
         dislikes: "&o&b [number] dislikes"
       dislike_rank:
-        name: "&f&l Place by Dislikes"
+        name: "&f&l Rank by Dislikes"
         description: |-
-          &7 Shows island place
-          &7 in top by dislikes
-        rank: "&o&b [number]. place"
+          &7 Rank island
+          &7 by dislikes
+        rank: "&o&b [number]. "
         not-ranked: "&o&b Not in the top."
       overall:
         name: "&f&l Rank"
@@ -93,21 +93,21 @@ likes:
         name: "&f&l Place by Rank"
         description: |-
           &7 Shows island place
-          &7 in top by rank
-        rank: "&o&b [number]. place"
-        not-ranked: "&o&b Not in the top."
+          &7 by rank
+        rank: "&o&b [number]. "
+        not-ranked: "&o&b Not ranked."
       stars:
         name: "&f&l Average Stars"
         description: |-
           &7 Shows number of average stars
         stars: "&o&b [number] stars"
       stars_rank:
-        name: "&f&l Place by Stars"
+        name: "&f&l Rank by Stars"
         description: |-
-          &7 Shows island place
-          &7 in top by stars
-        rank: "&o&b [number]. place"
-        not-ranked: "&o&b Not in the top."
+          &7 Rank island
+          &7 by stars
+        rank: "&o&b [number]. "
+        not-ranked: "&o&b Not ranked."
       # Buttons in multiple GUIs
       # Button that is used to return to previous GUI or exit it completely.
       return:
@@ -130,12 +130,12 @@ likes:
         name: "&f&l [name]"
       # Buttons in TOP GUIs
       view_mode:
-        name: "&f&l Top Type"
+        name: "&f&l Ranking Type"
         description: |-
           &7 Allows to switch between
-          &7 different Tops
-        active: "&2 Shows top by [type]"
-        inactive: "&c Shows top by [type]"
+          &7 different Rankings
+        active: "&2 Shows ranking by [type]"
+        inactive: "&c Shows ranking by [type]"
       island:
         name: '&f&l [name]'
         description: |-
@@ -154,7 +154,7 @@ likes:
         # Name of unknown player.
         unknown: "unknown"
         # Section for parsing [place]
-        place: "&7&o [number]. place &r&7 by &l [type]"
+        place: "&7&o [number]. &r&7 by &l [type]"
         # Sections for parsing [numbers]
         # For Likes Mode
         numbers_likes: |-
@@ -171,23 +171,23 @@ likes:
       manage_likes:
         name: "&f&l Manage Island Data"
         description: |-
-          &7 Allows to manage all data
+          &7 Manage all data
           &7 stored for island.
       likes_icon:
         name: "&f&l Island Icon"
         description: |-
-          &7 Allows to change selected
+          &7 Change selected
           &7 island icon in top GUI.
       wipe_data:
         name: "&f&l Wipe Data"
         description: |-
-          &7 Allows to complety remove
+          &7 Complety remove
           &7 all stored data for current
           &7 GameMode addon.
       settings:
         name: "&f&l Settings"
         description: |-
-          &7 Allows to Manage addon
+          &7 Manage addon
           &7 settings via GUI.
 
 
@@ -198,86 +198,86 @@ likes:
       add_like_user:
         name: "&f&l Add Like"
         description: |-
-          &7 Allows to select a
+          &7 Select a
           &7 player who will add
-          &7 the like.
+          &7 a like.
       remove_like_user:
         name: "&f&l Remove Like"
         description: |-
-          &7 Allows to select which
-          &7 player will remove his
+          &7 Select a player
+          &7 that will remove a
           &7 like.
       add_dislike_user:
         name: "&f&l Add Dislike"
         description: |-
-          &7 Allows to select a
-          &7 player who will add
-          &7 the dislike.
+          &7 Select a player
+          &7 who will add
+          &7 a dislike.
       remove_dislike_user:
         name: "&f&l Remove Dislike"
         description: |-
-          &7 Allows to select which
-          &7 player will remove his
+          &7 Select a player
+          &7 that will remove a
           &7 dislike.
       add_star_user:
         name: "&f&l Add Stars"
         description: |-
-          &7 Allows to select a
-          &7 player who will add
+          &7 Select a player
+          &7 who will add
           &7 stars.
       remove_star_user:
         name: "&f&l Remove Stars"
         description: |-
-          &7 Allows to select which
-          &7 player will remove his
+          &7 Select a player
+          &7 whoe will remove
           &7 stars.
       # Buttons in Admin Settings GUI
       like_cost:
         name: "&f&l Add Like Cost"
         description: |-
-          &7 Allows to change a cost
-          &7 for player to add like.
+          &7 Change the cost for a
+          &7 player to add a like.
         cost: "&7&o Cost: &b [number]"
       like_remove_cost:
         name: "&f&l Remove Like Cost"
         description: |-
-          &7 Allows to change a cost
-          &7 for player to remove like.
+          &7 Change the cost for a
+          &7 player to remove a like.
         cost: "&7&o Cost: &b [number]"
       dislike_cost:
         name: "&f&l Add Dislike Cost"
         description: |-
-          &7 Allows to change a cost
-          &7 for player to add dislike.
+          &7 Change the cost for a
+          &7 player to add a dislike.
         cost: "&7&o Cost: &b [number]"
       dislike_remove_cost:
         name: "&f&l Remove Dislike Cost"
         description: |-
-          &7 Allows to change a cost
-          &7 for player to remove dislike.
+          &7 Change the cost for a
+          &7 player to remove a dislike.
         cost: "&7&o Cost: &b [number]"
       stars_cost:
         name: "&f&l Add Stars Cost"
         description: |-
-          &7 Allows to change a cost
-          &7 for player to add stars.
+          &7 Change the cost for a
+          &7 player a to add stars.
         cost: "&7&o Cost: &b [number]"
       stars_remove_cost:
         name: "&f&l Remove Stars Cost"
         description: |-
-          &7 Allows to change a cost
-          &7 for player to remove stars.
+          &7 Change the cost for a
+          &7 player to remove stars.
         cost: "&7&o Cost: &b [number]"
       default_icon:
         name: "&f&l Default Icon"
         description: |-
-          &7 Allows to change default
-          &7 icon for islands in Top
-          &7 GUI.
+          &7 Change the default
+          &7 icon for islands in the
+          &7 Ranking GUI.
       inform_players:
         name: "&f&l Inform Players"
         description: |-
-          &7 Allows to toggle if players
+          &7 Toggle if players
           &7 should receive message when
           &7 someone likes/dislikes/stars
           &7 their island.
@@ -286,7 +286,7 @@ likes:
       log_history:
         name: "&f&l Log History"
         description: |-
-          &7 Allows to toggle if history
+          &7 Toggle if history
           &7 about adding and removing
           &7 likes/dislikes/stars should
           &7 be stored.
@@ -296,12 +296,12 @@ likes:
       reset_likes:
         name: "&f&l Reset Likes"
         description: |-
-          &7 Allows to remove all data
-          &7 about island when owner
+          &7 Remove all data
+          &7 about an island when an owner
           &7 resets their island.
           &7 Otherwise data will be kept
-          &7 and island will be in the
-          &7 tops.
+          &7 and islands will remain in the
+          &7 rankings.
         enabled: "&7 Resetting is &2 enabled"
         disabled: "&7 Resetting is &c disabled"
       # Buttons in Admin Island Selection GUI
@@ -346,8 +346,8 @@ likes:
       click-to-add: "&e Click &7 to add."
       click-to-remove: "&e Click &7 to remove."
       click-to-set: "&e Click &7 to set."
-      click-to-next: "&e Click &7 to next."
-      click-to-previous: "&e Click &7 to previous."
+      click-to-next: "&e Click &7 for next."
+      click-to-previous: "&e Click &7 for previous."
       click-to-quit: "&e Click &7 to quit."
       click-to-return: "&e Click &7 to return."
       click-to-warp: "&e Click &7 to warp."
@@ -366,9 +366,9 @@ likes:
       stars: "Stars"
   errors:
     not-on-island: "&c You must be on the island to run this command!"
-    your-island: "&c You cannot add like or dislike to your own island!"
-    top-is-empty: "&c Sorry, there is no one in the top!"
-    database-error: "&c Sorry, there was some error with database. Cannot find your island Data."
+    your-island: "&c You cannot add a like or dislike to your own island!"
+    top-is-empty: "&c Sorry, there is no one in the rankings!"
+    database-error: "&c Sorry, there was some error with database. Cannot find your island data."
     not-enough-money: "&c Sorry, you do not have enough credits in your account."
     no-data-about-island: "&c There is no data about this island."
     no-data-about-your-island: "&c There is no data about your island."
@@ -391,7 +391,7 @@ likes:
     not-valid-value: "&c The given number [value] is not valid. It must be larger than [min] and smaller than [max]!"
     # Below here starts messages and questions created by GUI.
     # Message that asks for search value input.
-    write-search: "&e Please write a search value. (write 'cancel' to exit)"
+    write-search: "&e Please enter a search value. (Write 'cancel' to exit)"
     # Message that appears after updating search value.
     search-updated: "&a Search value updated."
     # Message that appears when user clicks on number editing button.
@@ -403,13 +403,13 @@ likes:
     # Messages send to users
     add-like: "&a You liked [name]'s island."
     player-add-like: "&a [name] liked your island."
-    remove-like: "&c You remove your like [name]'s island."
-    player-remove-like: "&c [name] removed his like from your island."
+    remove-like: "&c You removed your like from [name]'s island."
+    player-remove-like: "&c [name] removed their like from your island."
     add-dislike: "&c You disliked [name]'s island."
     player-add-dislike: "&c [name] disliked your island."
-    remove-dislike: "&a You remove your dislike [name]'s island."
-    player-remove-dislike: "&a [name] removed his dislike from your island."
+    remove-dislike: "&a You remove your dislike from [name]'s island."
+    player-remove-dislike: "&a [name] removed their dislike from your island."
     add-stars: "&a You added [number] stars to [name]'s island."
     player-add-stars: "&a [name] added [number] stars your island."
     remove-stars: "&c You remove your stars from [name]'s island."
-    player-remove-stars: "&c [name] removed his stars from your island."
+    player-remove-stars: "&c [name] removed their stars from your island."
