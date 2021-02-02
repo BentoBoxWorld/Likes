@@ -556,12 +556,12 @@ public class LikesViewPanel
             if (island.getMemberSet().contains(user.getUniqueId()))
             {
                 Utils.sendMessage(user,
-                    user.getTranslation(Constants.CONVERSATIONS + "no-data-about-your-island"));
+                    user.getTranslation(Constants.ERRORS + "no-data-about-your-island"));
             }
             else
             {
                 Utils.sendMessage(user,
-                    user.getTranslation(Constants.CONVERSATIONS + "no-data-about-island"));
+                    user.getTranslation(Constants.ERRORS + "no-data-about-island"));
             }
 
             // Do not open gui if there is no data.
