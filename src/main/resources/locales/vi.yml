@@ -1,0 +1,337 @@
+likes:
+  commands:
+    admin:
+      main:
+        parameters: ''
+        description: mở menu quản trị viên
+      settings:
+        parameters: ''
+        description: mở menu tùy chỉnh quản trị viên
+    player:
+      main:
+        parameters: ''
+        description: mở menu đánh giá
+      top:
+        parameters: <loại>
+        description: mở menu top
+      view:
+        parameters: <người chơi>
+        description: mở menu mà bạn thấy đánh giá của bạn
+  gui:
+    titles:
+      view: '&0&l Xem đảo theo loại [type]'
+      top: '&0&l Top đảo theo loại [type]'
+      manage: '&0&l Quản lí [type]'
+      admin: '&0&l Menu quản trị'
+      settings: '&0&l Tùy chọn'
+      edit-view: '&0&l Chỉnh đảo theo loại [type]'
+      select-island: '&0&l Chọn một đảo'
+      select-player: '&0&l Chọn một người chơi'
+      select-block: '&0&l Chọn một khối'
+    buttons:
+      add_like:
+        name: '&f&l Thích'
+        description: |-
+          &7 Thêm hoặc xóa
+          &7 lượt thích từ đảo này.
+        cost: '&7 Nó sẽ tốn &b&o $[number]'
+      add_dislike:
+        name: '&f&l Ghét'
+        description: |-
+          &7 Thêm hoặc xóa
+          &7 lượt ghét từ đảo này.
+        cost: '&7 Nó sẽ tốn &b&o $[number]'
+      add_star:
+        name: '&f&l [number] Sao'
+        description: |-
+          &7 Cho phép thêm hoặc xóa
+          &7 sao từ đảo này.
+        cost: '&7 Nó sẽ tốn &b&o $[number]'
+      like:
+        name: '&f&l Lượt thích'
+        description: '&7 Xem lượt thích'
+        likes: '&o&b [number] lượt thích'
+      like_rank:
+        name: '&f&l Bậc theo lượt thích'
+        description: |-
+          &7 Xếp bậc cho đảo
+          &7 theo lượt thích
+        rank: '&o&b [number]. '
+        not-ranked: '&o&b Không nằm trong top.'
+      dislike:
+        name: '&f&l Lượt ghét'
+        description: '&7 Xem lượt ghét'
+        dislikes: '&o&b [number] lượt ghét'
+      dislike_rank:
+        name: '&f&l Bậc theo lượt ghét'
+        description: |-
+          &7 Xếp bậc cho đảo
+          &7 theo lượt ghét
+        rank: '&o&b [number]. '
+        not-ranked: '&o&b Không nằm trong top.'
+      overall:
+        name: '&f&l Cấp bậc'
+        description: '&7 Xem cấp bậc'
+        value: '&o&b cấp bậc thứ [number]'
+      overall_rank:
+        name: '&f&l Vị trí theo cấp bậc'
+        description: |-
+          &7 Xem vị trí
+          &7 theo cấp bậc
+        rank: '&o&b [number]. '
+        not-ranked: '&o&b Chưa có cấp bậc.'
+      stars:
+        name: '&f&l Số sao trung bình'
+        description: '&7 Xem số sao trung bình'
+        stars: '&o&b [number] sao'
+      stars_rank:
+        name: '&f&l Bậc theo số sao'
+        description: |-
+          &7 Xếp bậc cho đảo
+          &7 theo số sao
+        rank: '&o&b [number]. '
+        not-ranked: '&o&b Chưa có cấp bậc.'
+      return:
+        name: '&f&l Quay về'
+        description: |-
+          &7 Về menu trước
+          &7 hoặc thoát menu
+      previous:
+        name: '&f&l Trang trước'
+        description: '&7 Về trang [number]'
+      next:
+        name: '&f&l Trang kế'
+        description: '&7 Đến trang [number]'
+      user:
+        name: '&f&l [name]'
+      view_mode:
+        name: '&f&l Loại xếp hạng'
+        description: |-
+          &7 Cho phép chỉnh
+          &7 loại xếp hạng
+        active: '&2 Xem xếp hạng theo [type]'
+        inactive: '&c Xem xếp hạng theo [type]'
+      island:
+        name: '&f&l [name]'
+        description: |-
+          [owner]
+          [members]
+          [place]
+          [numbers]
+        owners-island: 'đảo của [player]'
+        owner: '&7&l Chủ: &r&b [player]'
+        members-title: '&7&l Thành viên:'
+        member: '&b - [player]'
+        unknown: không xác định
+        place: '&7&o [number]. &r&7 bởi &l [type]'
+        numbers_likes: '&7&l [likes] người chơi &r&7 thích đảo này'
+        numbers_stars: '&7&l [stars] sao &r&7 từ [number] người chơi'
+        numbers_likes_dislikes: |-
+          &7&l [likes] người chơi &r&7 thích đảo này
+          &7&l [dislikes] người chơi &r&7 ghét đảo này
+          &7 Bậc của đảo: &l [rank]
+      manage_likes:
+        name: '&f&l Quản lí dữ liệu đảo'
+        description: |-
+          &7 Quản lí tất cả
+          &7 dữ liệu của đảo.
+      likes_icon:
+        name: '&f&l Logo đảo'
+        description: |-
+          &7 Đổi logo đảo
+          &7 trong menu top.
+      wipe_data:
+        name: '&f&l Dọn dữ liệu'
+        description: |-
+          &7 Dọn tất cả dữ liệu
+          &7 từ chế độ này
+      settings:
+        name: '&f&l Tùy chỉnh'
+        description: |-
+          &7 Quản lí tùy chỉnh
+          &7 chế độ qua menu.
+      add_like_user:
+        name: '&f&l Thêm lượt thích'
+        description: |-
+          &7 Chọn người chơi
+          &7 sẽ thêm lượt thích
+      remove_like_user:
+        name: '&f&l Xóa lượt thích'
+        description: |-
+          &7 Chọn người chơi
+          &7 sẽ xóa lượt thích
+      add_dislike_user:
+        name: '&f&l thêm lượt ghét'
+        description: |-
+          &7 Chọn người chơi
+          &7 sẽ thêm lượt ghét
+      remove_dislike_user:
+        name: '&f&l Xóa lượt ghét'
+        description: |-
+          &7 Chọn người chơi
+          &7 sẽ xóa lượt ghét
+      add_star_user:
+        name: '&f&l Thêm sao'
+        description: |-
+          &7 Chọn người chơi
+          &7 sẽ thêm sao
+      remove_star_user:
+        name: '&f&l Xóa sao'
+        description: |-
+          &7 Chọn người chơi
+          &7 sẽ xóa sao
+      like_cost:
+        name: '&f&l Giá thêm lượt thích'
+        description: |-
+          &7 Chỉnh giá để người chơi
+          &7 thêm lượt thích
+        cost: '&7&o Tốn: &b [number]'
+      like_remove_cost:
+        name: '&f&l Giá xóa lượt thích'
+        description: |-
+          &7 Chỉnh giá để người chơi
+          &7 xóa lượt thích
+        cost: '&7&o Tốn: &b [number]'
+      dislike_cost:
+        name: '&f&l Giá thêm lượt ghét'
+        description: |-
+          &7 Chỉnh giá để người chơi
+          &7 thêm lượt ghét
+        cost: '&7&o Tốn: &b [number]'
+      dislike_remove_cost:
+        name: '&f&l Giá xóa lượt ghét'
+        description: |-
+          &7 Chỉnh giá để người chơi
+          &7 xóa lượt ghét
+        cost: '&7&o Tốn: &b [number]'
+      stars_cost:
+        name: '&f&l Giá thêm sao'
+        description: |-
+          &7 Chỉnh giá để người chơi
+          &7 thêm sao
+        cost: '&7&o Tốn: &b [number]'
+      stars_remove_cost:
+        name: '&f&l Giá xóa sao'
+        description: |-
+          &7 Chỉnh giá để người chơi
+          &7 xóa sao
+        cost: '&7&o Tốn: &b [number]'
+      default_icon:
+        name: '&f&l Logo mặc định'
+        description: |-
+          &7 Chỉnh logo mặc định
+          &7 cho các đảo trong menu top
+      inform_players:
+        name: '&f&l Thông báo người chơi'
+        description: |-
+          &7 Tùy chỉnh cho người chơi
+          &7 nhận thông báo khi
+          &7 có người đánh giá
+          &7 đảo của họ.
+        enabled: '&7 Thông báo đã &2 bật'
+        disabled: '&7 Thông báo đã &c tắt'
+      log_history:
+        name: '&f&l Ghi lịch sử'
+        description: |-
+          &7 Tùy chỉnh để lịch sử
+          &7 đánh nên được lưu hay không 
+          &7 Nó sẽ không hiển thị ở đâu khác.
+        enabled: '&7 Ghi lịch sử đã &2 bật'
+        disabled: '&7 Ghi lịch sử đã &c tắt'
+      reset_likes:
+        name: '&f&l Làm lại lượt thích'
+        description: |-
+          &7 Xóa các dữ liệu
+          &7 khi chủ đảo làm lại
+          &7 đảo của họ.
+          &7 hoặc dữ liệu sẽ được giữ lại
+          &7 và đảo sẽ vẫn còn trong menu top
+        enabled: '&7 Làm lại đã &2 bật'
+        disabled: '&7 Làm lại đã &c tắt'
+      is_online:
+        name: '&f&l Người chơi trực tuyến'
+        description: |-
+          &7 Liệt kê các đảo có
+          &7 người chơi trực tuyến.
+      has_data:
+        name: '&f&l Kiểm tra dữ liệu'
+        description: |-
+          &7 Liệt kê các đảo
+          &7 có dữ liệu.
+      all_islands:
+        name: '&f&l Toàn bộ các đảo'
+        description: '&7 Liệt kê toàn bộ các đảo.'
+      search:
+        name: '&f&l Tìm kiếm'
+        description: |-
+          &7 Tìm kiếm một giá trị
+          &7 xác định.
+        search: '&b Giá trị: [value]'
+      material-icon:
+        name: '&f&l [material]'
+      all_players:
+        name: '&f&l Toàn bộ người chơi'
+        description: '&7 Liệt kê toàn bộ người chơi.'
+      online_players:
+        name: '&f&l Người chơi trực tuyến'
+        description: '&7 Liệt kê toàn bộ người chơi trực tuyến.'
+    tips:
+      click-to-open: '&e Nhấp &7 để mở.'
+      click-to-change: '&e Nhấp &7 để đổi.'
+      click-to-wipe: '&e Nhấp &7 để dọn.'
+      click-to-manage: '&e Nhấp &7 để quản lí.'
+      click-to-add: '&e Nhấp &7 để thêm.'
+      click-to-remove: '&e Nhấp &7 để xóa.'
+      click-to-set: '&e Nhấp &7 để chọn.'
+      click-to-next: '&e Nhấp &7 để đi tiếp.'
+      click-to-previous: '&e Nhấp &7 để về trước.'
+      click-to-quit: '&e Nhấp &7 để thoát.'
+      click-to-return: '&e Nhấp &7 để quay về.'
+      click-to-warp: '&e Nhấp &7 để dịch chuyển.'
+      click-to-enable: '&e Nhấp &7 để bật.'
+      click-to-disable: '&e Nhấp &7 để tắt.'
+      click-to-view: '&e Nhấp &7 để xem.'
+      left-click-to-edit: '&e Chuột Trái &7 để chỉnh.'
+      right-click-to-clear: '&e Chuột Phải &7 để dọn.'
+      shift-click-to-remove: '&e Shilf + nhấp &7 để xóa.'
+      click-to-cancel: '&e Nhấp &7 để hủy.'
+      click-to-select: '&e Nhấp &7 để chọn.'
+    types:
+      likes: Lượt thích
+      dislikes: Lượt ghét
+      rank: Cấp bậc
+      stars: Số sao
+  errors:
+    not-on-island: '&c Bạn phải ở đảo để dùng lệnh này!'
+    your-island: '&c Bạn không thể thích hoặc ghét đảo của bạn!'
+    top-is-empty: '&c Xin lỗi, không có ai trong bảng xếp hạng cả!'
+    database-error: '&c Xin lỗi, đã có lỗi trong cơ sở dữ liệu. Không tìm thấy dữ liệu đảo.'
+    not-enough-money: '&c Xin lỗi, bạn không có đủ tiền trong tài khoản.'
+    no-data-about-island: '&c Không có dữ liệu về đảo này.'
+    no-data-about-your-island: '&c Không có dữ liệu về đảo của bạn.'
+  conversations:
+    confirm-string: true, on, yes, confirm, y, valid, correct, chấp nhận
+    deny-string: false, off, no, deny, n, invalid, incorrect, từ chối
+    cancel-string: cancel, hủy
+    exit-string: cancel, exit, quit, thoát
+    cancelled: '&c Đã hủy!'
+    prefix: '&l&6 [BentoBox]: &r'
+    numeric-only: '&c [value] không phải là một số!'
+    not-valid-value: '&c [value] không hợp lệ. Nó phải lớn hơn [min] và nhỏ hơn [max]!'
+    write-search: '&e Vui lòng nhập một giá trị tìm kiếm. (Viết ''cancel'' để thoát)'
+    search-updated: '&a Giá trị tìm kiếm đã cập nhật.'
+    input-number: '&e Vui lòng nhập một số trong chat.'
+    confirm-island-data-deletion: '&e Xác nhận rằng bạn muốn xóa hết dữ liệu trong [gamemode].'
+    user-data-removed: '&a Tất cả dữ liệu trong [gamemode] đã bị xóa!'
+    add-like: '&a Bạn thích đảo của [name].'
+    player-add-like: '&a [name] thích đảo của bạn.'
+    remove-like: '&c Bạn đã xóa lượt thích cho đảo của [name].'
+    player-remove-like: '&c [name] đã xóa lượt thích cho đảo của bạn.'
+    add-dislike: '&c Bạn ghét đảo của [name].'
+    player-add-dislike: '&c [name] ghét đảo của bạn.'
+    remove-dislike: '&a Bạn đã xóa lượt ghét cho đảo của [name].'
+    player-remove-dislike: '&a [name] đã xóa lượt ghét cho đảo của bạn.'
+    add-stars: '&a Bạn đã thêm [number] sao cho đảo của [name].'
+    player-add-stars: '&a [name] đã thêm [number] sao cho đảo của bạn.'
+    remove-stars: '&c bạn đã xóa sao cho đảo của [name].'
+    player-remove-stars: '&c [name] đã xóa sao cho đảo của bạn.'
