@@ -406,19 +406,10 @@ public class ListIslandsPanel extends CommonPanel
         }
         else
         {
-            material = null;
-        }
-
-        if (material == null &&
-            island.getMetaData() != null &&
-            island.getMetaData().containsKey(Constants.METADATA_ICON))
-        {
-            material = Material.matchMaterial(island.getMetaData(Constants.METADATA_ICON).asString());
-        }
-
-        if (material == null)
-        {
-            material = likesObject == null ? Material.PAPER : Material.WRITTEN_BOOK;
+            material = island.getMetaData()
+                    .map(map -> map.get(Constants.METADATA_ICON))
+                    .map(metaDataValue -> Material.matchMaterial(metaDataValue.asString()))
+                    .orElseGet(() -> likesObject == null ? Material.PAPER : Material.WRITTEN_BOOK);
         }
 
         PanelItemBuilder itemBuilder = new PanelItemBuilder().
@@ -426,7 +417,7 @@ public class ListIslandsPanel extends CommonPanel
             description(description).
             clickHandler(clickHandler);
 
-        if (material.equals(Material.PLAYER_HEAD))
+        if (Material.PLAYER_HEAD.equals(material))
         {
             if (owner == null)
             {

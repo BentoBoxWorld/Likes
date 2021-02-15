@@ -393,19 +393,10 @@ public class TopLikesPanel
         }
         else
         {
-            material = null;
-        }
-
-        if (material == null &&
-            island.getMetaData() != null &&
-            island.getMetaData().containsKey(Constants.METADATA_ICON))
-        {
-            material = Material.matchMaterial(island.getMetaData(Constants.METADATA_ICON).asString());
-        }
-
-        if (material == null)
-        {
-            material = this.addon.getSettings().getDefaultIcon();
+            material = island.getMetaData()
+                    .map(map -> map.get(Constants.METADATA_ICON))
+                    .map(metaDataValue -> Material.matchMaterial(metaDataValue.asString()))
+                    .orElseGet(() -> this.addon.getSettings().getDefaultIcon());
         }
 
         PanelItemBuilder itemBuilder = new PanelItemBuilder().
@@ -644,19 +635,10 @@ public class TopLikesPanel
         }
         else
         {
-            material = null;
-        }
-
-        if (material == null &&
-            island.getMetaData() != null &&
-            island.getMetaData().containsKey(Constants.METADATA_ICON))
-        {
-            material = Material.matchMaterial(island.getMetaData(Constants.METADATA_ICON).asString());
-        }
-
-        if (material == null)
-        {
-            material = this.addon.getSettings().getDefaultIcon();
+            material = island.getMetaData()
+                    .map(map -> map.get(Constants.METADATA_ICON))
+                    .map(metaDataValue -> Material.matchMaterial(metaDataValue.asString()))
+                    .orElseGet(() -> this.addon.getSettings().getDefaultIcon());
         }
 
         if (material == null || material.equals(Material.PLAYER_HEAD))
