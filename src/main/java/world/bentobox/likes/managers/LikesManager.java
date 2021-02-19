@@ -8,10 +8,10 @@ package world.bentobox.likes.managers;
 
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.bukkit.World;
@@ -56,23 +56,23 @@ public class LikesManager
         this.addon = addon;
 
         this.likesDatabase = new Database<>(addon, LikesObject.class);
-        this.likesCache = new HashMap<>();
+        this.likesCache = new ConcurrentHashMap<>();
 
         // Save memory, by adding values to set if they are necessary.
         switch (this.addon.getSettings().getMode())
         {
             case LIKES:
-                this.sortedLikeCache = new HashMap<>();
+                this.sortedLikeCache = new ConcurrentHashMap<>();
 
                 break;
             case LIKES_DISLIKES:
-                this.sortedDislikeCache = new HashMap<>();
-                this.sortedLikeCache = new HashMap<>();
-                this.sortedRankCache = new HashMap<>();
+                this.sortedDislikeCache = new ConcurrentHashMap<>();
+                this.sortedLikeCache = new ConcurrentHashMap<>();
+                this.sortedRankCache = new ConcurrentHashMap<>();
 
                 break;
             case STARS:
-                this.sortedStarsCache = new HashMap<>();
+                this.sortedStarsCache = new ConcurrentHashMap<>();
                 break;
         }
 
