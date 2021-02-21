@@ -1,7 +1,7 @@
-//
+///
 // Created by BONNe
-// Copyright - 2019
-//
+// Copyright - 2021
+///
 
 
 package world.bentobox.likes.listeners;
@@ -11,7 +11,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import world.bentobox.bentobox.api.events.island.IslandEvent;
+import world.bentobox.bentobox.api.events.island.IslandCreatedEvent;
+import world.bentobox.bentobox.api.events.island.IslandDeleteEvent;
+import world.bentobox.bentobox.api.events.island.IslandDeletedEvent;
+import world.bentobox.bentobox.api.events.island.IslandResettedEvent;
+import world.bentobox.bentobox.api.events.island.IslandUnregisteredEvent;
 import world.bentobox.likes.LikesAddon;
 
 
@@ -20,40 +24,84 @@ import world.bentobox.likes.LikesAddon;
  */
 public class ResetListener implements Listener
 {
-	/**
-	 * Default constructor.
-	 * @param addon Likes Addon
-	 */
-	public ResetListener(LikesAddon addon)
-	{
-		this.addon = addon;
-	}
+    /**
+     * Default constructor.
+     *
+     * @param addon Likes Addon
+     */
+    public ResetListener(LikesAddon addon)
+    {
+        this.addon = addon;
+    }
 
 
-	/**
-	 * Island reset event catcher.
-	 * @param event Island Event
-	 */
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onIslandReset(IslandEvent event)
-	{
-		if (event.getReason().equals(IslandEvent.Reason.CREATED) ||
-			(this.addon.getSettings().isResetLikes() && event.getReason().equals(IslandEvent.Reason.RESETTED)))
-		{
-			this.addon.getManager().resetLikes(event.getPlayerUUID(),
-				event.getIsland().getUniqueId(),
-				event.getIsland().getWorld());
-		}
-	}
+    /**
+     * This method handles Island Created event.
+     *
+     * @param event Event that must be handled.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onIslandCreated(IslandCreatedEvent event)
+    {
+        this.addon.getAddonManager().resetLikes(event.getPlayerUUID(),
+                event.getIsland().getUniqueId(),
+                event.getIsland().getWorld());
+    }
 
 
-// ---------------------------------------------------------------------
-// Section: Instance Variables
-// ---------------------------------------------------------------------
+    /**
+     * This method handles Island Resetted event.
+     *
+     * @param event Event that must be handled.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onIslandCreated(IslandResettedEvent event)
+    {
+        if (this.addon.getSettings().isResetLikes())
+        {
+            this.addon.getAddonManager().resetLikes(event.getPlayerUUID(),
+                    event.getIsland().getUniqueId(),
+                    event.getIsland().getWorld());
+        }
+    }
 
 
-	/**
-	 * Likes addon instance
-	 */
-	private LikesAddon addon;
+    /**
+     * This method handles Island Unregister event.
+     *
+     * @param event Event that must be handled.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onIslandUnregister(IslandUnregisteredEvent event)
+    {
+        if (this.addon.getSettings().isResetLikes())
+        {
+            this.addon.getAddonManager().resetLikes(event.getPlayerUUID(),
+                    event.getIsland().getUniqueId(),
+                    event.getIsland().getWorld());
+        }
+    }
+
+
+    /**
+     * This method handles Island Deletion
+     *
+     * @param event Event that must be handled.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onIslandDelete(IslandDeleteEvent event)
+    {
+        this.addon.getAddonManager().removeObject(event.getIsland().getUniqueId());
+    }
+
+
+    // ---------------------------------------------------------------------
+    // Section: Instance Variables
+    // ---------------------------------------------------------------------
+
+
+    /**
+     * Likes addon instance
+     */
+    private final LikesAddon addon;
 }

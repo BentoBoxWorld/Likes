@@ -1,11 +1,15 @@
+///
+// Created by BONNe
+// Copyright - 2021
+///
+
 package world.bentobox.likes;
 
 
-import java.util.Arrays;
-import java.util.Optional;
-
 import org.bukkit.Bukkit;
 import org.eclipse.jdt.annotation.NonNull;
+import java.util.Arrays;
+import java.util.Optional;
 
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
@@ -36,8 +40,8 @@ public class LikesAddon extends Addon
 
 
     /**
-     * Executes code when loading the addon. This is called before {@link #onEnable()}.
-     * This <b>must</b> be used to setup configuration, worlds and commands.
+     * Executes code when loading the addon. This is called before {@link #onEnable()}. This <b>must</b> be used to
+     * setup configuration, worlds and commands.
      */
     @Override
     public void onLoad()
@@ -65,10 +69,9 @@ public class LikesAddon extends Addon
 
 
     /**
-     * Executes code when enabling the addon. This is called after {@link #onLoad()}.
-     * <br/> Note that commands and worlds registration <b>must</b> be done in {@link
-     * #onLoad()}, if need be. Failure to do so <b>will</b> result in issues such as
-     * tab-completion not working for commands.
+     * Executes code when enabling the addon. This is called after {@link #onLoad()}. <br/> Note that commands and
+     * worlds registration <b>must</b> be done in {@link #onLoad()}, if need be. Failure to do so <b>will</b> result in
+     * issues such as tab-completion not working for commands.
      */
     @Override
     public void onEnable()
@@ -113,10 +116,10 @@ public class LikesAddon extends Addon
                 // create GameMode without them.
 
                 gameModeAddon.getPlayerCommand().ifPresent(
-                        playerCommand -> new PlayerCommand(this, playerCommand));
+                    playerCommand -> new PlayerCommand(this, playerCommand));
 
                 gameModeAddon.getAdminCommand().ifPresent(
-                        adminCommand -> new AdminCommand(this, adminCommand));
+                    adminCommand -> new AdminCommand(this, adminCommand));
 
                 // Register all likes addon placeholders
                 this.registerAddonPlaceholders(gameModeAddon);
@@ -132,10 +135,10 @@ public class LikesAddon extends Addon
         // Even if Vault is installed, it does not mean that economy can be used. It is
         // necessary to check it via VaultHook#hook() method.
 
-        if (!vaultHook.isPresent() || !vaultHook.get().hook())
+        if (!vaultHook.isPresent())
         {
             this.vaultHook = null;
-            this.logWarning("Economy plugin not found by Likes Addon!");
+            this.logWarning("Vault plugin not found. Economy will not work!");
         }
         else
         {
@@ -199,17 +202,25 @@ public class LikesAddon extends Addon
         // onDisable we would like to save exisitng settings. It is not necessary for
         // addons that does not have interface for settings editing!
 
-        if (this.settings != null)
-        {
-            new Config<>(this, Settings.class).saveConfigObject(this.settings);
-        }
-
         this.manager.save();
     }
 
 
     /**
+     * This method saves settings file from memory.
+     */
+    public void saveSettings()
+    {
+        if (this.settings != null)
+        {
+            new Config<>(this, Settings.class).saveConfigObject(this.settings);
+        }
+    }
+
+
+    /**
      * This is simple method that adds given event to plugin manager.
+     *
      * @param event BentoBoxEvent that is triggered.
      */
     public void callEvent(BentoBoxEvent event)
@@ -220,6 +231,7 @@ public class LikesAddon extends Addon
 
     /**
      * Registers LikesAddon placeholders for this gameMode Addon.
+     *
      * @param gameModeAddon the gameMode Addon to register the LikesAddon placeholders.
      */
     public void registerAddonPlaceholders(@NonNull GameModeAddon gameModeAddon)
@@ -227,8 +239,8 @@ public class LikesAddon extends Addon
         final PlaceholdersManager mgr = this.getPlugin().getPlaceholdersManager();
 
         Arrays.stream(LikesAddonPlaceholderType.values()).
-        filter(placeholder -> !mgr.isPlaceholder(gameModeAddon, placeholder.getPlaceholder())).
-        forEach(placeholder -> mgr.registerPlaceholder(gameModeAddon,
+            filter(placeholder -> !mgr.isPlaceholder(gameModeAddon, placeholder.getPlaceholder())).
+            forEach(placeholder -> mgr.registerPlaceholder(gameModeAddon,
                 placeholder.getPlaceholder(),
                 new LikesAddonPlaceholder(this, gameModeAddon, placeholder)));
     }
@@ -240,8 +252,18 @@ public class LikesAddon extends Addon
 
 
     /**
-     * This getter will allow to access to VaultHook. It is written so that it could
-     * return null, if Vault is not present.
+     * @return economyProvided variable.
+     */
+    public boolean isEconomyProvided()
+    {
+        return this.vaultHook != null && this.vaultHook.hook();
+    }
+
+
+    /**
+     * This getter will allow to access to VaultHook. It is written so that it could return null, if Vault is not
+     * present.
+     *
      * @return {@code VaultHook} if it is present, {@code null} otherwise.
      */
     public VaultHook getVaultHook()
@@ -277,7 +299,7 @@ public class LikesAddon extends Addon
      *
      * @return the manager (type LikesManager) of this object.
      */
-    public LikesManager getManager()
+    public LikesManager getAddonManager()
     {
         return this.manager;
     }

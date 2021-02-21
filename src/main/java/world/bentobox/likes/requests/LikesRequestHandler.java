@@ -1,11 +1,16 @@
+///
+// Created by BONNe
+// Copyright - 2021
+///
+
 package world.bentobox.likes.requests;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import world.bentobox.bentobox.api.addons.request.AddonRequestHandler;
 import world.bentobox.likes.LikesAddon;
@@ -44,17 +49,17 @@ public class LikesRequestHandler extends AddonRequestHandler
             - the map that contains all island values.
          */
 
-        if (map == null || map.isEmpty()
-            || map.get("world-name") == null || !(map.get("world-name") instanceof String)
-            || map.get("island") == null || !(map.get("island") instanceof String)
-            || Bukkit.getWorld((String) map.get("world-name")) == null)
+        if (map == null || map.isEmpty() ||
+            map.get("world-name") == null || !(map.get("world-name") instanceof String) ||
+            map.get("island") == null || !(map.get("island") instanceof String) ||
+            Bukkit.getWorld((String) map.get("world-name")) == null)
         {
             return Collections.emptyMap();
         }
 
         World world = Bukkit.getWorld((String) map.get("world-name"));
 
-        LikesObject likesObject = this.addon.getManager().getIslandLikes((String) map.get("island"), world);
+        LikesObject likesObject = this.addon.getAddonManager().getIslandLikes((String) map.get("island"), world);
 
         Map<String, Object> returnMap = new HashMap<>(8);
         returnMap.put("likes", likesObject.getLikes());
@@ -62,10 +67,10 @@ public class LikesRequestHandler extends AddonRequestHandler
         returnMap.put("rank", likesObject.getRank());
         returnMap.put("stars", likesObject.getStarsValue());
 
-        returnMap.put("placeByLikes", this.addon.getManager().getSortedLikes(world).entryIndex(likesObject));
-        returnMap.put("placeByDislikes", this.addon.getManager().getSortedDislikes(world).entryIndex(likesObject));
-        returnMap.put("placeByRank", this.addon.getManager().getSortedRank(world).entryIndex(likesObject));
-        returnMap.put("placeByStars", this.addon.getManager().getSortedStars(world).entryIndex(likesObject));
+        returnMap.put("placeByLikes", this.addon.getAddonManager().getIslandRankByLikes(world, likesObject));
+        returnMap.put("placeByDislikes", this.addon.getAddonManager().getIslandRankByDislikes(world, likesObject));
+        returnMap.put("placeByRank", this.addon.getAddonManager().getIslandRankByRank(world, likesObject));
+        returnMap.put("placeByStars", this.addon.getAddonManager().getIslandRankByStars(world, likesObject));
 
         returnMap.put("likedBy", likesObject.getLikedBy());
         returnMap.put("dislikedBy", likesObject.getDislikedBy());
@@ -83,5 +88,5 @@ public class LikesRequestHandler extends AddonRequestHandler
     /**
      * Likes addon instance.
      */
-    private LikesAddon addon;
+    private final LikesAddon addon;
 }

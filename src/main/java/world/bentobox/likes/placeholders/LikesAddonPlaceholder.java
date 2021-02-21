@@ -1,7 +1,7 @@
-//
+///
 // Created by BONNe
-// Copyright - 2019
-//
+// Copyright - 2021
+///
 
 
 package world.bentobox.likes.placeholders;
@@ -13,7 +13,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.placeholders.PlaceholderReplacer;
 import world.bentobox.bentobox.api.user.User;
-import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.LikesAddon;
 
 
@@ -22,50 +21,50 @@ import world.bentobox.likes.LikesAddon;
  */
 public class LikesAddonPlaceholder implements PlaceholderReplacer
 {
-	/**
-	 * Default constructor for likes addon placeholder.
-	 * @param gameModeAddon Target GameMode addon.
-	 * @param type Likes Addon Placeholder Type.
-	 */
-	public LikesAddonPlaceholder(LikesAddon addon, GameModeAddon gameModeAddon, LikesAddonPlaceholderType type)
-	{
-		this.addon = addon;
-		this.gameModeAddon = gameModeAddon;
-		this.type = type;
-	}
+    /**
+     * Default constructor for likes addon placeholder.
+     *
+     * @param gameModeAddon Target GameMode addon.
+     * @param type Likes Addon Placeholder Type.
+     */
+    public LikesAddonPlaceholder(LikesAddon addon, GameModeAddon gameModeAddon, LikesAddonPlaceholderType type)
+    {
+        this.addon = addon;
+        this.gameModeAddon = gameModeAddon;
+        this.type = type;
+    }
 
 
-	/**
-	 * (non-Javadoc)
-	 * @see world.bentobox.bentobox.api.placeholders.PlaceholderReplacer#onReplace(world.bentobox.bentobox.api.user.User)
-	 */
-	@NonNull
-	@Override
-	public String onReplace(@Nullable User user)
-	{
-		if (user == null)
-		{
-			return "";
-		}
+    /**
+     * (non-Javadoc)
+     *
+     * @see world.bentobox.bentobox.api.placeholders.PlaceholderReplacer#onReplace(world.bentobox.bentobox.api.user.User)
+     */
+    @NonNull
+    @Override
+    public String onReplace(@Nullable User user)
+    {
+        if (user == null)
+        {
+            return "";
+        }
 
-		Island island = this.gameModeAddon.getIslands().getIsland(this.gameModeAddon.getOverWorld(), user);
-
-		return this.type.getReplacer().onReplace(this.addon, this.gameModeAddon, island);
-	}
+        return this.type.getReplacer().onReplace(this.addon, this.gameModeAddon, user);
+    }
 
 
-	/**
-	 * Target GameMode addon.
-	 */
-	private final GameModeAddon gameModeAddon;
+    /**
+     * Target GameMode addon.
+     */
+    private final GameModeAddon gameModeAddon;
 
-	/**
-	 * Likes addon instance
-	 */
-	private final LikesAddon addon;
+    /**
+     * Likes addon instance
+     */
+    private final LikesAddon addon;
 
-	/**
-	 * Current placeholder type
-	 */
-	private final LikesAddonPlaceholderType type;
+    /**
+     * Current placeholder type
+     */
+    private final LikesAddonPlaceholderType type;
 }

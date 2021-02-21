@@ -5,7 +5,7 @@ main: world.bentobox.likes.LikesAddon
 # Version of your addon. Can use maven variables.
 version: ${version}${build.number}
 # Minimal BentoBox version for addon to work.
-api-version: 1.14
+api-version: ${bentobox.version}
 # Allow to send metric about this addon usage.
 metrics: true
 # GitHub version check. Will work only for GitHub.
@@ -45,3 +45,7 @@ permissions:
   '[gamemode].likes.admin.settings':
     description: Let the admin use the '/bsb likes settings' command
     default: op
+
+  '[gamemode].likes.icon.STONE':
+    description: Allows to change owned island icon in Top GUIs.
+    default: false
