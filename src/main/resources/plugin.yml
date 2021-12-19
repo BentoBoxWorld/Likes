@@ -1,0 +1,8 @@
+name: Pladdon
+main: world.bentobox.likes.LikesPladdon
+version: ${version}
+api-version: "1.17"
+description: Likes Addon
+author: tastybento
+depend:
+  - BentoBox
