@@ -64,7 +64,7 @@
         <vault.version>1.7</vault.version>
 
         <!-- BentoBox API version -->
-        <bentobox.version>1.16.0-SNAPSHOT</bentobox.version>
+        <bentobox.version>1.16.5</bentobox.version>
         <!-- Warps addon version -->
         <warps.version>1.7.0</warps.version>
 
@@ -156,6 +156,12 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>${spigot.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>plugin-annotations</artifactId>
+            <version>1.2.3-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
