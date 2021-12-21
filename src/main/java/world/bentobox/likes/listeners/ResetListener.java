@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 
 import world.bentobox.bentobox.api.events.island.IslandCreatedEvent;
 import world.bentobox.bentobox.api.events.island.IslandDeleteEvent;
-import world.bentobox.bentobox.api.events.island.IslandDeletedEvent;
 import world.bentobox.bentobox.api.events.island.IslandResettedEvent;
 import world.bentobox.bentobox.api.events.island.IslandUnregisteredEvent;
 import world.bentobox.likes.LikesAddon;

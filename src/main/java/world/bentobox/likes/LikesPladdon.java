@@ -1,6 +1,9 @@
 package world.bentobox.likes;
 
-import world.bentobox.bentobox.BentoBox;
+import org.bukkit.plugin.java.annotation.dependency.Dependency;
+import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
+import org.bukkit.plugin.java.annotation.plugin.Plugin;
+
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.addons.Pladdon;
 
