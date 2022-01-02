@@ -1,0 +1,62 @@
+---
+likes:
+  commands:
+    admin:
+      main: {}
+      settings: {}
+    player:
+      main: {}
+      top: {}
+      view: {}
+  gui:
+    titles:
+      select-block: "&dSeleccione un bloque"
+    buttons:
+      add_like: {}
+      add_dislike: {}
+      add_star: {}
+      like: {}
+      like_rank: {}
+      dislike: {}
+      dislike_rank: {}
+      overall: {}
+      overall_rank: {}
+      stars: {}
+      stars_rank: {}
+      return: {}
+      previous: {}
+      next: {}
+      user: {}
+      view_mode: {}
+      island: {}
+      manage_likes: {}
+      likes_icon: {}
+      wipe_data: {}
+      settings: {}
+      add_like_user: {}
+      remove_like_user: {}
+      add_dislike_user: {}
+      remove_dislike_user: {}
+      add_star_user: {}
+      remove_star_user: {}
+      like_cost: {}
+      like_remove_cost: {}
+      dislike_cost: {}
+      dislike_remove_cost: {}
+      stars_cost: {}
+      stars_remove_cost: {}
+      default_icon: {}
+      inform_players: {}
+      log_history: {}
+      reset_likes: {}
+      is_online: {}
+      has_data: {}
+      all_islands: {}
+      search: {}
+      material-icon: {}
+      all_players: {}
+      online_players: {}
+    tips: {}
+    types: {}
+  errors: {}
+  conversations: {}
