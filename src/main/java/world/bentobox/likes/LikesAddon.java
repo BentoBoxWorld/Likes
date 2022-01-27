@@ -65,6 +65,10 @@ public class LikesAddon extends Addon
             this.logError("Likes settings could not load! Addon disabled.");
             this.setState(State.DISABLED);
         }
+
+        this.saveResource("panels/view_likes.yml", false);
+        this.saveResource("panels/view_likes_dislikes.yml", false);
+        this.saveResource("panels/view_stars.yml", false);
     }
 
 

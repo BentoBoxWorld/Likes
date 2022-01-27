@@ -22,7 +22,9 @@ likes:
   gui:
     titles:
       # Title for viewing island likes GUI
-      view: "&0&l View Island [type]"
+      view-likes: "&0&l View Island Likes"
+      view-likes-dislikes: "&0&l View Island Likes And Dislikes"
+      view-stars: "&0&l View Island Stars"
       # Title for viewing TOP islands.
       top: "&0&l Top Islands by [type]"
       # Title for managing likes, dislikes or stars
