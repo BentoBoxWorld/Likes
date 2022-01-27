@@ -23,7 +23,6 @@ import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.config.Settings;
 import world.bentobox.likes.config.Settings.VIEW_MODE;
 import world.bentobox.likes.database.objects.LikesObject;
-import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.utils.Constants;
 import world.bentobox.likes.utils.Utils;
 

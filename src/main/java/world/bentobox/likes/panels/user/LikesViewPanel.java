@@ -25,7 +25,6 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.database.objects.LikesObject;
-import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.utils.Constants;
 import world.bentobox.likes.utils.Utils;
 

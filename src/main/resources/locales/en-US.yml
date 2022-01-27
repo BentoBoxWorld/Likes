@@ -190,10 +190,6 @@ likes:
           &7 Manage addon
           &7 settings via GUI.
 
-
-
-
-
       # Buttons in Admin View Island GUI
       add_like_user:
         name: "&f&l Add Like"
@@ -326,8 +322,10 @@ likes:
           &7 value.
         search: "&b Value: [value]"
       # Button in Admin Select Blocks GUI
-      material-icon:
+      material:
         name: "&f&l [material]"
+        description: |-
+          &7 Material ID: [id]
       # Button for Admin User Select GUI
       all_players:
         name: "&f&l All Players"
@@ -337,6 +335,11 @@ likes:
         name: "&f&l Online Players"
         description: |-
           &7 List of online players.
+      cancel:
+        name: "&f&l Cancel"
+        description: |-
+          &7 Cancel and return to
+          &7 previous menu.
     # Button tips inside GUIs.
     tips:
       click-to-open: "&e Click &7 to open."
@@ -359,6 +362,7 @@ likes:
       shift-click-to-remove: "&e Shift Click &7 to remove."
       click-to-cancel: "&e Click &7 to cancel."
       click-to-select: "&e Click &7 to select."
+      click-to-choose: "&e Click &7 to choose."
     types:
       likes: "Likes"
       dislikes: "Dislikes"

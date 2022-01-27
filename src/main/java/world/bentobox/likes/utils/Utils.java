@@ -9,19 +9,15 @@ package world.bentobox.likes.utils;
 
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.eclipse.jdt.annotation.Nullable;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.user.User;
-import world.bentobox.bentobox.util.Util;
+import world.bentobox.bentobox.hooks.LangUtilsHook;
 
 
 public class Utils
@@ -157,90 +153,30 @@ public class Utils
 
 
 // ---------------------------------------------------------------------
-// Section: Input sanitization
+// Section: Prettify Object translations
 // ---------------------------------------------------------------------
 
 
     /**
-     * Sanitizes the provided input. It replaces spaces and hyphens with underscores and lower cases the input.
-     *
-     * @param input input to sanitize
-     * @return sanitized input
+     * Prettify Material object for user.
+     * @param object Object that must be pretty.
+     * @param user User who will see the object.
+     * @return Prettified string for Material.
      */
-    public static String sanitizeInput(String input)
+    public static String prettifyObject(@Nullable Material object, User user)
     {
-        return input.toLowerCase(Locale.ENGLISH).replace(" ", "_").replace("-", "_");
-    }
-
-
-    /**
-     * This method prettify given Biome name to more friendly name.
-     *
-     * @param user User which translation set will be used.
-     * @param biome Biome that requires prettifying.
-     * @return Clean and readable biome name.
-     */
-    public static String prettifyObject(User user, Biome biome)
-    {
-        // Find addon structure with:
-        // [addon]:
-        //   biomes:
-        //     [biome]:
-        //       name: [name]
-        String translation = user.getTranslationOrNothing(Constants.BIOMES + biome.name().toLowerCase() + ".name");
-
-        if (!translation.isEmpty())
+        // Nothing to translate
+        if (object == null)
         {
-            // We found our translation.
-            return translation;
+            return "";
         }
 
-        // Find addon structure with:
-        // [addon]:
-        //   biomes:
-        //     [biome]: [name]
-
-        translation = user.getTranslationOrNothing(Constants.BIOMES + biome.name().toLowerCase());
-
-        if (!translation.isEmpty())
-        {
-            // We found our translation.
-            return translation;
-        }
-
-        // Find general structure with:
-        // biomes:
-        //   [biome]: [name]
-
-        translation = user.getTranslationOrNothing("biomes." + biome.name().toLowerCase());
-
-        if (!translation.isEmpty())
-        {
-            // We found our translation.
-            return translation;
-        }
-
-        // Nothing was found. Use just a prettify text function.
-        return Util.prettifyText(biome.name());
-    }
-
-
-    /**
-     * This method prettify given material name to more friendly name.
-     *
-     * @param user User which translation set will be used.
-     * @param material material that requires prettifying.
-     * @return Clean and readable material name.
-     */
-    public static String prettifyObject(User user, Material material)
-    {
         // Find addon structure with:
         // [addon]:
         //   materials:
         //     [material]:
         //       name: [name]
-        String translation =
-            user.getTranslationOrNothing(Constants.MATERIALS + material.name().toLowerCase() + ".name");
+        String translation = user.getTranslationOrNothing(Constants.MATERIALS + object.name().toLowerCase() + ".name");
 
         if (!translation.isEmpty())
         {
@@ -253,7 +189,7 @@ public class Utils
         //   materials:
         //     [material]: [name]
 
-        translation = user.getTranslationOrNothing(Constants.MATERIALS + material.name().toLowerCase());
+        translation = user.getTranslationOrNothing(Constants.MATERIALS + object.name().toLowerCase());
 
         if (!translation.isEmpty())
         {
@@ -262,10 +198,10 @@ public class Utils
         }
 
         // Find general structure with:
-        // biomes:
+        // materials:
         //   [material]: [name]
 
-        translation = user.getTranslationOrNothing("materials." + material.name().toLowerCase());
+        translation = user.getTranslationOrNothing("materials." + object.name().toLowerCase());
 
         if (!translation.isEmpty())
         {
@@ -273,77 +209,31 @@ public class Utils
             return translation;
         }
 
-        // Nothing was found. Use just a prettify text function.
-        return Util.prettifyText(material.name());
+        // Use Lang Utils Hook to translate material
+        return LangUtilsHook.getMaterialName(object, user);
     }
 
 
     /**
-     * This method prettify given itemStack name to more friendly name.
-     *
-     * @param user User which translation set will be used.
-     * @param itemStack material that requires prettifying.
-     * @return Clean and readable material name.
+     * Prettify Material object description for user.
+     * @param object Object that must be pretty.
+     * @param user User who will see the object.
+     * @return Prettified description string for Material.
      */
-    public static String prettifyObject(User user, ItemStack itemStack)
+    public static String prettifyDescription(@Nullable Material object, User user)
     {
-        if (itemStack.hasItemMeta() && itemStack.getItemMeta() != null)
+        // Nothing to translate
+        if (object == null)
         {
-            // If item has a valid display name, return it.
-
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            return itemMeta.getDisplayName().isEmpty() ?
-                Utils.prettifyObject(user, itemStack.getType()) :
-                itemMeta.getDisplayName();
-        }
-        else
-        {
-            // Otherwise return material object name:
-            return Utils.prettifyObject(user, itemStack.getType());
-        }
-    }
-
-
-    /**
-     * This method prettify given entity name to more friendly name.
-     *
-     * @param user User which translation set will be used.
-     * @param entity entity that requires prettifying.
-     * @return Clean and readable entity name.
-     */
-    public static String prettifyObject(User user, EntityType entity)
-    {
-        // Find addon structure with:
-        // [addon]:
-        //   biomes:
-        //     [entity]:
-        //       name: [name]
-        String translation = user.getTranslationOrNothing(Constants.ENTITIES + entity.name().toLowerCase() + ".name");
-
-        if (!translation.isEmpty())
-        {
-            // We found our translation.
-            return translation;
+            return "";
         }
 
         // Find addon structure with:
         // [addon]:
-        //   biomes:
-        //     [entity]: [name]
-
-        translation = user.getTranslationOrNothing(Constants.ENTITIES + entity.name().toLowerCase());
-
-        if (!translation.isEmpty())
-        {
-            // We found our translation.
-            return translation;
-        }
-
-        // Find general structure with:
-        // biomes:
-        //   [entity]: [name]
-
-        translation = user.getTranslationOrNothing("entities." + entity.name().toLowerCase());
+        //   materials:
+        //     [material]:
+        //       description: [text]
+        String translation = user.getTranslationOrNothing(Constants.MATERIALS + object.name().toLowerCase() + ".description");
 
         if (!translation.isEmpty())
         {
@@ -351,8 +241,8 @@ public class Utils
             return translation;
         }
 
-        // Nothing was found. Use just a prettify text function.
-        return Util.prettifyText(entity.name());
+        // No text to return.
+        return "";
     }
 
 

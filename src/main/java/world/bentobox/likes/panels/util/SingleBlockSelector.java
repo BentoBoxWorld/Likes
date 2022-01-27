@@ -189,6 +189,14 @@ public class SingleBlockSelector extends PagedSelector<Material>
 		final String reference = Constants.BUTTONS + "material.";
 
 		List<String> description = new ArrayList<>();
+
+		String descriptionText = Utils.prettifyDescription(material, this.user);
+
+		if (!descriptionText.isBlank())
+		{
+			description.add(descriptionText);
+		}
+
 		description.add(this.user.getTranslation(reference + "description",
 			"[id]", material.name()));
 		description.add("");
@@ -196,7 +204,7 @@ public class SingleBlockSelector extends PagedSelector<Material>
 
 		return new PanelItemBuilder().
 			name(this.user.getTranslation(reference + "name", "[material]",
-				Utils.prettifyObject(this.user, material))).
+				Utils.prettifyObject(material, this.user))).
 			icon(PanelUtils.getMaterialItem(material)).
 			description(description).
 			clickHandler((panel, user1, clickType, slot) -> {
