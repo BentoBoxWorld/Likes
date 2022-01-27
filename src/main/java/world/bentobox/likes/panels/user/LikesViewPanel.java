@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lv.id.bonne.panelutils.PanelUtils;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
@@ -142,7 +143,7 @@ public class LikesViewPanel
      */
     private void buildLikesPanel(PanelBuilder panelBuilder)
     {
-        GuiUtils.fillBorder(panelBuilder, 4, Material.MAGENTA_STAINED_GLASS_PANE);
+        PanelUtils.fillBorder(panelBuilder, 4, Material.MAGENTA_STAINED_GLASS_PANE);
 
         panelBuilder.item(10, this.createButton(Button.LIKE));
         panelBuilder.item(11, this.createButton(Button.LIKE_RANK));
@@ -160,7 +161,7 @@ public class LikesViewPanel
      */
     private void buildLikesDislikesPanel(PanelBuilder panelBuilder)
     {
-        GuiUtils.fillBorder(panelBuilder, 6, Material.MAGENTA_STAINED_GLASS_PANE);
+        PanelUtils.fillBorder(panelBuilder, 6, Material.MAGENTA_STAINED_GLASS_PANE);
 
         panelBuilder.item(10, this.createButton(Button.LIKE));
         panelBuilder.item(11, this.createButton(Button.LIKE_RANK));
@@ -186,7 +187,7 @@ public class LikesViewPanel
      */
     private void buildStarsPanel(PanelBuilder panelBuilder)
     {
-        GuiUtils.fillBorder(panelBuilder, 4, Material.MAGENTA_STAINED_GLASS_PANE);
+        PanelUtils.fillBorder(panelBuilder, 4, Material.MAGENTA_STAINED_GLASS_PANE);
 
         panelBuilder.item(10, this.createButton(Button.STARS));
         panelBuilder.item(11, this.createButton(Button.STARS_RANK));

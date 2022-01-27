@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import lv.id.bonne.panelutils.PanelUtils;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
@@ -23,7 +24,6 @@ import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.config.Settings;
 import world.bentobox.likes.panels.CommonPanel;
 import world.bentobox.likes.panels.ConversationUtils;
-import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.panels.util.SelectBlocksPanel;
 import world.bentobox.likes.utils.Constants;
 
@@ -67,7 +67,7 @@ public class EditSettingsPanel extends CommonPanel
             user(this.user).
             name(this.user.getTranslation(Constants.TITLES + "settings"));
 
-        GuiUtils.fillBorder(panelBuilder);
+        PanelUtils.fillBorder(panelBuilder);
 
         // Like cost
         panelBuilder.item(10, this.createButton(Button.LIKE_COST));

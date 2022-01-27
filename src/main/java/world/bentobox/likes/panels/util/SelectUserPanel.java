@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import lv.id.bonne.panelutils.PanelUtils;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
@@ -51,7 +52,7 @@ public class SelectUserPanel
         PanelBuilder panelBuilder = new PanelBuilder().user(this.user).
             name(this.user.getTranslation(Constants.TITLES + "select-player"));
 
-        GuiUtils.fillBorder(panelBuilder, Material.BLUE_STAINED_GLASS_PANE);
+        PanelUtils.fillBorder(panelBuilder, Material.BLUE_STAINED_GLASS_PANE);
 
         final int MAX_ELEMENTS = 21;
 

@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import lv.id.bonne.panelutils.PanelUtils;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
@@ -81,7 +82,7 @@ public class SelectBlocksPanel
             user(this.user).
             name(this.user.getTranslation(Constants.TITLES + "select-block"));
 
-        GuiUtils.fillBorder(panelBuilder, Material.BLUE_STAINED_GLASS_PANE);
+        PanelUtils.fillBorder(panelBuilder, Material.BLUE_STAINED_GLASS_PANE);
 
         final int MAX_ELEMENTS = 21;
 
@@ -200,7 +201,7 @@ public class SelectBlocksPanel
         return new PanelItemBuilder().
             name(name).
             description(description).
-            icon(GuiUtils.getMaterialItem(material)).
+            icon(PanelUtils.getMaterialItem(material)).
             clickHandler((panel, user1, clickType, slot) -> {
                 if (this.singleSelect)
                 {

@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import lv.id.bonne.panelutils.PanelUtils;
 import world.bentobox.bentobox.api.metadata.MetaDataValue;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
@@ -64,7 +65,7 @@ public class ListIslandsPanel extends CommonPanel
             user(this.user).
             name(this.user.getTranslation(Constants.TITLES + "select-island"));
 
-        GuiUtils.fillBorder(panelBuilder, Material.BLUE_STAINED_GLASS_PANE);
+        PanelUtils.fillBorder(panelBuilder, Material.BLUE_STAINED_GLASS_PANE);
 
         panelBuilder.item(3, this.createButton(Filter.IS_ONLINE));
         panelBuilder.item(4, this.createButton(Filter.HAS_DATA));

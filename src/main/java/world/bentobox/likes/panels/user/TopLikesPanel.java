@@ -13,6 +13,7 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import lv.id.bonne.panelutils.PanelUtils;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
@@ -130,7 +131,7 @@ public class TopLikesPanel
             rowCount = 6;
         }
 
-        GuiUtils.fillBorder(panelBuilder, rowCount, mainMaterial);
+        PanelUtils.fillBorder(panelBuilder, rowCount, mainMaterial);
 
         if (this.addon.getSettings().getMode().equals(Settings.LikeMode.LIKES_DISLIKES))
         {

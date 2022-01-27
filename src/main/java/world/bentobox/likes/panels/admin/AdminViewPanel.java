@@ -13,6 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import lv.id.bonne.panelutils.PanelUtils;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
@@ -20,7 +21,6 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.database.objects.LikesObject;
 import world.bentobox.likes.panels.CommonPanel;
-import world.bentobox.likes.panels.GuiUtils;
 import world.bentobox.likes.panels.user.LikesManagePanel;
 import world.bentobox.likes.panels.util.SelectUserPanel;
 import world.bentobox.likes.utils.Constants;
@@ -136,7 +136,7 @@ public class AdminViewPanel extends CommonPanel
      */
     private void buildLikesPanel(PanelBuilder panelBuilder)
     {
-        GuiUtils.fillBorder(panelBuilder, 4, Material.MAGENTA_STAINED_GLASS_PANE);
+        PanelUtils.fillBorder(panelBuilder, 4, Material.MAGENTA_STAINED_GLASS_PANE);
 
         panelBuilder.item(2, this.createButton(Button.ADD_LIKE_USER));
         panelBuilder.item(3, this.createButton(Button.REMOVE_LIKE_USER));
@@ -157,7 +157,7 @@ public class AdminViewPanel extends CommonPanel
      */
     private void buildLikesDislikesPanel(PanelBuilder panelBuilder)
     {
-        GuiUtils.fillBorder(panelBuilder, 6, Material.MAGENTA_STAINED_GLASS_PANE);
+        PanelUtils.fillBorder(panelBuilder, 6, Material.MAGENTA_STAINED_GLASS_PANE);
 
         panelBuilder.item(2, this.createButton(Button.ADD_LIKE_USER));
         panelBuilder.item(3, this.createButton(Button.REMOVE_LIKE_USER));
@@ -189,7 +189,7 @@ public class AdminViewPanel extends CommonPanel
      */
     private void buildStarsPanel(PanelBuilder panelBuilder)
     {
-        GuiUtils.fillBorder(panelBuilder, 4, Material.MAGENTA_STAINED_GLASS_PANE);
+        PanelUtils.fillBorder(panelBuilder, 4, Material.MAGENTA_STAINED_GLASS_PANE);
 
         panelBuilder.item(2, this.createButton(Button.ADD_STAR_USER));
         panelBuilder.item(3, this.createButton(Button.REMOVE_STAR_USER));

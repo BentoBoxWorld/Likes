@@ -56,7 +56,7 @@
         <!-- Some JAVA encoding settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>16</java.version>
 
         <!-- SPIGOT API version -->
         <spigot.version>1.16.4-R0.1-SNAPSHOT</spigot.version>
@@ -67,7 +67,8 @@
         <bentobox.version>1.16.6</bentobox.version>
         <!-- Warps addon version -->
         <warps.version>1.7.0</warps.version>
-
+        <!-- Panel Utils version -->
+        <panelutils.version>1.0.0</panelutils.version>
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- This allows to change between versions and snapshots. -->
@@ -159,6 +160,11 @@
             <version>${warps.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>lv.id.bonne</groupId>
+            <artifactId>panelutils</artifactId>
+            <version>${panelutils.version}</version>
+        </dependency>
     </dependencies>
 
     <!-- Build contains information for maven. It allows to create correct 
@@ -246,9 +252,25 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.3.1-SNAPSHOT</version>
                 <configuration>
                     <minimizeJar>true</minimizeJar>
+                    <artifactSet>
+                        <includes>
+                            <include>lv.id.bonne:panelutils:*</include>
+                        </includes>
+                    </artifactSet>
+                    <transformers>
+                        <!-- Add a transformer to exclude any other manifest files (possibly from dependencies). -->
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+                            <resource>MANIFEST.MF</resource>
+                        </transformer>
+                        <!-- Add a transformer to include your custom manifest file. -->
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                            <resource>META-INF/MANIFEST.MF</resource>
+                            <file>src/main/resources/META-INF/MANIFEST.MF</file>
+                        </transformer>
+                    </transformers>
                 </configuration>
                 <executions>
                     <execution>
