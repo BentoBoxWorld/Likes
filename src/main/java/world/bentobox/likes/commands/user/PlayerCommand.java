@@ -78,7 +78,7 @@ public class PlayerCommand extends CompositeCommand
 
         Optional<Island> island = this.getAddon().getIslands().getIslandAt(user.getLocation());
 
-        if (!island.isPresent())
+        if (island.isEmpty())
         {
             Utils.sendMessage(user, user.getTranslation(Constants.ERRORS + "not-on-island"));
             return false;

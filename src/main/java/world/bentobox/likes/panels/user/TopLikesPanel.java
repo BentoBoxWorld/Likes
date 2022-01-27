@@ -109,7 +109,7 @@ public class TopLikesPanel
 
         if (topPlayerCount == 0)
         {
-            this.user.sendMessage(this.user.getTranslation(Constants.ERRORS + "top-is-empty"));
+            Utils.sendMessage(this.user, this.user.getTranslation(Constants.ERRORS + "top-is-empty"));
             this.user.closeInventory();
             return;
         }

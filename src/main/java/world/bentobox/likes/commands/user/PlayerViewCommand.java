@@ -19,6 +19,7 @@ import world.bentobox.bentobox.util.Util;
 import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.panels.user.LikesViewPanel;
 import world.bentobox.likes.utils.Constants;
+import world.bentobox.likes.utils.Utils;
 
 
 /**
@@ -76,8 +77,8 @@ public class PlayerViewCommand extends CompositeCommand
     {
         if (!args.isEmpty() && !user.hasPermission(this.getPermission() + "others"))
         {
-            user.sendMessage("general.errors.no-permission",
-                Constants.PARAMETER_PERMISSION, this.getPermission() + "others");
+            Utils.sendMessage(user, user.getTranslation("general.errors.no-permission",
+                Constants.PARAMETER_PERMISSION, this.getPermission() + "others"));
             return false;
         }
 
@@ -93,7 +94,8 @@ public class PlayerViewCommand extends CompositeCommand
 
             if (playerUUID == null)
             {
-                user.sendMessage("general.errors.unknown-player", TextVariables.NAME, args.get(0));
+                Utils.sendMessage(user, user.getTranslation("general.errors.unknown-player",
+                    TextVariables.NAME, args.get(0)));
                 return false;
             }
 
@@ -102,7 +104,7 @@ public class PlayerViewCommand extends CompositeCommand
 
         if (island == null)
         {
-            user.sendMessage(Constants.ERRORS + "not-on-island");
+            Utils.sendMessage(user, user.getTranslation(Constants.ERRORS + "not-on-island"));
             return false;
         }
 
