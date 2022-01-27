@@ -26,6 +26,7 @@ import world.bentobox.likes.placeholders.LikesAddonPlaceholder;
 import world.bentobox.likes.placeholders.LikesAddonPlaceholderType;
 import world.bentobox.likes.requests.LikesRequestHandler;
 import world.bentobox.likes.requests.TopTenRequestHandler;
+import world.bentobox.visit.VisitAddon;
 import world.bentobox.warps.Warp;
 
 
@@ -163,6 +164,20 @@ public class LikesAddon extends Addon
             this.logWarning("Warps addon not found by Likes Addon!");
         }
 
+        // Check if warps exist, so players could warp when they click on player icon.
+
+        Optional<Addon> visits = this.getPlugin().getAddonsManager().getAddonByName("Visit");
+
+        if (visits.isPresent())
+        {
+            this.visitHook = (VisitAddon) visits.get();
+        }
+        else
+        {
+            this.visitHook = null;
+            this.logWarning("Visit addon not found by Likes Addon!");
+        }
+
         // Register Listener
         this.registerListener(new ResetListener(this));
 
@@ -277,6 +292,17 @@ public class LikesAddon extends Addon
 
 
     /**
+     * Gets visit hook.
+     *
+     * @return the visit hook
+     */
+    public VisitAddon getVisitHook()
+    {
+        return this.visitHook;
+    }
+
+
+    /**
      * Method LikesAddon#getWarpHook returns the warpHook of this object.
      *
      * @return {@code Warp} of this object, {@code null} otherwise.
@@ -330,7 +356,12 @@ public class LikesAddon extends Addon
     private VaultHook vaultHook;
 
     /**
-     * Local variable that stores if vaultHook is present.
+     * Local variable that stores if warpHook is present.
      */
     private Warp warpHook;
+
+    /**
+     * Local variable that stores if visitHook is present.
+     */
+    private VisitAddon visitHook;
 }

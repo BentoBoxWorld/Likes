@@ -67,6 +67,8 @@
         <bentobox.version>1.16.6</bentobox.version>
         <!-- Warps addon version -->
         <warps.version>1.7.0</warps.version>
+        <!-- Visit addon version -->
+        <visit.version>1.4.0</visit.version>
         <!-- Panel Utils version -->
         <panelutils.version>1.0.0</panelutils.version>
         <!-- Revision variable removes warning about dynamic version -->
@@ -158,6 +160,12 @@
             <groupId>world.bentobox</groupId>
             <artifactId>warps</artifactId>
             <version>${warps.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>world.bentobox</groupId>
+            <artifactId>visit</artifactId>
+            <version>${visit.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
