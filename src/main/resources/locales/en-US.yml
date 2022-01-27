@@ -26,7 +26,7 @@ likes:
       view-likes-dislikes: "&0&l View Island Likes And Dislikes"
       view-stars: "&0&l View Island Stars"
       # Title for viewing TOP islands.
-      top: "&0&l Top Islands by [type]"
+      top: "&0&l Top Islands"
       # Title for managing likes, dislikes or stars
       manage: "&0&l Manage [type]"
       # Title for main Admin GUI
@@ -139,6 +139,7 @@ likes:
         active: "&2 Shows ranking by [type]"
         inactive: "&c Shows ranking by [type]"
       island:
+        empty: '&f&l [name]. place'
         name: '&f&l [name]'
         description: |-
           [owner]

@@ -70,6 +70,7 @@ public class LikesAddon extends Addon
         this.saveResource("panels/view_likes.yml", false);
         this.saveResource("panels/view_likes_dislikes.yml", false);
         this.saveResource("panels/view_stars.yml", false);
+        this.saveResource("panels/top_panel.yml", false);
     }
 
 
