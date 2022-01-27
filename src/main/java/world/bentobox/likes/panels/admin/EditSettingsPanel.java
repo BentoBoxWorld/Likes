@@ -24,7 +24,7 @@ import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.config.Settings;
 import world.bentobox.likes.panels.CommonPanel;
 import world.bentobox.likes.panels.ConversationUtils;
-import world.bentobox.likes.panels.util.SelectBlocksPanel;
+import world.bentobox.likes.panels.util.SingleBlockSelector;
 import world.bentobox.likes.utils.Constants;
 
 
@@ -259,16 +259,18 @@ public class EditSettingsPanel extends CommonPanel
                 icon = new ItemStack(this.settings.getDefaultIcon());
                 clickHandler = (panel, user, clickType, slot) ->
                 {
-                    SelectBlocksPanel.open(user, (value, materials) ->
-                    {
-                        if (value)
-                        {
-                            this.settings.setDefaultIcon(materials.iterator().next());
-                            this.addon.saveSettings();
-                        }
+                    SingleBlockSelector.open(this.user,
+                        SingleBlockSelector.Mode.ANY,
+                        (status, block) -> {
+                            if (status)
+                            {
+                                this.settings.setDefaultIcon(block);
+                                this.addon.saveSettings();
+                            }
 
-                        this.build();
-                    });
+                            this.build();
+                        });
+
                     return true;
                 };
                 glow = false;

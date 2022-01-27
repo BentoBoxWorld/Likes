@@ -9,7 +9,6 @@ package world.bentobox.likes.panels.admin;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import lv.id.bonne.panelutils.PanelUtils;
@@ -20,10 +19,9 @@ import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.database.objects.LikesObject;
+import world.bentobox.likes.panels.CommonPagedPanel;
 import world.bentobox.likes.panels.CommonPanel;
-import world.bentobox.likes.panels.ConversationUtils;
-import world.bentobox.likes.panels.GuiUtils;
-import world.bentobox.likes.panels.util.SelectBlocksPanel;
+import world.bentobox.likes.panels.util.SingleBlockSelector;
 import world.bentobox.likes.utils.Constants;
 import world.bentobox.likes.utils.Utils;
 
@@ -31,7 +29,7 @@ import world.bentobox.likes.utils.Utils;
 /**
  * This class contains all necessary things that allows to select single island from all existing in given world.
  */
-public class ListIslandsPanel extends CommonPanel
+public class ListIslandsPanel extends CommonPagedPanel<Island>
 {
     /**
      * Default constructor.
@@ -46,8 +44,12 @@ public class ListIslandsPanel extends CommonPanel
         this.iconPermission = this.permissionPrefix + "likes.icon";
 
         this.activeFilter = Filter.IS_ONLINE;
-        this.searchString = "";
-        this.pageIndex = 0;
+
+        this.filterElements = this.addon.getIslands().getIslands(this.world).stream().
+            filter(Island::isOwned).
+            sorted(ISLAND_COMPARATOR).
+            distinct().
+            collect(Collectors.toList());
 
         this.updateFilters();
 
@@ -71,11 +73,8 @@ public class ListIslandsPanel extends CommonPanel
         panelBuilder.item(4, this.createButton(Filter.HAS_DATA));
         panelBuilder.item(5, this.createButton(Filter.ALL_ISLANDS));
 
-        // Add search field.
-        panelBuilder.item(40, this.createButton(Action.SEARCH));
-
         // Populate islands
-        this.populateIslandList(panelBuilder);
+        this.populateElements(panelBuilder, this.filterElements);
 
         panelBuilder.item(44, this.returnButton);
 
@@ -83,53 +82,43 @@ public class ListIslandsPanel extends CommonPanel
     }
 
 
+    /**
+     * This method updates element list.
+     */
+    protected void updateFilters()
+    {
+        switch (this.activeFilter)
+        {
+            case IS_ONLINE -> this.filterElements = Bukkit.getOnlinePlayers().stream().
+                map(player -> this.addon.getIslands().getIsland(this.world, player.getUniqueId())).
+                filter(Objects::nonNull).
+                distinct().
+                collect(Collectors.toList());
+            case HAS_DATA -> this.filterElements = this.addon.getIslands().getIslands(this.world).stream().
+                filter(island -> this.addon.getAddonManager().getExistingIslandLikes(island.getUniqueId()) != null).
+                distinct().
+                collect(Collectors.toList());
+            case ALL_ISLANDS -> this.filterElements = this.addon.getIslands().getIslands(this.world).stream().
+                filter(Island::isOwned).
+                distinct().
+                collect(Collectors.toList());
+            default -> this.filterElements = Collections.emptyList();
+        }
+
+        if (this.searchString != null && !this.searchString.isEmpty())
+        {
+            // Search through filtered elements.
+            this.filterElements = this.searchElements(this.filterElements);
+        }
+
+        // Sort by name.
+        this.filterElements.sort(ISLAND_COMPARATOR);
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Methods
 // ---------------------------------------------------------------------
-
-
-    /**
-     * This method populates panel with all
-     *
-     * @param panelBuilder panelBuilder that must be populated.
-     */
-    private void populateIslandList(PanelBuilder panelBuilder)
-    {
-        if (this.pageIndex < 0)
-        {
-            this.pageIndex = this.maxPageIndex;
-        }
-        else if (this.pageIndex > this.maxPageIndex)
-        {
-            this.pageIndex = 0;
-        }
-
-        if (this.elements.size() > MAX_ELEMENTS)
-        {
-            // Navigation buttons if necessary
-
-            panelBuilder.item(18, this.createButton(Action.PREVIOUS));
-            panelBuilder.item(26, this.createButton(Action.NEXT));
-        }
-
-        int elementIndex = MAX_ELEMENTS * this.pageIndex;
-
-        // I want first row to be only for navigation and return button.
-        int index = 10;
-
-        while (elementIndex < ((this.pageIndex + 1) * MAX_ELEMENTS) &&
-            elementIndex < this.elements.size() &&
-            index < 36)
-        {
-            if (!panelBuilder.slotOccupied(index))
-            {
-                panelBuilder.item(index,
-                    this.createIslandButton(this.elements.get(elementIndex++)));
-            }
-
-            index++;
-        }
-    }
 
 
     /**
@@ -156,8 +145,7 @@ public class ListIslandsPanel extends CommonPanel
                 {
                     User member = User.getInstance(uuid);
 
-                    if (member != null &&
-                        member.isPlayer() &&
+                    if (member.isPlayer() &&
                         member.getName().toLowerCase().contains(this.searchString.toLowerCase()))
                     {
                         return true;
@@ -178,7 +166,8 @@ public class ListIslandsPanel extends CommonPanel
      * @param island island which icon must be created.
      * @return PanelItem that represents given island.
      */
-    private PanelItem createIslandButton(Island island)
+    @Override
+    protected PanelItem createElementButton(Island island)
     {
         if (island == null)
         {
@@ -189,7 +178,7 @@ public class ListIslandsPanel extends CommonPanel
         LikesObject likesObject =
             this.addon.getAddonManager().getExistingIslandLikes(island.getUniqueId());
 
-        User owner = User.getInstance(island.getOwner());
+        User owner = island.getOwner() == null ? null : User.getInstance(island.getOwner());
 
         final String reference = Constants.BUTTONS + "island.";
 
@@ -232,12 +221,9 @@ public class ListIslandsPanel extends CommonPanel
                     memberBuilder.append("\n");
                 }
 
-                if (user != null)
-                {
-                    memberBuilder.append(
-                        this.user.getTranslationOrNothing(Constants.BUTTONS + "island.member",
-                            Constants.PARAMETER_PLAYER, user.getName()));
-                }
+                memberBuilder.append(
+                    this.user.getTranslationOrNothing(Constants.BUTTONS + "island.member",
+                        Constants.PARAMETER_PLAYER, user.getName()));
             }
 
             memberText = memberBuilder.toString();
@@ -254,8 +240,7 @@ public class ListIslandsPanel extends CommonPanel
         {
             switch (this.addon.getSettings().getMode())
             {
-                case LIKES:
-                {
+                case LIKES -> {
                     int rank = this.addon.getAddonManager().getIslandRankByLikes(this.world, likesObject);
 
                     if (rank != -1)
@@ -264,11 +249,8 @@ public class ListIslandsPanel extends CommonPanel
                             Constants.PARAMETER_NUMBER, String.valueOf(rank),
                             Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes"));
                     }
-
-                    break;
                 }
-                case LIKES_DISLIKES:
-                {
+                case LIKES_DISLIKES -> {
                     int byLikes = this.addon.getAddonManager().getIslandRankByLikes(this.world, likesObject);
                     int byDislikes = this.addon.getAddonManager().getIslandRankByDislikes(this.world, likesObject);
                     int byRank = this.addon.getAddonManager().getIslandRankByRank(this.world, likesObject);
@@ -293,10 +275,8 @@ public class ListIslandsPanel extends CommonPanel
                             Constants.PARAMETER_NUMBER, String.valueOf(byRank),
                             Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "rank"));
                     }
-                    break;
                 }
-                case STARS:
-                {
+                case STARS -> {
                     int byStars = this.addon.getAddonManager().getIslandRankByStars(this.world, likesObject);
 
                     if (byStars != -1)
@@ -305,32 +285,24 @@ public class ListIslandsPanel extends CommonPanel
                             Constants.PARAMETER_NUMBER, String.valueOf(byStars),
                             Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "stars"));
                     }
-                    break;
                 }
             }
         }
 
         // Get Numbers Text
-        String numbersText = "";
-
-        switch (this.addon.getSettings().getMode())
-        {
-            case LIKES:
-                numbersText = this.user.getTranslation(reference + "numbers_likes",
-                    Constants.PARAMETER_LIKES, String.valueOf(likesObject == null ? 0 : likesObject.getLikes()));
-                break;
-            case LIKES_DISLIKES:
-                numbersText = this.user.getTranslation(reference + "numbers_likes_dislikes",
-                    Constants.PARAMETER_LIKES, String.valueOf(likesObject == null ? 0 : likesObject.getLikes()),
-                    Constants.PARAMETER_DISLIKES, String.valueOf(likesObject == null ? 0 : likesObject.getDislikes()),
-                    Constants.PARAMETER_RANK, String.valueOf(likesObject == null ? 0 : likesObject.getRank()));
-                break;
-            case STARS:
-                numbersText = this.user.getTranslation(reference + "numbers_stars",
-                    Constants.PARAMETER_STARS, this.hundredsFormat.format(likesObject == null ? 0 : likesObject.getStarsValue()),
-                    Constants.PARAMETER_NUMBER, String.valueOf(likesObject == null ? 0 : likesObject.numberOfStars()));
-                break;
-        }
+        String numbersText = switch (this.addon.getSettings().getMode()) {
+            case LIKES -> this.user.getTranslation(reference + "numbers_likes",
+                Constants.PARAMETER_LIKES, String.valueOf(likesObject == null ? 0 : likesObject.getLikes()));
+            case LIKES_DISLIKES -> this.user.getTranslation(reference + "numbers_likes_dislikes",
+                Constants.PARAMETER_LIKES, String.valueOf(likesObject == null ? 0 : likesObject.getLikes()),
+                Constants.PARAMETER_DISLIKES, String.valueOf(likesObject == null ? 0 : likesObject.getDislikes()),
+                Constants.PARAMETER_RANK, String.valueOf(likesObject == null ? 0 : likesObject.getRank()));
+            case STARS -> this.user.getTranslation(reference + "numbers_stars",
+                Constants.PARAMETER_STARS,
+                this.hundredsFormat.format(likesObject == null ? 0 : likesObject.getStarsValue()),
+                Constants.PARAMETER_NUMBER,
+                String.valueOf(likesObject == null ? 0 : likesObject.numberOfStars()));
+        };
 
         // Now combine everything.
         String descriptionText = this.user.getTranslation(reference + "description",
@@ -346,25 +318,21 @@ public class ListIslandsPanel extends CommonPanel
 
         switch (this.type)
         {
-            case MANAGE:
+            case MANAGE -> {
                 description.add(this.user.getTranslation(Constants.TIPS + "click-to-open"));
-
-                if(this.addon.getAddonManager().getExistingIslandLikes(island.getUniqueId()) != null)
+                if (this.addon.getAddonManager().getExistingIslandLikes(island.getUniqueId()) != null)
                 {
                     description.add(this.user.getTranslation(Constants.TIPS + "shift-click-to-remove"));
                 }
-
-                break;
-            case ICON:
-                description.add(this.user.getTranslation(Constants.TIPS + "click-to-change"));
-                break;
+            }
+            case ICON -> description.add(this.user.getTranslation(Constants.TIPS + "click-to-change"));
         }
 
         PanelItem.ClickHandler clickHandler = (panel, user, clickType, slot) ->
         {
             switch (this.type)
             {
-                case MANAGE:
+                case MANAGE -> {
                     if (clickType.isShiftClick())
                     {
                         this.addon.getAddonManager().removeObject(island.getUniqueId());
@@ -374,25 +342,21 @@ public class ListIslandsPanel extends CommonPanel
                     {
                         AdminViewPanel.openPanel(this, island);
                     }
-                    break;
-                case ICON:
-                    SelectBlocksPanel.open(user, (hasSelected, materials) ->
-                    {
-                        if (hasSelected && materials.size() == 1)
+                }
+                case ICON -> {
+                    SingleBlockSelector.open(this.user,
+                        SingleBlockSelector.Mode.ANY,
+                        (status, block) ->
                         {
-                            if (island.getMetaData() == null)
+                            if (status)
                             {
-                                island.setMetaData(new HashMap<>(4));
+                                island.putMetaData(Constants.METADATA_ICON,
+                                    new MetaDataValue(block.name()));
                             }
 
-                            // Put icon in metadata.
-                            island.putMetaData(Constants.METADATA_ICON,
-                                new MetaDataValue(materials.iterator().next().name()));
-                        }
-
-                        this.build();
-                    });
-                    break;
+                            this.build();
+                        });
+                }
             }
 
             return true;
@@ -407,10 +371,10 @@ public class ListIslandsPanel extends CommonPanel
         }
         else
         {
-            material = island.getMetaData()
-                    .map(map -> map.get(Constants.METADATA_ICON))
-                    .map(metaDataValue -> Material.matchMaterial(metaDataValue.asString()))
-                    .orElseGet(() -> likesObject == null ? Material.PAPER : Material.WRITTEN_BOOK);
+            material = island.getMetaData().
+                map(map -> map.get(Constants.METADATA_ICON)).
+                map(metaDataValue -> Material.matchMaterial(metaDataValue.asString())).
+                orElseGet(() -> likesObject == null ? Material.PAPER : Material.WRITTEN_BOOK);
         }
 
         PanelItemBuilder itemBuilder = new PanelItemBuilder().
@@ -440,133 +404,6 @@ public class ListIslandsPanel extends CommonPanel
 
 
     /**
-     * Create button panel item with a given button type.
-     *
-     * @param button the button
-     * @return the panel item
-     */
-    private PanelItem createButton(Action button)
-    {
-        final String reference = Constants.BUTTONS + button.name().toLowerCase();
-        String name = this.user.getTranslation(reference + ".name");
-        List<String> description = new ArrayList<>();
-
-        PanelItem.ClickHandler clickHandler;
-
-        Material icon = Material.PAPER;
-        boolean glow = false;
-        int count = 1;
-
-        switch (button)
-        {
-            case PREVIOUS:
-            {
-                count = GuiUtils.getPreviousPage(this.pageIndex, this.maxPageIndex);
-                description.add(this.user.getTranslationOrNothing(reference + ".description",
-                    Constants.PARAMETER_NUMBER, String.valueOf(count)));
-
-                // add empty line
-                description.add("");
-                description.add(this.user.getTranslation(Constants.TIPS + "click-to-previous"));
-
-                clickHandler = (panel, user, clickType, i) -> {
-                    this.pageIndex--;
-                    this.build();
-                    return true;
-                };
-
-                icon = Material.TIPPED_ARROW;
-                break;
-            }
-            case NEXT:
-            {
-                count = GuiUtils.getNextPage(this.pageIndex, this.maxPageIndex);
-                description.add(this.user.getTranslationOrNothing(reference + ".description",
-                    Constants.PARAMETER_NUMBER, String.valueOf(count)));
-
-                // add empty line
-                description.add("");
-                description.add(this.user.getTranslation(Constants.TIPS + "click-to-next"));
-
-                clickHandler = (panel, user, clickType, i) -> {
-                    this.pageIndex++;
-                    this.build();
-                    return true;
-                };
-
-                icon = Material.TIPPED_ARROW;
-                break;
-            }
-            case SEARCH:
-            {
-                description.add(this.user.getTranslationOrNothing(reference + ".description"));
-
-                if (this.searchString != null && !this.searchString.isEmpty())
-                {
-                    description.add(this.user.getTranslation(reference + ".search",
-                        Constants.PARAMETER_VALUE, this.searchString));
-                }
-
-                description.add("");
-                description.add(this.user.getTranslation(Constants.TIPS + "left-click-to-edit"));
-
-                if (this.searchString != null && !this.searchString.isEmpty())
-                {
-                    description.add(this.user.getTranslation(Constants.TIPS + "right-click-to-clear"));
-                }
-
-                clickHandler = (panel, user, clickType, slot) ->
-                {
-                    if (clickType.isRightClick())
-                    {
-                        // Clear string.
-                        this.searchString = "";
-                        this.updateFilters();
-                        // Rebuild gui.
-                        this.build();
-                    }
-                    else
-                    {
-                        // Create consumer that process description change
-                        Consumer<String> consumer = value ->
-                        {
-                            if (value != null)
-                            {
-                                this.searchString = value;
-                                this.updateFilters();
-                            }
-
-                            this.build();
-                        };
-
-                        // start conversation
-                        ConversationUtils.createStringInput(consumer,
-                            user,
-                            user.getTranslation(Constants.CONVERSATIONS + "write-search"),
-                            user.getTranslation(Constants.CONVERSATIONS + "search-updated"));
-                    }
-
-                    return true;
-                };
-
-                break;
-            }
-            default:
-                return PanelItem.empty();
-        }
-
-        return new PanelItemBuilder().
-            name(name).
-            description(description).
-            icon(icon).
-            amount(Math.max(count, 1)).
-            clickHandler(clickHandler).
-            glow(glow).
-            build();
-    }
-
-
-    /**
      * This method creates panel item for given button type.
      *
      * @param button Button type.
@@ -589,28 +426,15 @@ public class ListIslandsPanel extends CommonPanel
         {
             this.activeFilter = button;
             this.updateFilters();
-            this.pageIndex = 0;
-
             this.build();
             return true;
         };
 
-        Material material;
-
-        switch (button)
-        {
-            case IS_ONLINE:
-                material = Material.FILLED_MAP;
-                break;
-            case HAS_DATA:
-                material = Material.WRITTEN_BOOK;
-                break;
-            case ALL_ISLANDS:
-                material = Material.CHEST;
-                break;
-            default:
-                material = Material.PAPER;
-        }
+        Material material = switch (button) {
+            case IS_ONLINE -> Material.FILLED_MAP;
+            case HAS_DATA -> Material.WRITTEN_BOOK;
+            case ALL_ISLANDS -> Material.CHEST;
+        };
 
         return new PanelItemBuilder().
             name(name).
@@ -619,67 +443,6 @@ public class ListIslandsPanel extends CommonPanel
             clickHandler(clickHandler).
             glow(this.activeFilter == button).
             build();
-    }
-
-
-    /**
-     * This method updates element list.
-     */
-    private void updateFilters()
-    {
-        switch (this.activeFilter)
-        {
-            case IS_ONLINE:
-                this.elements = Bukkit.getOnlinePlayers().stream().
-                    map(player -> this.addon.getIslands().getIsland(this.world, player.getUniqueId())).
-                    filter(Objects::nonNull).
-                    distinct().
-                    collect(Collectors.toList());
-                break;
-            case HAS_DATA:
-                this.elements = this.addon.getIslands().getIslands(this.world).stream().
-                    filter(island -> this.addon.getAddonManager().getExistingIslandLikes(island.getUniqueId()) != null).
-                    distinct().
-                    collect(Collectors.toList());
-                break;
-            case ALL_ISLANDS:
-                this.elements = this.addon.getIslands().getIslands(this.world).stream().
-                    filter(Island::isOwned).
-                    distinct().
-                    collect(Collectors.toList());
-                break;
-            default:
-                this.elements = Collections.emptyList();
-        }
-
-        if (this.searchString != null && !this.searchString.isEmpty())
-        {
-            // Search through filtered elements.
-            this.elements = this.searchElements(this.elements);
-        }
-
-        // Update max page index.
-        this.maxPageIndex = (int) Math.ceil(1.0 * this.elements.size() / MAX_ELEMENTS) - 1;
-
-        // Sort by name.
-        this.elements.sort((o1, o2) ->
-        {
-            User u1 = User.getInstance(o1.getOwner());
-            User u2 = User.getInstance(o2.getOwner());
-
-            if (u1 == null || !u1.isPlayer())
-            {
-                return -1;
-            }
-            else if (u2 == null || !u2.isPlayer())
-            {
-                return 1;
-            }
-            else
-            {
-                return u1.getName().compareTo(u2.getName());
-            }
-        });
     }
 
 
@@ -730,26 +493,6 @@ public class ListIslandsPanel extends CommonPanel
     }
 
 
-    /**
-     * This enum holds all possible actions in current GUI.
-     */
-    private enum Action
-    {
-        /**
-         * Process search function.
-         */
-        SEARCH,
-        /**
-         * Allows to select previous bundles in multi-page situation.
-         */
-        PREVIOUS,
-        /**
-         * Allows to select next bundles in multi-page situation.
-         */
-        NEXT
-    }
-
-
 // ---------------------------------------------------------------------
 // Section: Variables
 // ---------------------------------------------------------------------
@@ -767,22 +510,7 @@ public class ListIslandsPanel extends CommonPanel
     /**
      * List with elements that will be displayed in current GUI.
      */
-    private List<Island> elements;
-
-    /**
-     * Stores current string for searching.
-     */
-    private String searchString;
-
-    /**
-     * This variable holds current pageIndex for multi-page generator choosing.
-     */
-    private int pageIndex;
-
-    /**
-     * This variable stores maximal page index for previous/next page.
-     */
-    private int maxPageIndex;
+    private List<Island> filterElements;
 
     /**
      * Allows to switch between active tabs.
@@ -790,7 +518,36 @@ public class ListIslandsPanel extends CommonPanel
     private Filter activeFilter;
 
     /**
-     * Stores maximal elements per page.
+     * This comparator orders island by their owner names.
      */
-    public static final int MAX_ELEMENTS = 21;
+    private final static Comparator<Island> ISLAND_COMPARATOR = (o1, o2) -> {
+        if (o1.getOwner() == null && o2.getOwner() == null)
+        {
+            return 0;
+        }
+        else if (o1.getOwner() == null)
+        {
+            return 1;
+        }
+        else if (o2.getOwner() == null)
+        {
+            return -1;
+        }
+
+        User u1 = User.getInstance(o1.getOwner());
+        User u2 = User.getInstance(o2.getOwner());
+
+        if (!u1.isPlayer())
+        {
+            return 1;
+        }
+        else if (!u2.isPlayer())
+        {
+            return -1;
+        }
+        else
+        {
+            return u1.getName().compareTo(u2.getName());
+        }
+    };
 }
