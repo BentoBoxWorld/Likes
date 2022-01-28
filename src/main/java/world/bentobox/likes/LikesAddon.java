@@ -9,8 +9,8 @@ package world.bentobox.likes;
 import org.bukkit.Bukkit;
 import org.eclipse.jdt.annotation.NonNull;
 import java.util.Arrays;
-import java.util.Optional;
 
+import world.bentobox.bank.Bank;
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.configuration.Config;
@@ -133,62 +133,38 @@ public class LikesAddon extends Addon
 
                 // Register all likes addon placeholders
                 this.registerAddonPlaceholders(gameModeAddon);
+
+                this.hooked = true;
             }
         });
 
-        // BentoBox does not manage money, but it provides VaultHook that does it.
-        // I suggest to do the same trick as with Level addon. Create local variable and
-        // store if Vault is present there.
-
-        Optional<VaultHook> vaultHook = this.getPlugin().getVault();
-
-        // Even if Vault is installed, it does not mean that economy can be used. It is
-        // necessary to check it via VaultHook#hook() method.
-
-        if (!vaultHook.isPresent())
+        if (this.hooked)
         {
-            this.vaultHook = null;
-            this.logWarning("Vault plugin not found. Economy will not work!");
+
+            // Register Listener
+            this.registerListener(new ResetListener(this));
+
+            // Register Request Handlers
+            this.registerRequestHandler(new LikesRequestHandler(this));
+            this.registerRequestHandler(new TopTenRequestHandler(this));
         }
         else
         {
-            this.vaultHook = vaultHook.get();
+            this.logError("Likes could not hook into any GameMode. Disabling...");
+            this.setState(State.DISABLED);
         }
+    }
 
-        // Check if warps exist, so players could warp when they click on player icon.
 
-        Optional<Addon> warps = this.getPlugin().getAddonsManager().getAddonByName("Warps");
+    @Override
+    public void allLoaded()
+    {
+        super.allLoaded();
 
-        if (warps.isPresent())
+        if (this.hooked)
         {
-            this.warpHook = (Warp) warps.get();
+            this.hookExtensions();
         }
-        else
-        {
-            this.warpHook = null;
-            this.logWarning("Warps addon not found by Likes Addon!");
-        }
-
-        // Check if warps exist, so players could warp when they click on player icon.
-
-        Optional<Addon> visits = this.getPlugin().getAddonsManager().getAddonByName("Visit");
-
-        if (visits.isPresent())
-        {
-            this.visitHook = (VisitAddon) visits.get();
-        }
-        else
-        {
-            this.visitHook = null;
-            this.logWarning("Visit addon not found by Likes Addon!");
-        }
-
-        // Register Listener
-        this.registerListener(new ResetListener(this));
-
-        // Register Request Handlers
-        this.registerRequestHandler(new LikesRequestHandler(this));
-        this.registerRequestHandler(new TopTenRequestHandler(this));
     }
 
 
@@ -223,10 +199,6 @@ public class LikesAddon extends Addon
     @Override
     public void onDisable()
     {
-        // onDisable we would like to save exisitng settings. It is not necessary for
-        // addons that does not have interface for settings editing!
-
-        this.manager.save();
     }
 
 
@@ -270,9 +242,70 @@ public class LikesAddon extends Addon
     }
 
 
-    // ---------------------------------------------------------------------
-    // Section: Getters
-    // ---------------------------------------------------------------------
+// ---------------------------------------------------------------------
+// Section: Hooks
+// ---------------------------------------------------------------------
+
+
+    /**
+     * This method tries to hook into addons and plugins
+     */
+    private void hookExtensions()
+    {
+        // Try to find Bank addon and if it does not exist, display a warning
+        this.getAddonByName("Bank").ifPresentOrElse(addon ->
+        {
+            this.bankHook = (Bank) addon;
+            this.log("Likes Addon hooked into Bank addon.");
+        }, () ->
+        {
+            this.bankHook = null;
+        });
+
+        // Try to find Visit addon and if it does not exist, display a warning
+        this.getAddonByName("Visit").ifPresentOrElse(addon ->
+        {
+            this.visitHook = (VisitAddon) addon;
+            this.log("Likes Addon hooked into Visit addon.");
+        }, () ->
+        {
+            this.visitHook = null;
+        });
+
+        // Try to find Warps addon and if it does not exist, display a warning
+        this.getAddonByName("Warps").ifPresentOrElse(addon ->
+        {
+            this.warpHook = (Warp) addon;
+            this.log("Likes Addon hooked into Warps addon.");
+        }, () ->
+        {
+            this.warpHook = null;
+        });
+
+        // Try to find Vault Plugin and if it does not exist, display a warning
+        this.getPlugin().getVault().ifPresentOrElse(hook ->
+        {
+            this.vaultHook = hook;
+
+            if (this.vaultHook.hook())
+            {
+                this.log("Likes Addon hooked into Economy.");
+            }
+            else
+            {
+                this.logWarning("Likes Addon could not hook into valid Economy.");
+            }
+        }, () ->
+        {
+            this.vaultHook = null;
+            this.logWarning("Vault plugin not found. Economy will not work!");
+        });
+    }
+
+
+// ---------------------------------------------------------------------
+// Section: Getters
+// ---------------------------------------------------------------------
 
 
     /**
@@ -304,6 +337,17 @@ public class LikesAddon extends Addon
     public VisitAddon getVisitHook()
     {
         return this.visitHook;
+    }
+
+
+    /**
+     * Gets Bank hook.
+     *
+     * @return the Bank hook
+     */
+    public Bank getBankHook()
+    {
+        return this.bankHook;
     }
 
 
@@ -354,6 +398,16 @@ public class LikesAddon extends Addon
      * Likes addon manager.
      */
     private LikesManager manager;
+
+    /**
+     * Stores if Likes addon has hooked any gamemode.
+     */
+    private boolean hooked;
+
+    /**
+     * Local variable that stores if bankHook is present.
+     */
+    private Bank bankHook;
 
     /**
      * Local variable that stores if vaultHook is present.
