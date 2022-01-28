@@ -288,6 +288,21 @@ public class LikesManager
     }
 
 
+    /**
+     * Save likes object.
+     *
+     * @param object the object
+     */
+    private void saveLikesObject(LikesObject object)
+    {
+        if (object.isChanged())
+        {
+            object.setChanged(false);
+            this.likesDatabase.saveObjectAsync(object);
+        }
+    }
+
+
     // ---------------------------------------------------------------------
     // Section: Wipe methods
     // ---------------------------------------------------------------------
@@ -374,6 +389,9 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new LikeAddEvent(user.getUniqueId(), island.getUniqueId()));
+
+            // Save object
+            this.saveLikesObject(object);
         }
     }
 
@@ -421,6 +439,9 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new LikeRemoveEvent(user.getUniqueId(), island.getUniqueId()));
+
+            // Save object
+            this.saveLikesObject(object);
         }
     }
 
@@ -481,6 +502,9 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new DislikeAddEvent(user.getUniqueId(), island.getUniqueId()));
+
+            // Save object
+            this.saveLikesObject(object);
         }
     }
 
@@ -528,6 +552,9 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new DislikeRemoveEvent(user.getUniqueId(), island.getUniqueId()));
+
+            // Save object
+            this.saveLikesObject(object);
         }
     }
 
@@ -593,6 +620,9 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new StarsAddEvent(user.getUniqueId(), value, island.getUniqueId()));
+
+            // Save object
+            this.saveLikesObject(object);
         }
     }
 
@@ -640,6 +670,9 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new StarsRemoveEvent(user.getUniqueId(), island.getUniqueId()));
+
+            // Save object
+            this.saveLikesObject(object);
         }
     }
 
@@ -695,6 +728,9 @@ public class LikesManager
                 data("user-id", user.toString()).
                 build());
         }
+
+        // Save object
+        this.saveLikesObject(object);
     }
 
 
