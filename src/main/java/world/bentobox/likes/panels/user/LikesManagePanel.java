@@ -355,22 +355,27 @@ public class LikesManagePanel extends CommonPanel
 
         PanelItemBuilder builder = new PanelItemBuilder();
 
+        int starsValue = (int) template.dataMap().getOrDefault("value", 1);
+
         if (template.icon() != null)
         {
             builder.icon(template.icon().clone());
         }
         else
         {
-            builder.icon(Material.IRON_INGOT);
+            builder.icon(Material.NETHER_STAR);
+            builder.amount(starsValue);
         }
 
         if (template.title() != null)
         {
-            builder.name(this.user.getTranslation(this.world, template.title()));
+            builder.name(this.user.getTranslation(this.world, template.title(),
+                "[number]", String.valueOf(starsValue)));
         }
         else
         {
-            builder.name(this.user.getTranslation(reference + "name"));
+            builder.name(this.user.getTranslation(reference + "name",
+                "[number]", String.valueOf(starsValue)));
         }
 
         if (template.description() != null)
@@ -396,8 +401,6 @@ public class LikesManagePanel extends CommonPanel
             }
         }
 
-        int starsValue = (int) template.dataMap().getOrDefault("value", 1);
-
         // Add ClickHandler
         builder.clickHandler((panel, user, clickType, i) ->
         {
@@ -409,6 +412,15 @@ public class LikesManagePanel extends CommonPanel
                     {
                         this.addon.getAddonManager().removeStars(this.target, this.island, this.world);
                     }
+
+                    if (this.parent != null)
+                    {
+                        this.parent.build();
+                    }
+                    else
+                    {
+                        user.closeInventory();
+                    }
                 }
             }
             else
@@ -417,15 +429,15 @@ public class LikesManagePanel extends CommonPanel
                 {
                     this.addon.getAddonManager().addStars(this.target, starsValue, this.island, this.world);
                 }
-            }
 
-            if (this.parent != null)
-            {
-                this.parent.build();
-            }
-            else
-            {
-                user.closeInventory();
+                if (this.parent != null)
+                {
+                    this.parent.build();
+                }
+                else
+                {
+                    user.closeInventory();
+                }
             }
 
             // Always return true.

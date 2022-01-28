@@ -9,13 +9,13 @@ view_stars:
   content:
     2:
       2:
-        icon: GOLD_INGOT
+        icon: NETHER_STAR
         title: likes.gui.buttons.stars.name
         description: likes.gui.buttons.stars.description
         data:
           type: STARS
       3:
-        icon: GOLD_BLOCK
+        icon: BEACON
         title: likes.gui.buttons.stars_rank.name
         description: likes.gui.buttons.stars_rank.description
         data:
