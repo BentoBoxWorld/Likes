@@ -28,7 +28,9 @@ likes:
       # Title for viewing TOP islands.
       top: "&0&l Top Islands"
       # Title for managing likes, dislikes or stars
-      manage: "&0&l Manage [type]"
+      manage-likes: "&0&l Manage Like"
+      manage-likes-dislikes: "&0&l Manage Like And Dislike"
+      manage-stars: "&0&l Manage Stars"
       # Title for main Admin GUI
       admin: "&0&l Admin Panel"
       # Title for Admin Settings GUI

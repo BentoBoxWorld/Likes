@@ -1,0 +1,29 @@
+manage_stars_panel:
+  title: likes.gui.titles.manage-stars
+  type: HOPPER
+  background:
+    icon: BLACK_STAINED_GLASS_PANE
+    title: "&b&r" # Empty text
+  force-shown: []
+  content:
+    1:
+      1:
+        data:
+          type: ADD_STAR
+          value: 1
+      2:
+        data:
+          type: ADD_STAR
+          value: 2
+      3:
+        data:
+          type: ADD_STAR
+          value: 3
+      4:
+        data:
+          type: ADD_STAR
+          value: 4
+      5:
+        data:
+          type: ADD_STAR
+          value: 5
