@@ -83,18 +83,18 @@ public class LikesManagePanel extends CommonPanel
         switch (this.settings.getMode())
         {
             case LIKES -> {
-                panelBuilder.template("manage_likes_panel", new File(this.addon.getDataFolder(), "panels"));
+                panelBuilder.template("likes", "manage_panels", new File(this.addon.getDataFolder(), "panels"));
 
                 panelBuilder.registerTypeBuilder("ADD_LIKE", this::createLikeButton);
             }
             case LIKES_DISLIKES -> {
-                panelBuilder.template("manage_likes_dislikes_panel", new File(this.addon.getDataFolder(), "panels"));
+                panelBuilder.template("likes_dislikes", "manage_panels", new File(this.addon.getDataFolder(), "panels"));
 
                 panelBuilder.registerTypeBuilder("ADD_LIKE", this::createLikeButton);
                 panelBuilder.registerTypeBuilder("ADD_DISLIKE", this::createDislikeButton);
             }
             case STARS -> {
-                panelBuilder.template("manage_stars_panel", new File(this.addon.getDataFolder(), "panels"));
+                panelBuilder.template("stars", "manage_panels",  new File(this.addon.getDataFolder(), "panels"));
 
                 final int starCount = this.addon.getAddonManager().getStarred(
                     this.target.getUniqueId(),

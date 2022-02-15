@@ -151,7 +151,8 @@ public class LikesViewPanel extends CommonPanel
         switch (this.addon.getSettings().getMode())
         {
             case LIKES -> {
-                panelBuilder.template("view_likes",
+                panelBuilder.template("likes",
+                    "view_panels",
                     new File(this.addon.getDataFolder(), "panels"));
                 // Register Top Buttons
                 panelBuilder.registerTypeBuilder("LIKE",
@@ -162,7 +163,8 @@ public class LikesViewPanel extends CommonPanel
                 panelBuilder.registerTypeBuilder("LIKE_PLAYER", this::createLikePlayer);
             }
             case LIKES_DISLIKES -> {
-                panelBuilder.template("view_likes_dislikes",
+                panelBuilder.template("likes_dislikes",
+                    "view_panels",
                     new File(this.addon.getDataFolder(), "panels"));
                 // Register Top Buttons
                 panelBuilder.registerTypeBuilder("LIKE",
@@ -183,7 +185,8 @@ public class LikesViewPanel extends CommonPanel
 
             }
             case STARS -> {
-                panelBuilder.template("view_stars",
+                panelBuilder.template("stars",
+                    "view_panels",
                     new File(this.addon.getDataFolder(), "panels"));
                 // Register Top Button
                 panelBuilder.registerTypeBuilder("STARS",
