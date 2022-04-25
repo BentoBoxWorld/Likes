@@ -368,6 +368,7 @@ likes:
       click-to-cancel: "&e Click &7 to cancel."
       click-to-select: "&e Click &7 to select."
       click-to-choose: "&e Click &7 to choose."
+      click-to-visit: "&e Click &7 to visit."
     types:
       likes: "Likes"
       dislikes: "Dislikes"
