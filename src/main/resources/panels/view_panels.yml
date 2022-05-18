@@ -1,0 +1,260 @@
+# This panel is active only if Likes Addon is set into LIKES_DISLIKES mode.
+likes_dislikes:
+  title: likes.gui.titles.view-likes-dislikes
+  type: INVENTORY
+  border:
+    icon: MAGENTA_STAINED_GLASS_PANE
+    title: "&b&r"  # Empty text
+  force-shown: [3, 5]
+  content:
+    2:
+      2:
+        icon: GOLD_INGOT
+        title: likes.gui.buttons.like.name
+        description: likes.gui.buttons.like.description
+        data:
+          type: LIKE
+      3:
+        icon: GOLD_BLOCK
+        title: likes.gui.buttons.like_rank.name
+        description: likes.gui.buttons.like_rank.description
+        data:
+          type: LIKE_RANK
+      7:
+        icon: DIAMOND
+        title: likes.gui.buttons.overall.name
+        description: likes.gui.buttons.overall.description
+        data:
+          type: OVERALL
+      8:
+        icon: DIAMOND_BLOCK
+        title: likes.gui.buttons.overall_rank.name
+        description: likes.gui.buttons.overall_rank.description
+        data:
+          type: OVERALL_RANK
+    3:
+      1:
+        icon: TIPPED_ARROW:INSTANT_HEAL::::1
+        title: likes.gui.buttons.previous.name
+        description: likes.gui.buttons.previous.description
+        data:
+          type: PREVIOUS
+          indexing: true
+          target: LIKE
+        action:
+          left:
+            tooltip: likes.gui.tips.click-to-previous
+      2: like_player_button
+      3: like_player_button
+      4: like_player_button
+      5: like_player_button
+      6: like_player_button
+      7: like_player_button
+      8: like_player_button
+      9:
+        icon: TIPPED_ARROW:JUMP::::1
+        title: likes.gui.buttons.next.name
+        description: likes.gui.buttons.next.description
+        data:
+          type: NEXT
+          indexing: true
+          target: LIKE
+        action:
+          left:
+            tooltip: likes.gui.tips.click-to-next
+    4:
+      2:
+        icon: IRON_INGOT
+        title: likes.gui.buttons.dislike.name
+        description: likes.gui.buttons.dislike.description
+        data:
+          type: DISLIKE
+      3:
+        icon: IRON_BLOCK
+        title: likes.gui.buttons.dislike_rank.name
+        description: likes.gui.buttons.dislike_rank.description
+        data:
+          type: DISLIKE_RANK
+    5:
+      1:
+        icon: TIPPED_ARROW:INSTANT_HEAL::::1
+        title: likes.gui.buttons.previous.name
+        description: likes.gui.buttons.previous.description
+        data:
+          type: PREVIOUS
+          indexing: true
+          target: DISLIKE
+        action:
+          left:
+            tooltip: likes.gui.tips.click-to-previous
+      2: dislike_player_button
+      3: dislike_player_button
+      4: dislike_player_button
+      5: dislike_player_button
+      6: dislike_player_button
+      7: dislike_player_button
+      8: dislike_player_button
+      9:
+        icon: TIPPED_ARROW:JUMP::::1
+        title: likes.gui.buttons.next.name
+        description: likes.gui.buttons.next.description
+        data:
+          type: NEXT
+          indexing: true
+          target: DISLIKE
+        action:
+          left:
+            tooltip: likes.gui.tips.click-to-next
+  reusable:
+    like_player_button:
+      data:
+        type: LIKE_PLAYER
+    dislike_player_button:
+      data:
+        type: DISLIKE_PLAYER
+
+# This panel is active only if Likes Addon is set into LIKES mode.
+likes:
+  title: likes.gui.titles.view-likes
+  type: INVENTORY
+  border:
+    icon: MAGENTA_STAINED_GLASS_PANE
+    title: "&b&r"  # Empty text
+  force-shown: [3]
+  content:
+    2:
+      2:
+        icon: GOLD_INGOT
+        title: likes.gui.buttons.like.name
+        description: likes.gui.buttons.like.description
+        data:
+          type: LIKE
+      3:
+        icon: GOLD_BLOCK
+        title: likes.gui.buttons.like_rank.name
+        description: likes.gui.buttons.like_rank.description
+        data:
+          type: LIKE_RANK
+    3:
+      2: player_button
+      3: player_button
+      4: player_button
+      5: player_button
+      6: player_button
+      7: player_button
+      8: player_button
+    4:
+      1:
+        icon: TIPPED_ARROW:INSTANT_HEAL::::1
+        title: likes.gui.buttons.previous.name
+        description: likes.gui.buttons.previous.description
+        data:
+          type: PREVIOUS
+          indexing: true
+          target: LIKE
+        action:
+          left:
+            tooltip: likes.gui.tips.click-to-previous
+      2: player_button
+      3: player_button
+      4: player_button
+      5: player_button
+      6: player_button
+      7: player_button
+      8: player_button
+      9:
+        icon: TIPPED_ARROW:JUMP::::1
+        title: likes.gui.buttons.next.name
+        description: likes.gui.buttons.next.description
+        data:
+          type: NEXT
+          indexing: true
+          target: LIKE
+        action:
+          left:
+            tooltip: likes.gui.tips.click-to-next
+    5:
+      2: player_button
+      3: player_button
+      4: player_button
+      5: player_button
+      6: player_button
+      7: player_button
+      8: player_button
+  reusable:
+    player_button:
+      data:
+        type: LIKE_PLAYER
+
+# This panel is active only if Likes Addon is set into STARS mode.
+stars:
+  title: likes.gui.titles.view-stars
+  type: INVENTORY
+  border:
+    icon: MAGENTA_STAINED_GLASS_PANE
+    title: "&b&r"  # Empty text
+  force-shown: [3]
+  content:
+    2:
+      2:
+        icon: NETHER_STAR
+        title: likes.gui.buttons.stars.name
+        description: likes.gui.buttons.stars.description
+        data:
+          type: STARS
+      3:
+        icon: BEACON
+        title: likes.gui.buttons.stars_rank.name
+        description: likes.gui.buttons.stars_rank.description
+        data:
+          type: STARS_RANK
+    3:
+      2: player_button
+      3: player_button
+      4: player_button
+      5: player_button
+      6: player_button
+      7: player_button
+      8: player_button
+    4:
+      1:
+        icon: TIPPED_ARROW:INSTANT_HEAL::::1
+        title: likes.gui.buttons.previous.name
+        description: likes.gui.buttons.previous.description
+        data:
+          type: PREVIOUS
+          indexing: true
+          target: STARS
+        action:
+          left:
+            tooltip: likes.gui.tips.click-to-previous
+      2: player_button
+      3: player_button
+      4: player_button
+      5: player_button
+      6: player_button
+      7: player_button
+      8: player_button
+      9:
+        icon: TIPPED_ARROW:JUMP::::1
+        title: likes.gui.buttons.next.name
+        description: likes.gui.buttons.next.description
+        data:
+          type: NEXT
+          indexing: true
+          target: STARS
+        action:
+          left:
+            tooltip: likes.gui.tips.click-to-next
+    5:
+      2: player_button
+      3: player_button
+      4: player_button
+      5: player_button
+      6: player_button
+      7: player_button
+      8: player_button
+  reusable:
+    player_button:
+      data:
+        type: STARS_PLAYER

@@ -75,12 +75,18 @@ public class PlayerCommand extends CompositeCommand
     @Override
     public boolean canExecute(User user, String label, List<String> args)
     {
-
         Optional<Island> island = this.getAddon().getIslands().getIslandAt(user.getLocation());
 
-        if (!island.isPresent())
+        if (island.isEmpty())
         {
             Utils.sendMessage(user, user.getTranslation(Constants.ERRORS + "not-on-island"));
+            return false;
+        }
+
+
+        if (!island.get().isOwned() && !this.<LikesAddon>getAddon().getSettings().isAllowUnowned())
+        {
+            Utils.sendMessage(user, user.getTranslation(Constants.ERRORS + "island-not-owned"));
             return false;
         }
 

@@ -9,14 +9,16 @@ package world.bentobox.likes.panels.user;
 
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.inventory.ItemStack;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import world.bentobox.bentobox.api.panels.Panel;
 import world.bentobox.bentobox.api.panels.PanelItem;
-import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
+import world.bentobox.bentobox.api.panels.TemplatedPanel;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
+import world.bentobox.bentobox.api.panels.builders.TemplatedPanelBuilder;
+import world.bentobox.bentobox.api.panels.reader.ItemTemplateRecord;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.LikesAddon;
@@ -72,125 +74,40 @@ public class LikesManagePanel extends CommonPanel
      */
     public void build()
     {
-        PanelBuilder panelBuilder = new PanelBuilder().
-            type(Panel.Type.HOPPER).
-            user(this.user);
+        TemplatedPanelBuilder panelBuilder = new TemplatedPanelBuilder();
 
+        panelBuilder.user(this.user);
+        panelBuilder.world(this.world);
+
+        // Set main template.
         switch (this.settings.getMode())
         {
-            case LIKES:
-                panelBuilder.name(this.user.getTranslation(Constants.TITLES + "manage",
-                    Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes")));
+            case LIKES -> {
+                panelBuilder.template("likes", "manage_panels", new File(this.addon.getDataFolder(), "panels"));
 
-                panelBuilder.item(2, this.createLikeButton());
-                break;
-            case LIKES_DISLIKES:
-                panelBuilder.name(this.user.getTranslation(Constants.TITLES + "manage",
-                    Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes")));
+                panelBuilder.registerTypeBuilder("ADD_LIKE", this::createLikeButton);
+            }
+            case LIKES_DISLIKES -> {
+                panelBuilder.template("likes_dislikes", "manage_panels", new File(this.addon.getDataFolder(), "panels"));
 
-                panelBuilder.item(1, this.createLikeButton());
-                panelBuilder.item(3, this.createDislikeButton());
-                break;
-            case STARS:
-                panelBuilder.name(this.user.getTranslation(Constants.TITLES + "manage",
-                    Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "stars")));
+                panelBuilder.registerTypeBuilder("ADD_LIKE", this::createLikeButton);
+                panelBuilder.registerTypeBuilder("ADD_DISLIKE", this::createDislikeButton);
+            }
+            case STARS -> {
+                panelBuilder.template("stars", "manage_panels",  new File(this.addon.getDataFolder(), "panels"));
 
                 final int starCount = this.addon.getAddonManager().getStarred(
                     this.target.getUniqueId(),
                     this.island.getUniqueId(),
                     this.world);
 
-                if (starCount == 0 || starCount > 5)
-                {
-                    panelBuilder.item(0, this.createStarsButton(1, false));
-                    panelBuilder.item(1, this.createStarsButton(2, false));
-                    panelBuilder.item(2, this.createStarsButton(3, false));
-                    panelBuilder.item(3, this.createStarsButton(4, false));
-                    panelBuilder.item(4, this.createStarsButton(5, false));
-                }
-                else
-                {
-                    panelBuilder.item(starCount - 1, this.createStarsButton(starCount, true));
-                }
+                panelBuilder.registerTypeBuilder("ADD_STAR",
+                    (template, itemSlot) -> this.createStarButton(template, itemSlot, starCount));
+            }
         }
 
-        // At the end we just call build method that creates and opens panel.
+        // Register unknown type builder.
         panelBuilder.build();
-    }
-
-
-    /**
-     * This method creates Like Button.
-     *
-     * @return PanelItem that process like action.
-     */
-    private PanelItem createLikeButton()
-    {
-        final boolean hasLiked =
-            this.addon.getAddonManager().hasLiked(this.target.getUniqueId(), this.island.getUniqueId(), this.world);
-
-        List<String> description = new ArrayList<>(4);
-        description.add(this.user.getTranslationOrNothing(Constants.BUTTONS + "add_like.description"));
-
-        if (this.addon.isEconomyProvided())
-        {
-            if (hasLiked && this.settings.getLikeRemoveCost() > 0)
-            {
-                description.add(this.user.getTranslation(Constants.BUTTONS + "add_like.cost",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeRemoveCost())));
-            }
-            else if (!hasLiked && this.settings.getLikeAddCost() > 0)
-            {
-                description.add(this.user.getTranslation(Constants.BUTTONS + "add_like.cost",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeAddCost())));
-            }
-        }
-
-        description.add("");
-
-        if (hasLiked)
-        {
-            description.add(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
-        }
-        else
-        {
-            description.add(this.user.getTranslation(Constants.TIPS + "click-to-add"));
-        }
-
-        return new PanelItemBuilder().
-            name(this.user.getTranslation(Constants.BUTTONS + "add_like.name")).
-            icon(Material.GOLD_INGOT).
-            description(description).
-            clickHandler((panel, user, clickType, slot) ->
-            {
-                if (hasLiked)
-                {
-                    if (this.hasPaid(this.settings.getLikeRemoveCost()))
-                    {
-                        this.addon.getAddonManager().removeLike(this.target, this.island, this.world);
-                    }
-                }
-                else
-                {
-                    if (this.hasPaid(this.settings.getLikeAddCost()))
-                    {
-                        this.addon.getAddonManager().addLike(this.target, this.island, this.world);
-                    }
-                }
-
-                if (this.parent != null)
-                {
-                    this.parent.build();
-                }
-                else
-                {
-                    user.closeInventory();
-                }
-
-                return true;
-            }).
-            glow(hasLiked).
-            build();
     }
 
 
@@ -199,139 +116,318 @@ public class LikesManagePanel extends CommonPanel
 // ---------------------------------------------------------------------
 
 
-    /**
-     * This method creates dislike Button.
-     *
-     * @return PanelItem that process dislike action.
-     */
-    private PanelItem createDislikeButton()
+    private PanelItem createLikeButton(ItemTemplateRecord template, TemplatedPanel.ItemSlot itemSlot)
+    {
+        final boolean hasLiked =
+            this.addon.getAddonManager().hasLiked(this.target.getUniqueId(), this.island.getUniqueId(), this.world);
+
+        final String reference = Constants.BUTTONS + "add_like.";
+
+        PanelItemBuilder builder = new PanelItemBuilder();
+
+        if (template.icon() != null)
+        {
+            builder.icon(template.icon().clone());
+        }
+        else
+        {
+            builder.icon(Material.GOLD_INGOT);
+        }
+
+        if (template.title() != null)
+        {
+            builder.name(this.user.getTranslation(this.world, template.title()));
+        }
+        else
+        {
+            builder.name(this.user.getTranslation(reference + "name"));
+        }
+
+        if (template.description() != null)
+        {
+            builder.description(this.user.getTranslation(this.world, template.description()));
+        }
+        else
+        {
+            builder.description(this.user.getTranslationOrNothing(reference + "description"));
+
+            if (this.addon.isEconomyProvided())
+            {
+                if (hasLiked && this.settings.getLikeRemoveCost() > 0)
+                {
+                    builder.description(this.user.getTranslation(reference + "cost",
+                        Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeRemoveCost())));
+                }
+                else if (!hasLiked && this.settings.getLikeAddCost() > 0)
+                {
+                    builder.description(this.user.getTranslation(reference + "cost",
+                        Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeAddCost())));
+                }
+            }
+        }
+
+        // Add ClickHandler
+        builder.clickHandler((panel, user, clickType, i) ->
+        {
+            if (hasLiked)
+            {
+                if (this.hasPaid(this.settings.getLikeRemoveCost()))
+                {
+                    this.addon.getAddonManager().removeLike(this.target, this.island, this.world);
+                }
+            }
+            else
+            {
+                if (this.hasPaid(this.settings.getLikeAddCost()))
+                {
+                    this.addon.getAddonManager().addLike(this.target, this.island, this.world);
+                }
+            }
+
+            if (this.parent != null)
+            {
+                this.parent.build();
+            }
+            else
+            {
+                user.closeInventory();
+            }
+
+            // Always return true.
+            return true;
+        });
+
+        builder.glow(hasLiked);
+
+        // Collect tooltips.
+        List<String> tooltips = template.actions().stream().
+            filter(action -> action.tooltip() != null).
+            map(action -> this.user.getTranslation(this.world, action.tooltip())).
+            filter(text -> !text.isBlank()).
+            collect(Collectors.toCollection(() -> new ArrayList<>(template.actions().size())));
+
+        // Add tooltips.
+        if (!tooltips.isEmpty())
+        {
+            // Empty line and tooltips.
+            builder.description("");
+            builder.description(tooltips);
+        }
+        else
+        {
+            builder.description("");
+
+            if (hasLiked)
+            {
+                builder.description(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
+            }
+            else
+            {
+                builder.description(this.user.getTranslation(Constants.TIPS + "click-to-add"));
+            }
+        }
+
+        return builder.build();
+    }
+
+
+
+    private PanelItem createDislikeButton(ItemTemplateRecord template, TemplatedPanel.ItemSlot itemSlot)
     {
         final boolean hasDisliked =
             this.addon.getAddonManager().hasDisliked(this.target.getUniqueId(), this.island.getUniqueId(), this.world);
 
-        List<String> description = new ArrayList<>(4);
-        description.add(this.user.getTranslationOrNothing(Constants.BUTTONS + "add_dislike.description"));
+        final String reference = Constants.BUTTONS + "add_dislike.";
 
-        if (this.addon.isEconomyProvided())
+        PanelItemBuilder builder = new PanelItemBuilder();
+
+        if (template.icon() != null)
         {
-            if (hasDisliked && this.settings.getDislikeRemoveCost() > 0)
-            {
-                description.add(this.user.getTranslation(Constants.BUTTONS + "add_dislike.cost",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getDislikeRemoveCost())));
-            }
-            else if (!hasDisliked && this.settings.getDislikeAddCost() > 0)
-            {
-                description.add(this.user.getTranslation(Constants.BUTTONS + "add_dislike.cost",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getDislikeAddCost())));
-            }
-        }
-
-        description.add("");
-
-        if (hasDisliked)
-        {
-            description.add(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
+            builder.icon(template.icon().clone());
         }
         else
         {
-            description.add(this.user.getTranslation(Constants.TIPS + "click-to-add"));
+            builder.icon(Material.IRON_INGOT);
         }
 
-        return new PanelItemBuilder().
-            name(this.user.getTranslation(Constants.BUTTONS + "add_dislike.name")).
-            icon(Material.IRON_INGOT).
-            description(description).
-            clickHandler((panel, user, clickType, slot) ->
+        if (template.title() != null)
+        {
+            builder.name(this.user.getTranslation(this.world, template.title()));
+        }
+        else
+        {
+            builder.name(this.user.getTranslation(reference + "name"));
+        }
+
+        if (template.description() != null)
+        {
+            builder.description(this.user.getTranslation(this.world, template.description()));
+        }
+        else
+        {
+            builder.description(this.user.getTranslationOrNothing(reference + "description"));
+
+            if (this.addon.isEconomyProvided())
             {
+                if (hasDisliked && this.settings.getDislikeRemoveCost() > 0)
+                {
+                    builder.description(this.user.getTranslation(reference + "cost",
+                        Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getDislikeRemoveCost())));
+                }
+                else if (!hasDisliked && this.settings.getDislikeAddCost() > 0)
+                {
+                    builder.description(this.user.getTranslation(reference + "cost",
+                        Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getDislikeAddCost())));
+                }
+            }
+        }
 
-                if (hasDisliked)
+        // Add ClickHandler
+        builder.clickHandler((panel, user, clickType, i) ->
+        {
+            if (hasDisliked)
+            {
+                if (this.hasPaid(this.settings.getDislikeRemoveCost()))
                 {
-                    if (this.hasPaid(this.settings.getDislikeRemoveCost()))
-                    {
-                        this.addon.getAddonManager().removeDislike(this.target, this.island, this.world);
-                    }
+                    this.addon.getAddonManager().removeDislike(this.target, this.island, this.world);
                 }
-                else
+            }
+            else
+            {
+                if (this.hasPaid(this.settings.getDislikeAddCost()))
                 {
-                    if (this.hasPaid(this.settings.getDislikeAddCost()))
-                    {
-                        this.addon.getAddonManager().addDislike(this.target, this.island, this.world);
-                    }
+                    this.addon.getAddonManager().addDislike(this.target, this.island, this.world);
                 }
+            }
 
-                if (this.parent != null)
-                {
-                    this.parent.build();
-                }
-                else
-                {
-                    user.closeInventory();
-                }
+            if (this.parent != null)
+            {
+                this.parent.build();
+            }
+            else
+            {
+                user.closeInventory();
+            }
 
-                return true;
-            }).
-            glow(hasDisliked).
-            build();
+            // Always return true.
+            return true;
+        });
+
+        // Collect tooltips.
+        List<String> tooltips = template.actions().stream().
+            filter(action -> action.tooltip() != null).
+            map(action -> this.user.getTranslation(this.world, action.tooltip())).
+            filter(text -> !text.isBlank()).
+            collect(Collectors.toCollection(() -> new ArrayList<>(template.actions().size())));
+
+        builder.glow(hasDisliked);
+
+        // Add tooltips.
+        if (!tooltips.isEmpty())
+        {
+            // Empty line and tooltips.
+            builder.description("");
+            builder.description(tooltips);
+        }
+        else
+        {
+            builder.description("");
+
+            if (hasDisliked)
+            {
+                builder.description(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
+            }
+            else
+            {
+                builder.description(this.user.getTranslation(Constants.TIPS + "click-to-add"));
+            }
+        }
+
+        return builder.build();
     }
 
 
-    /**
-     * This method creates Stars Button with given value.
-     *
-     * @param value value for stars button.
-     * @param hasStarred indicates that player has added star to this island.
-     * @return PanelItem that process stars action.
-     */
-    private PanelItem createStarsButton(int value, boolean hasStarred)
+    private PanelItem createStarButton(ItemTemplateRecord template, TemplatedPanel.ItemSlot itemSlot, int value)
     {
-        List<String> description = new ArrayList<>(4);
-        description.add(this.user.getTranslationOrNothing(Constants.BUTTONS + "add_star.description"));
+        final boolean hasStarred = value > 0 && value < 6;
 
-        if (this.addon.isEconomyProvided())
+        final String reference = Constants.BUTTONS + "add_star.";
+
+        PanelItemBuilder builder = new PanelItemBuilder();
+
+        int starsValue = (int) template.dataMap().getOrDefault("value", 1);
+
+        if (template.icon() != null)
         {
-            if (hasStarred && this.settings.getLikeAddCost() > 0)
-            {
-                description.add(this.user.getTranslation(Constants.BUTTONS + "add_star.cost",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeAddCost())));
-            }
-            else if (!hasStarred && this.settings.getLikeRemoveCost() > 0)
-            {
-                description.add(this.user.getTranslation(Constants.BUTTONS + "add_star.cost",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeRemoveCost())));
-            }
-        }
-
-        description.add("");
-
-        if (hasStarred)
-        {
-            description.add(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
+            builder.icon(template.icon().clone());
         }
         else
         {
-            description.add(this.user.getTranslation(Constants.TIPS + "click-to-set"));
+            builder.icon(Material.NETHER_STAR);
+            builder.amount(starsValue);
         }
 
-        return new PanelItemBuilder().
-            name(this.user.getTranslation(Constants.BUTTONS + "add_star.name",
-                Constants.PARAMETER_NUMBER, String.valueOf(value))).
-            icon(new ItemStack(Material.NETHER_STAR, value)).
-            description(description).
-            clickHandler((panel, user, clickType, slot) -> {
+        if (template.title() != null)
+        {
+            builder.name(this.user.getTranslation(this.world, template.title(),
+                "[number]", String.valueOf(starsValue)));
+        }
+        else
+        {
+            builder.name(this.user.getTranslation(reference + "name",
+                "[number]", String.valueOf(starsValue)));
+        }
 
-                if (hasStarred)
+        if (template.description() != null)
+        {
+            builder.description(this.user.getTranslation(this.world, template.description()));
+        }
+        else
+        {
+            builder.description(this.user.getTranslationOrNothing(reference + "description"));
+
+            if (this.addon.isEconomyProvided())
+            {
+                if (hasStarred && this.settings.getLikeAddCost() > 0)
+                {
+                    builder.description(this.user.getTranslation(reference + "cost",
+                        Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeAddCost())));
+                }
+                else if (!hasStarred && this.settings.getLikeRemoveCost() > 0)
+                {
+                    builder.description(this.user.getTranslation(reference + "cost",
+                        Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeRemoveCost())));
+                }
+            }
+        }
+
+        // Add ClickHandler
+        builder.clickHandler((panel, user, clickType, i) ->
+        {
+            if (hasStarred)
+            {
+                if (value == starsValue)
                 {
                     if (this.hasPaid(this.settings.getLikeRemoveCost()))
                     {
                         this.addon.getAddonManager().removeStars(this.target, this.island, this.world);
                     }
-                }
-                else
-                {
-                    if (this.hasPaid(this.settings.getLikeAddCost()))
+
+                    if (this.parent != null)
                     {
-                        this.addon.getAddonManager().addStars(this.target, value, this.island, this.world);
+                        this.parent.build();
                     }
+                    else
+                    {
+                        user.closeInventory();
+                    }
+                }
+            }
+            else
+            {
+                if (this.hasPaid(this.settings.getLikeAddCost()))
+                {
+                    this.addon.getAddonManager().addStars(this.target, starsValue, this.island, this.world);
                 }
 
                 if (this.parent != null)
@@ -342,11 +438,43 @@ public class LikesManagePanel extends CommonPanel
                 {
                     user.closeInventory();
                 }
+            }
 
-                return true;
-            }).
-            glow(hasStarred).
-            build();
+            // Always return true.
+            return true;
+        });
+
+        // Collect tooltips.
+        List<String> tooltips = template.actions().stream().
+            filter(action -> action.tooltip() != null).
+            map(action -> this.user.getTranslation(this.world, action.tooltip())).
+            filter(text -> !text.isBlank()).
+            collect(Collectors.toCollection(() -> new ArrayList<>(template.actions().size())));
+
+        builder.glow(hasStarred && value >= starsValue);
+
+        // Add tooltips.
+        if (!tooltips.isEmpty())
+        {
+            // Empty line and tooltips.
+            builder.description("");
+            builder.description(tooltips);
+        }
+        else if (hasStarred)
+        {
+            if (value == starsValue)
+            {
+                builder.description("");
+                builder.description(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
+            }
+        }
+        else
+        {
+            builder.description("");
+            builder.description(this.user.getTranslation(Constants.TIPS + "click-to-set"));
+        }
+
+        return builder.build();
     }
 
 

@@ -22,11 +22,15 @@ likes:
   gui:
     titles:
       # Title for viewing island likes GUI
-      view: "&0&l View Island [type]"
+      view-likes: "&0&l View Island Likes"
+      view-likes-dislikes: "&0&l View Island Likes And Dislikes"
+      view-stars: "&0&l View Island Stars"
       # Title for viewing TOP islands.
-      top: "&0&l Top Islands by [type]"
+      top: "&0&l Top Islands"
       # Title for managing likes, dislikes or stars
-      manage: "&0&l Manage [type]"
+      manage-likes: "&0&l Manage Like"
+      manage-likes-dislikes: "&0&l Manage Like And Dislike"
+      manage-stars: "&0&l Manage Stars"
       # Title for main Admin GUI
       admin: "&0&l Admin Panel"
       # Title for Admin Settings GUI
@@ -137,6 +141,7 @@ likes:
         active: "&2 Shows ranking by [type]"
         inactive: "&c Shows ranking by [type]"
       island:
+        empty: '&f&l [name]. place'
         name: '&f&l [name]'
         description: |-
           [owner]
@@ -153,6 +158,8 @@ likes:
         member: "&b - [player]"
         # Name of unknown player.
         unknown: "unknown"
+        # Spawn island name. Will replace [owners-island]. [owner] will not be present.
+        spawn: "Spawn Island"
         # Section for parsing [place]
         place: "&7&o [number]. &r&7 by &l [type]"
         # Sections for parsing [numbers]
@@ -189,10 +196,6 @@ likes:
         description: |-
           &7 Manage addon
           &7 settings via GUI.
-
-
-
-
 
       # Buttons in Admin View Island GUI
       add_like_user:
@@ -326,8 +329,10 @@ likes:
           &7 value.
         search: "&b Value: [value]"
       # Button in Admin Select Blocks GUI
-      material-icon:
+      material:
         name: "&f&l [material]"
+        description: |-
+          &7 Material ID: [id]
       # Button for Admin User Select GUI
       all_players:
         name: "&f&l All Players"
@@ -337,6 +342,11 @@ likes:
         name: "&f&l Online Players"
         description: |-
           &7 List of online players.
+      cancel:
+        name: "&f&l Cancel"
+        description: |-
+          &7 Cancel and return to
+          &7 previous menu.
     # Button tips inside GUIs.
     tips:
       click-to-open: "&e Click &7 to open."
@@ -359,6 +369,10 @@ likes:
       shift-click-to-remove: "&e Shift Click &7 to remove."
       click-to-cancel: "&e Click &7 to cancel."
       click-to-select: "&e Click &7 to select."
+      click-to-choose: "&e Click &7 to choose."
+      click-to-visit: "&e Click &7 to visit."
+      left-click-cycle: "&e Left Click &7 to cycle up."
+      right-click-cycle: "&e Left Click &7 to cycle down."
     types:
       likes: "Likes"
       dislikes: "Dislikes"
@@ -372,6 +386,7 @@ likes:
     not-enough-money: "&c Sorry, you do not have enough credits in your account."
     no-data-about-island: "&c There is no data about this island."
     no-data-about-your-island: "&c There is no data about your island."
+    island-not-owned: "&c This island is not owned. You cannot like/dislike it!"
   conversations:
     # List of strings that are valid for confirming input. (separated with ,)
     confirm-string: "true, on, yes, confirm, y, valid, correct"

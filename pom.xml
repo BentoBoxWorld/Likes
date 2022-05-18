@@ -56,7 +56,7 @@
         <!-- Some JAVA encoding settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>16</java.version>
 
         <!-- SPIGOT API version -->
         <spigot.version>1.16.4-R0.1-SNAPSHOT</spigot.version>
@@ -64,14 +64,19 @@
         <vault.version>1.7</vault.version>
 
         <!-- BentoBox API version -->
-        <bentobox.version>1.16.0-SNAPSHOT</bentobox.version>
+        <bentobox.version>1.20.0</bentobox.version>
         <!-- Warps addon version -->
         <warps.version>1.7.0</warps.version>
-
+        <!-- Visit addon version -->
+        <visit.version>1.4.0</visit.version>
+        <!-- Bank addon version -->
+        <bank.version>1.4.0</bank.version>
+        <!-- Panel Utils version -->
+        <panelutils.version>1.0.0</panelutils.version>
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- This allows to change between versions and snapshots. -->
-        <build.version>2.1.1</build.version>
+        <build.version>2.2.0</build.version>
         <build.number>-LOCAL</build.number>
     </properties>
 
@@ -104,30 +109,6 @@
                 <build.number></build.number>
             </properties>
         </profile>
-        <profile>
-            <id>sonar</id>
-            <properties>
-                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-                <sonar.organization>bentobox-world</sonar.organization>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.sonarsource.scanner.maven</groupId>
-                        <artifactId>sonar-maven-plugin</artifactId>
-                        <version>3.6.0.1398</version>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sonar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 
     <!-- Repositories contains links from were dependencies will be searched -->
@@ -159,6 +140,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>plugin-annotations</artifactId>
+            <version>1.2.3-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>${vault.version}</version>
@@ -175,6 +162,29 @@
             <groupId>world.bentobox</groupId>
             <artifactId>warps</artifactId>
             <version>${warps.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>world.bentobox</groupId>
+            <artifactId>visit</artifactId>
+            <version>${visit.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>world.bentobox</groupId>
+            <artifactId>bank</artifactId>
+            <version>${bank.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>lv.id.bonne</groupId>
+            <artifactId>panelutils</artifactId>
+            <version>${panelutils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>22.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -264,9 +274,25 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.3.1-SNAPSHOT</version>
                 <configuration>
                     <minimizeJar>true</minimizeJar>
+                    <artifactSet>
+                        <includes>
+                            <include>lv.id.bonne:panelutils:*</include>
+                        </includes>
+                    </artifactSet>
+                    <transformers>
+                        <!-- Add a transformer to exclude any other manifest files (possibly from dependencies). -->
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+                            <resource>MANIFEST.MF</resource>
+                        </transformer>
+                        <!-- Add a transformer to include your custom manifest file. -->
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                            <resource>META-INF/MANIFEST.MF</resource>
+                            <file>src/main/resources/META-INF/MANIFEST.MF</file>
+                        </transformer>
+                    </transformers>
                 </configuration>
                 <executions>
                     <execution>

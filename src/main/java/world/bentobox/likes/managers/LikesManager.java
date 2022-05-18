@@ -61,19 +61,13 @@ public class LikesManager
         // Save memory, by adding values to set if they are necessary.
         switch (this.addon.getSettings().getMode())
         {
-            case LIKES:
-                this.sortedLikeCache = new ConcurrentHashMap<>();
-
-                break;
-            case LIKES_DISLIKES:
+            case LIKES -> this.sortedLikeCache = new ConcurrentHashMap<>();
+            case LIKES_DISLIKES -> {
                 this.sortedDislikeCache = new ConcurrentHashMap<>();
                 this.sortedLikeCache = new ConcurrentHashMap<>();
                 this.sortedRankCache = new ConcurrentHashMap<>();
-
-                break;
-            case STARS:
-                this.sortedStarsCache = new ConcurrentHashMap<>();
-                break;
+            }
+            case STARS -> this.sortedStarsCache = new ConcurrentHashMap<>();
         }
 
         this.load();
@@ -94,17 +88,13 @@ public class LikesManager
 
         switch (this.addon.getSettings().getMode())
         {
-            case LIKES:
-                this.sortedLikeCache.clear();
-                break;
-            case LIKES_DISLIKES:
+            case LIKES -> this.sortedLikeCache.clear();
+            case LIKES_DISLIKES -> {
                 this.sortedLikeCache.clear();
                 this.sortedDislikeCache.clear();
                 this.sortedRankCache.clear();
-                break;
-            case STARS:
-                this.sortedStarsCache.clear();
-                break;
+            }
+            case STARS -> this.sortedStarsCache.clear();
         }
 
         this.addon.getLogger().info("Loading likes...");
@@ -125,62 +115,33 @@ public class LikesManager
 
         switch (this.addon.getSettings().getMode())
         {
-            case LIKES:
-            {
+            case LIKES -> {
                 // Add object into GameMode to sorted by likes cache.
                 this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
-                    gameMode -> new IndexedTreeSet<>(Comparator.
-                        comparingLong(LikesObject::getLikes).
-                        thenComparing(LikesObject::getUniqueId).
-                        reversed())).
+                        gameMode -> new IndexedTreeSet<>(LIKES_COMPARATOR)).
                     add(likesObject);
-
-                break;
             }
-            case LIKES_DISLIKES:
-            {
+            case LIKES_DISLIKES -> {
                 // Add object into GameMode to sorted by likes cache.
                 this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
-                    gameMode -> new IndexedTreeSet<>(Comparator.
-                        comparingLong(LikesObject::getLikes).
-                        thenComparing(Comparator.comparingLong(LikesObject::getDislikes).reversed()).
-                        thenComparing(LikesObject::getUniqueId).
-                        reversed())).
+                        gameMode -> new IndexedTreeSet<>(LIKES_DISLIKES_COMPARATOR)).
                     add(likesObject);
 
                 // Add object into GameMode to sorted by dislikes cache.
                 this.sortedDislikeCache.computeIfAbsent(likesObject.getGameMode(),
-                    gameMode -> new IndexedTreeSet<>(Comparator.
-                        comparingLong(LikesObject::getDislikes).
-                        thenComparing(Comparator.comparingLong(LikesObject::getLikes).reversed()).
-                        thenComparing(LikesObject::getUniqueId).
-                        reversed())).
+                        gameMode -> new IndexedTreeSet<>(DISLIKES_LIKES_COMPARATOR)).
                     add(likesObject);
 
                 // Add object into GameMode to sorted by rank cache.
                 this.sortedRankCache.computeIfAbsent(likesObject.getGameMode(),
-                    gameMode -> new IndexedTreeSet<>(Comparator.
-                        comparingLong(LikesObject::getRank).
-                        thenComparingLong(LikesObject::getLikes).
-                        thenComparing(Comparator.comparingLong(LikesObject::getDislikes).reversed()).
-                        thenComparing(LikesObject::getUniqueId).
-                        reversed())).
+                        gameMode -> new IndexedTreeSet<>(RANK_COMPARATOR)).
                     add(likesObject);
-
-                break;
             }
-            case STARS:
-            {
+            case STARS -> {
                 // Add object into GameMode to sorted by likes cache.
                 this.sortedStarsCache.computeIfAbsent(likesObject.getGameMode(),
-                    gameMode -> new IndexedTreeSet<>(Comparator.
-                        comparingDouble(LikesObject::getStarsValue).
-                        thenComparingInt(LikesObject::numberOfStars).
-                        thenComparing(LikesObject::getUniqueId).
-                        reversed())).
+                        gameMode -> new IndexedTreeSet<>(STARS_COMPARATOR)).
                     add(likesObject);
-
-                break;
             }
         }
     }
@@ -288,6 +249,21 @@ public class LikesManager
     }
 
 
+    /**
+     * Save likes object.
+     *
+     * @param object the object
+     */
+    private void saveLikesObject(LikesObject object)
+    {
+        if (object.isChanged())
+        {
+            object.setChanged(false);
+            this.likesDatabase.saveObjectAsync(object);
+        }
+    }
+
+
     // ---------------------------------------------------------------------
     // Section: Wipe methods
     // ---------------------------------------------------------------------
@@ -304,17 +280,13 @@ public class LikesManager
 
         switch (this.addon.getSettings().getMode())
         {
-            case LIKES:
-                this.sortedLikeCache.remove(gameMode);
-                break;
-            case LIKES_DISLIKES:
+            case LIKES -> this.sortedLikeCache.remove(gameMode);
+            case LIKES_DISLIKES -> {
                 this.sortedLikeCache.remove(gameMode);
                 this.sortedDislikeCache.remove(gameMode);
                 this.sortedRankCache.remove(gameMode);
-                break;
-            case STARS:
-                this.sortedStarsCache.remove(gameMode);
-                break;
+            }
+            case STARS -> this.sortedStarsCache.remove(gameMode);
         }
 
         // Remove from database
@@ -374,6 +346,9 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new LikeAddEvent(user.getUniqueId(), island.getUniqueId()));
+
+            // Save object
+            this.saveLikesObject(object);
         }
     }
 
@@ -421,6 +396,9 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new LikeRemoveEvent(user.getUniqueId(), island.getUniqueId()));
+
+            // Save object
+            this.saveLikesObject(object);
         }
     }
 
@@ -481,6 +459,9 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new DislikeAddEvent(user.getUniqueId(), island.getUniqueId()));
+
+            // Save object
+            this.saveLikesObject(object);
         }
     }
 
@@ -528,6 +509,9 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new DislikeRemoveEvent(user.getUniqueId(), island.getUniqueId()));
+
+            // Save object
+            this.saveLikesObject(object);
         }
     }
 
@@ -593,6 +577,9 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new StarsAddEvent(user.getUniqueId(), value, island.getUniqueId()));
+
+            // Save object
+            this.saveLikesObject(object);
         }
     }
 
@@ -640,6 +627,9 @@ public class LikesManager
 
             // Fire event
             this.addon.callEvent(new StarsRemoveEvent(user.getUniqueId(), island.getUniqueId()));
+
+            // Save object
+            this.saveLikesObject(object);
         }
     }
 
@@ -695,6 +685,9 @@ public class LikesManager
                 data("user-id", user.toString()).
                 build());
         }
+
+        // Save object
+        this.saveLikesObject(object);
     }
 
 
@@ -1000,4 +993,113 @@ public class LikesManager
      * This map links GameMode's to liked islands sorted by rank. It should be cached, because of PlaceHolders.
      */
     private Map<String, IndexedTreeSet<LikesObject>> sortedStarsCache;
+
+    // ---------------------------------------------------------------------
+    // Section: Static variables
+    // ---------------------------------------------------------------------
+
+    /**
+     * This comparator is used to sort by highest likes and smallest dislikes number.
+     */
+    public static final Comparator<LikesObject> LIKES_DISLIKES_COMPARATOR = (i1, i2) -> {
+        int likes = Long.compare(i2.getLikes(), i1.getLikes());
+
+        if (likes != 0)
+        {
+            return likes;
+        }
+
+        int dislikes = Long.compare(i1.getDislikes(), i2.getDislikes());
+
+        if (dislikes != 0)
+        {
+            return dislikes;
+        }
+
+        return i1.getUniqueId().compareTo(i2.getUniqueId());
+    };
+
+    /**
+     * This comparator is used to sort by highest dislikes and smallest likes number.
+     */
+    public static final Comparator<LikesObject> DISLIKES_LIKES_COMPARATOR = (i1, i2) -> {
+        int dislikes = Long.compare(i2.getDislikes(), i1.getDislikes());
+
+        if (dislikes != 0)
+        {
+            return dislikes;
+        }
+
+        int likes = Long.compare(i1.getLikes(), i2.getLikes());
+
+        if (likes != 0)
+        {
+            return likes;
+        }
+
+        return i1.getUniqueId().compareTo(i2.getUniqueId());
+    };
+
+    /**
+     * This comparator is used to sort by highest rank and likes and smallest dislikes number.
+     */
+    public static final Comparator<LikesObject> RANK_COMPARATOR = (i1, i2) -> {
+        int rank = Long.compare(i2.getRank(), i1.getRank());
+
+        if (rank != 0)
+        {
+            return rank;
+        }
+
+        int likes = Long.compare(i2.getLikes(), i1.getLikes());
+
+        if (likes != 0)
+        {
+            return likes;
+        }
+
+        int dislikes = Long.compare(i1.getDislikes(), i2.getDislikes());
+
+        if (dislikes != 0)
+        {
+            return dislikes;
+        }
+
+        return i1.getUniqueId().compareTo(i2.getUniqueId());
+    };
+
+    /**
+     * This comparator is used to sort by highest likes number.
+     */
+    public static final Comparator<LikesObject> LIKES_COMPARATOR = (i1, i2) -> {
+        int likes = Long.compare(i2.getLikes(), i1.getLikes());
+
+        if (likes != 0)
+        {
+            return likes;
+        }
+
+        return i1.getUniqueId().compareTo(i2.getUniqueId());
+    };
+
+    /**
+     * This comparator is used to sort by highest stars number.
+     */
+    public static final Comparator<LikesObject> STARS_COMPARATOR = (i1, i2) -> {
+        int stars = Double.compare(i2.getStarsValue(), i1.getStarsValue());
+
+        if (stars != 0)
+        {
+            return stars;
+        }
+
+        int count = Long.compare(i2.getStars(), i1.getStars());
+
+        if (count != 0)
+        {
+            return count;
+        }
+
+        return i1.getUniqueId().compareTo(i2.getUniqueId());
+    };
 }

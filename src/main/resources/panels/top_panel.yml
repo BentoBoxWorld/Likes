@@ -1,0 +1,163 @@
+top_panel:
+  title: likes.gui.titles.top
+  type: INVENTORY
+  background:
+    icon: BLACK_STAINED_GLASS_PANE
+    title: "&b&r" # Empty text
+  border:
+    icon: BLACK_STAINED_GLASS_PANE
+    title: "&b&r"  # Empty text
+  force-shown: [2,3,4,5]
+  content:
+    1:
+      9:
+        data:
+          type: RANKING_TYPE
+        actions:
+          left:
+            type: UP
+            tooltip: likes.gui.tips.left-click-cycle
+          right:
+            type: DOWN
+            tooltip: likes.gui.tips.right-click-cycle
+    2:
+      5:
+        icon: PLAYER_HEAD
+        data:
+          type: TOP
+          index: 1
+          background: LIME_STAINED_GLASS_PANE
+        actions:
+          left:
+            type: WARP
+            tooltip: likes.gui.tips.click-to-warp
+          right:
+            type: VISIT
+            tooltip: likes.gui.tips.click-to-visit
+    3:
+      4:
+        icon: PLAYER_HEAD
+        data:
+          type: TOP
+          index: 2
+          background: LIME_STAINED_GLASS_PANE
+        actions:
+          left:
+            type: WARP
+            tooltip: likes.gui.tips.click-to-warp
+          right:
+            type: VISIT
+            tooltip: likes.gui.tips.click-to-visit
+      6:
+        icon: PLAYER_HEAD
+        data:
+          type: TOP
+          index: 3
+          background: LIME_STAINED_GLASS_PANE
+        actions:
+          left:
+            type: WARP
+            tooltip: likes.gui.tips.click-to-warp
+          right:
+            type: VISIT
+            tooltip: likes.gui.tips.click-to-visit
+    4:
+      2:
+        icon: PLAYER_HEAD
+        data:
+          type: TOP
+          index: 4
+          background: LIME_STAINED_GLASS_PANE
+        actions:
+          left:
+            type: WARP
+            tooltip: likes.gui.tips.click-to-warp
+          right:
+            type: VISIT
+            tooltip: likes.gui.tips.click-to-visit
+      3:
+        icon: PLAYER_HEAD
+        data:
+          type: TOP
+          index: 5
+          background: LIME_STAINED_GLASS_PANE
+        actions:
+          left:
+            type: WARP
+            tooltip: likes.gui.tips.click-to-warp
+          right:
+            type: VISIT
+            tooltip: likes.gui.tips.click-to-visit
+      4:
+        icon: PLAYER_HEAD
+        data:
+          type: TOP
+          index: 6
+          background: LIME_STAINED_GLASS_PANE
+        actions:
+          left:
+            type: WARP
+            tooltip: likes.gui.tips.click-to-warp
+          right:
+            type: VISIT
+            tooltip: likes.gui.tips.click-to-visit
+      5:
+        icon: PLAYER_HEAD
+        data:
+          type: TOP
+          index: 7
+          background: LIME_STAINED_GLASS_PANE
+        actions:
+          left:
+            type: WARP
+            tooltip: likes.gui.tips.click-to-warp
+          right:
+            type: VISIT
+            tooltip: likes.gui.tips.click-to-visit
+      6:
+        icon: PLAYER_HEAD
+        data:
+          type: TOP
+          index: 8
+          background: LIME_STAINED_GLASS_PANE
+        actions:
+          left:
+            type: WARP
+            tooltip: likes.gui.tips.click-to-warp
+          right:
+            type: VISIT
+            tooltip: likes.gui.tips.click-to-visit
+      7:
+        icon: PLAYER_HEAD
+        data:
+          type: TOP
+          index: 9
+          background: LIME_STAINED_GLASS_PANE
+        actions:
+          left:
+            type: WARP
+            tooltip: likes.gui.tips.click-to-warp
+          right:
+            type: VISIT
+            tooltip: likes.gui.tips.click-to-visit
+      8:
+        icon: PLAYER_HEAD
+        data:
+          type: TOP
+          index: 10
+          background: LIME_STAINED_GLASS_PANE
+        actions:
+          left:
+            type: WARP
+            tooltip: likes.gui.tips.click-to-warp
+          right:
+            type: VISIT
+            tooltip: likes.gui.tips.click-to-visit
+    6:
+      5:
+        icon: PLAYER_HEAD
+        data:
+          type: VIEW
+        actions:
+          left:
+            tooltip: likes.gui.tips.click-to-view
