@@ -259,6 +259,28 @@ public class Settings implements ConfigObject
     }
 
 
+    /**
+     * Is allow unowned boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isAllowUnowned()
+    {
+        return this.allowUnowned;
+    }
+
+
+    /**
+     * Sets allow unowned.
+     *
+     * @param allowUnowned the allow unowned
+     */
+    public void setAllowUnowned(boolean allowUnowned)
+    {
+        this.allowUnowned = allowUnowned;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Enums
 // ---------------------------------------------------------------------
@@ -377,6 +399,11 @@ public class Settings implements ConfigObject
     @ConfigComment("Allows to store history data about added and removed likes and dislikes.")
     @ConfigEntry(path = "log-history")
     private boolean logHistory;
+
+    @ConfigComment("")
+    @ConfigComment("Allows adding likes/dislikes or stars to the unowned islands. This includes spawn island.")
+    @ConfigEntry(path = "allow-unowned")
+    private boolean allowUnowned;
 
     @ConfigComment("")
     @ConfigComment("This list stores GameModes in which Likes addon should not work.")

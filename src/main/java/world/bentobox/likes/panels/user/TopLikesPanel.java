@@ -366,11 +366,18 @@ public class TopLikesPanel extends CommonPanel
 
             if (island.getName() == null || island.getName().isEmpty())
             {
-                nameText = this.user.getTranslation(reference + "owners-island",
-                    Constants.PARAMETER_PLAYER,
-                    island.getOwner() == null ? 
-                        this.user.getTranslation(reference + "unknown") : 
-                        this.addon.getPlayers().getName(island.getOwner()));
+                if (island.isSpawn())
+                {
+                    nameText = this.user.getTranslation(reference + "spawn");
+                }
+                else
+                {
+                    nameText = this.user.getTranslation(reference + "owners-island",
+                        Constants.PARAMETER_PLAYER,
+                        island.getOwner() == null ?
+                            this.user.getTranslation(reference + "unknown") :
+                            this.addon.getPlayers().getName(island.getOwner()));
+                }
             }
             else
             {
@@ -463,11 +470,20 @@ public class TopLikesPanel extends CommonPanel
         else
         {
             // Get Owner Name
-            String ownerText = this.user.getTranslation(reference + "owner",
-                Constants.PARAMETER_PLAYER,
-                island.getOwner() == null ? 
-                    this.user.getTranslation(reference + "unknown") : 
-                    this.addon.getPlayers().getName(island.getOwner()));
+            String ownerText;
+
+            if (island.isSpawn())
+            {
+                ownerText = "";
+            }
+            else
+            {
+                ownerText = this.user.getTranslation(reference + "owner",
+                    Constants.PARAMETER_PLAYER,
+                    island.getOwner() == null ?
+                        this.user.getTranslation(reference + "unknown") :
+                        this.addon.getPlayers().getName(island.getOwner()));
+            }
 
             // Get Members Text
             String memberText;
@@ -479,7 +495,7 @@ public class TopLikesPanel extends CommonPanel
 
                 for (UUID uuid : island.getMemberSet())
                 {
-                    User user = User.getInstance(uuid);
+                    String name = this.addon.getPlayers().getName(uuid);
 
                     if (memberBuilder.length() > 0)
                     {
@@ -488,7 +504,7 @@ public class TopLikesPanel extends CommonPanel
 
                     memberBuilder.append(
                         this.user.getTranslationOrNothing(reference + "member",
-                            Constants.PARAMETER_PLAYER, user.getName()));
+                            Constants.PARAMETER_PLAYER, name));
                 }
 
                 memberText = memberBuilder.toString();

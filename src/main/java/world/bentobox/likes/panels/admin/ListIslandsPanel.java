@@ -46,7 +46,7 @@ public class ListIslandsPanel extends CommonPagedPanel<Island>
         this.activeFilter = Filter.IS_ONLINE;
 
         this.filterElements = this.addon.getIslands().getIslands(this.world).stream().
-            filter(Island::isOwned).
+            filter(island -> island.isOwned() || island.isSpawn()).
             sorted(ISLAND_COMPARATOR).
             distinct().
             collect(Collectors.toList());
@@ -214,7 +214,7 @@ public class ListIslandsPanel extends CommonPagedPanel<Island>
 
             for (UUID uuid : island.getMemberSet())
             {
-                User user = User.getInstance(uuid);
+                String name = this.addon.getPlayers().getName(uuid);
 
                 if (memberBuilder.length() > 0)
                 {
@@ -223,7 +223,7 @@ public class ListIslandsPanel extends CommonPagedPanel<Island>
 
                 memberBuilder.append(
                     this.user.getTranslationOrNothing(Constants.BUTTONS + "island.member",
-                        Constants.PARAMETER_PLAYER, user.getName()));
+                        Constants.PARAMETER_PLAYER, name));
             }
 
             memberText = memberBuilder.toString();

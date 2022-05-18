@@ -158,6 +158,8 @@ likes:
         member: "&b - [player]"
         # Name of unknown player.
         unknown: "unknown"
+        # Spawn island name. Will replace [owners-island]. [owner] will not be present.
+        spawn: "Spawn Island"
         # Section for parsing [place]
         place: "&7&o [number]. &r&7 by &l [type]"
         # Sections for parsing [numbers]
@@ -384,6 +386,7 @@ likes:
     not-enough-money: "&c Sorry, you do not have enough credits in your account."
     no-data-about-island: "&c There is no data about this island."
     no-data-about-your-island: "&c There is no data about your island."
+    island-not-owned: "&c This island is not owned. You cannot like/dislike it!"
   conversations:
     # List of strings that are valid for confirming input. (separated with ,)
     confirm-string: "true, on, yes, confirm, y, valid, correct"
