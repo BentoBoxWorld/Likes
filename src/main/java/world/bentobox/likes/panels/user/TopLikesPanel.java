@@ -8,6 +8,7 @@ package world.bentobox.likes.panels.user;
 
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.event.inventory.ClickType;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -298,7 +299,7 @@ public class TopLikesPanel extends CommonPanel
         {
             for (ItemTemplateRecord.ActionRecords action : activeActions)
             {
-                if (clickType == action.clickType())
+                if (clickType == action.clickType() || action.clickType() == ClickType.UNKNOWN)
                 {
                     switch (action.actionType().toUpperCase())
                     {
@@ -307,12 +308,21 @@ public class TopLikesPanel extends CommonPanel
                             this.addon.getWarpHook().getWarpSignsManager().warpPlayer(this.world, this.user, island.getOwner());
                         }
                         case "VISIT" -> {
+                            // The command call implementation solves necessity to check for all visits options,
+                            // like cool down, confirmation and preprocess in single go. Would it be better to write
+                            // all logic here?
 
                             this.addon.getPlugin().getIWM().getAddon(this.world).
                                 flatMap(GameModeAddon::getPlayerCommand).ifPresent(command ->
                                 {
-                                    this.user.performCommand(command.getTopLabel() + " visit " + island.getOwner());
-                                    this.user.closeInventory();
+                                    String mainCommand =
+                                        this.addon.getVisitHook().getSettings().getPlayerMainCommand();
+
+                                    if (!mainCommand.isBlank())
+                                    {
+                                        this.user.closeInventory();
+                                        this.user.performCommand(command.getTopLabel() + " " + mainCommand + " " + island.getOwner());
+                                    }
                                 });
                         }
                     }
