@@ -9,7 +9,9 @@ package world.bentobox.likes.panels.user;
 
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import java.io.File;
@@ -315,7 +317,16 @@ public class LikesViewPanel extends CommonPanel
         {
             if (template.icon().getType().equals(Material.PLAYER_HEAD))
             {
-                builder.icon(userName);
+                SkullMeta meta = (SkullMeta) template.icon().getItemMeta();
+
+                if (meta != null && meta.hasOwner())
+                {
+                    builder.icon(template.icon().clone());
+                }
+                else
+                {
+                    builder.icon(userName);
+                }
             }
             else
             {
@@ -338,8 +349,12 @@ public class LikesViewPanel extends CommonPanel
 
         if (template.description() != null && !template.description().isBlank())
         {
-            builder.description(Util.translateColorCodes(
-                this.user.getTranslation(this.world, template.description())));
+            String translation = this.user.getTranslationOrNothing(template.description());
+
+            if (!translation.isBlank())
+            {
+                builder.description(Util.translateColorCodes(translation));
+            }
         }
         else
         {
@@ -548,14 +563,20 @@ public class LikesViewPanel extends CommonPanel
         // Add ClickHandler
         builder.clickHandler((panel, user, clickType, i) ->
         {
-            // Next button ignores click type currently.
-            switch (target)
+            for (ItemTemplateRecord.ActionRecords action : template.actions())
             {
-                case "LIKE", "STARS" -> this.likeIndex++;
-                case "DISLIKE" -> this.dislikeIndex++;
-            }
+                if (clickType == action.clickType() || ClickType.UNKNOWN.equals(action.clickType()))
+                {
+                    // Next button ignores click type currently.
+                    switch (target)
+                    {
+                        case "LIKE", "STARS" -> this.likeIndex++;
+                        case "DISLIKE" -> this.dislikeIndex++;
+                    }
 
-            this.build();
+                    this.build();
+                }
+            }
 
             // Always return true.
             return true;
@@ -641,14 +662,20 @@ public class LikesViewPanel extends CommonPanel
         // Add ClickHandler
         builder.clickHandler((panel, user, clickType, i) ->
         {
-            // Next button ignores click type currently.
-            switch (target)
+            for (ItemTemplateRecord.ActionRecords action : template.actions())
             {
-                case "LIKE", "STARS" -> this.likeIndex--;
-                case "DISLIKE" -> this.dislikeIndex--;
-            }
+                if (clickType == action.clickType() || ClickType.UNKNOWN.equals(action.clickType()))
+                {
+                    // Next button ignores click type currently.
+                    switch (target)
+                    {
+                        case "LIKE", "STARS" -> this.likeIndex--;
+                        case "DISLIKE" -> this.dislikeIndex--;
+                    }
 
-            this.build();
+                    this.build();
+                }
+            }
 
             // Always return true.
             return true;
