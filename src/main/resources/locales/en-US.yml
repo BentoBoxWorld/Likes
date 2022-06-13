@@ -373,7 +373,7 @@ likes:
       click-to-visit: "&e Click &7 to visit."
       right-click-to-visit: "&e Right Click &7 to visit."
       left-click-cycle: "&e Left Click &7 to cycle up."
-      right-click-cycle: "&e Left Click &7 to cycle down."
+      right-click-cycle: "&e Right Click &7 to cycle down."
     types:
       likes: "Likes"
       dislikes: "Dislikes"
