@@ -41,8 +41,9 @@ likes_dislikes:
           type: PREVIOUS
           indexing: true
           target: LIKE
-        action:
-          left:
+        actions:
+          previous:
+            click-type: unknown
             tooltip: likes.gui.tips.click-to-previous
       2: like_player_button
       3: like_player_button
@@ -59,8 +60,9 @@ likes_dislikes:
           type: NEXT
           indexing: true
           target: LIKE
-        action:
-          left:
+        actions:
+          next:
+            click-type: unknown
             tooltip: likes.gui.tips.click-to-next
     4:
       2:
@@ -84,8 +86,9 @@ likes_dislikes:
           type: PREVIOUS
           indexing: true
           target: DISLIKE
-        action:
-          left:
+        actions:
+          previous:
+            click-type: unknown
             tooltip: likes.gui.tips.click-to-previous
       2: dislike_player_button
       3: dislike_player_button
@@ -102,14 +105,21 @@ likes_dislikes:
           type: NEXT
           indexing: true
           target: DISLIKE
-        action:
-          left:
+        actions:
+          next:
+            click-type: unknown
             tooltip: likes.gui.tips.click-to-next
   reusable:
     like_player_button:
+      icon: PLAYER_HEAD
+      title: likes.gui.buttons.user.name
+      description: likes.gui.buttons.user.description
       data:
         type: LIKE_PLAYER
     dislike_player_button:
+      icon: PLAYER_HEAD
+      title: likes.gui.buttons.user.name
+      description: likes.gui.buttons.user.description
       data:
         type: DISLIKE_PLAYER
 
@@ -152,8 +162,9 @@ likes:
           type: PREVIOUS
           indexing: true
           target: LIKE
-        action:
-          left:
+        actions:
+          previous:
+            click-type: unknown
             tooltip: likes.gui.tips.click-to-previous
       2: player_button
       3: player_button
@@ -170,8 +181,9 @@ likes:
           type: NEXT
           indexing: true
           target: LIKE
-        action:
-          left:
+        actions:
+          next:
+            click-type: unknown
             tooltip: likes.gui.tips.click-to-next
     5:
       2: player_button
@@ -183,6 +195,9 @@ likes:
       8: player_button
   reusable:
     player_button:
+      icon: PLAYER_HEAD
+      title: likes.gui.buttons.user.name
+      description: likes.gui.buttons.user.description
       data:
         type: LIKE_PLAYER
 
@@ -225,8 +240,9 @@ stars:
           type: PREVIOUS
           indexing: true
           target: STARS
-        action:
-          left:
+        actions:
+          previous:
+            click-type: unknown
             tooltip: likes.gui.tips.click-to-previous
       2: player_button
       3: player_button
@@ -243,8 +259,9 @@ stars:
           type: NEXT
           indexing: true
           target: STARS
-        action:
-          left:
+        actions:
+          next:
+            click-type: unknown
             tooltip: likes.gui.tips.click-to-next
     5:
       2: player_button
@@ -256,5 +273,8 @@ stars:
       8: player_button
   reusable:
     player_button:
+      icon: PLAYER_HEAD
+      title: likes.gui.buttons.user.name
+      description: likes.gui.buttons.user.description
       data:
         type: STARS_PLAYER

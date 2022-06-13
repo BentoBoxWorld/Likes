@@ -330,6 +330,11 @@ public class LikesManager
             String name = island.getName() == null || island.getName().isEmpty() ?
                 this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
+            if (island.isSpawn())
+            {
+                name = user.getTranslation("likes.gui.buttons.island.spawn");
+            }
+
             Utils.sendMessage(user,
                 user.getTranslation(Constants.CONVERSATIONS + "add-like", Constants.PARAMETER_NAME, name));
 
@@ -379,6 +384,11 @@ public class LikesManager
 
             String name = island.getName() == null || island.getName().isEmpty() ?
                 this.addon.getPlayers().getName(island.getOwner()) : island.getName();
+
+            if (island.isSpawn())
+            {
+                name = user.getTranslation("likes.gui.buttons.island.spawn");
+            }
 
             Utils.sendMessage(user,
                 user.getTranslation(Constants.CONVERSATIONS + "remove-like", Constants.PARAMETER_NAME, name));
@@ -443,6 +453,11 @@ public class LikesManager
             String name = island.getName() == null || island.getName().isEmpty() ?
                 this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
+            if (island.isSpawn())
+            {
+                name = user.getTranslation("likes.gui.buttons.island.spawn");
+            }
+
             Utils.sendMessage(user,
                 user.getTranslation(Constants.CONVERSATIONS + "add-dislike", Constants.PARAMETER_NAME, name));
 
@@ -492,6 +507,11 @@ public class LikesManager
 
             String name = island.getName() == null || island.getName().isEmpty() ?
                 this.addon.getPlayers().getName(island.getOwner()) : island.getName();
+
+            if (island.isSpawn())
+            {
+                name = user.getTranslation("likes.gui.buttons.island.spawn");
+            }
 
             Utils.sendMessage(user,
                 user.getTranslation(Constants.CONVERSATIONS + "remove-dislike", Constants.PARAMETER_NAME, name));
@@ -558,6 +578,11 @@ public class LikesManager
             String name = island.getName() == null || island.getName().isEmpty() ?
                 this.addon.getPlayers().getName(island.getOwner()) : island.getName();
 
+            if (island.isSpawn())
+            {
+                name = user.getTranslation("likes.gui.buttons.island.spawn");
+            }
+
             Utils.sendMessage(user,
                 user.getTranslation(Constants.CONVERSATIONS + "add-stars",
                 Constants.PARAMETER_NAME, name,
@@ -610,6 +635,11 @@ public class LikesManager
 
             String name = island.getName() == null || island.getName().isEmpty() ?
                 this.addon.getPlayers().getName(island.getOwner()) : island.getName();
+
+            if (island.isSpawn())
+            {
+                name = user.getTranslation("likes.gui.buttons.island.spawn");
+            }
 
             Utils.sendMessage(user,
                 user.getTranslation(Constants.CONVERSATIONS + "remove-stars", Constants.PARAMETER_NAME, name));

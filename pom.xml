@@ -66,7 +66,7 @@
         <!-- BentoBox API version -->
         <bentobox.version>1.20.0</bentobox.version>
         <!-- Warps addon version -->
-        <warps.version>1.7.0</warps.version>
+        <warps.version>1.12.0</warps.version>
         <!-- Visit addon version -->
         <visit.version>1.4.0</visit.version>
         <!-- Bank addon version -->
@@ -76,7 +76,7 @@
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- This allows to change between versions and snapshots. -->
-        <build.version>2.2.0</build.version>
+        <build.version>2.3.0</build.version>
         <build.number>-LOCAL</build.number>
     </properties>
 

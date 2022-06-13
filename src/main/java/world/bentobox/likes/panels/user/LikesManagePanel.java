@@ -9,6 +9,7 @@ package world.bentobox.likes.panels.user;
 
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.event.inventory.ClickType;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,47 +151,72 @@ public class LikesManagePanel extends CommonPanel
         else
         {
             builder.description(this.user.getTranslationOrNothing(reference + "description"));
+        }
 
-            if (this.addon.isEconomyProvided())
+        if (this.addon.isEconomyProvided())
+        {
+            if (hasLiked && this.settings.getLikeRemoveCost() > 0)
             {
-                if (hasLiked && this.settings.getLikeRemoveCost() > 0)
-                {
-                    builder.description(this.user.getTranslation(reference + "cost",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeRemoveCost())));
-                }
-                else if (!hasLiked && this.settings.getLikeAddCost() > 0)
-                {
-                    builder.description(this.user.getTranslation(reference + "cost",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeAddCost())));
-                }
+                builder.description(this.user.getTranslation(reference + "cost",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeRemoveCost())));
+            }
+            else if (!hasLiked && this.settings.getLikeAddCost() > 0)
+            {
+                builder.description(this.user.getTranslation(reference + "cost",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeAddCost())));
             }
         }
+
+        // Get only possible actions, by removing all inactive ones.
+        List<ItemTemplateRecord.ActionRecords> activeActions = new ArrayList<>(template.actions());
+
+        activeActions.removeIf(action ->
+        {
+            switch (action.actionType().toUpperCase())
+            {
+                case "ADD_LIKE" -> {
+                    return hasLiked;
+                }
+                case "REMOVE_LIKE" -> {
+                    return !hasLiked;
+                }
+                default -> {
+                    return false;
+                }
+            }
+        });
 
         // Add ClickHandler
         builder.clickHandler((panel, user, clickType, i) ->
         {
-            if (hasLiked)
+            for (ItemTemplateRecord.ActionRecords action : activeActions)
             {
-                if (this.hasPaid(this.settings.getLikeRemoveCost()))
+                if (clickType == action.clickType() || action.clickType() == ClickType.UNKNOWN)
                 {
-                    this.addon.getAddonManager().removeLike(this.target, this.island, this.world);
-                }
-            }
-            else
-            {
-                if (this.hasPaid(this.settings.getLikeAddCost()))
-                {
-                    this.addon.getAddonManager().addLike(this.target, this.island, this.world);
-                }
-            }
+                    if (hasLiked)
+                    {
+                        if (this.hasPaid(this.settings.getLikeRemoveCost()))
+                        {
+                            this.addon.getAddonManager().removeLike(this.target, this.island, this.world);
+                        }
+                    }
+                    else
+                    {
+                        if (this.hasPaid(this.settings.getLikeAddCost()))
+                        {
+                            this.addon.getAddonManager().addLike(this.target, this.island, this.world);
+                        }
+                    }
 
-            if (this.parent != null)
-            {
-                this.parent.build();
-            }
-            else
-            {
-                user.closeInventory();
+                    if (this.parent != null)
+                    {
+                        this.parent.build();
+                    }
+                    else
+                    {
+                        user.closeInventory();
+                    }
+                }
             }
 
             // Always return true.
@@ -200,7 +226,7 @@ public class LikesManagePanel extends CommonPanel
         builder.glow(hasLiked);
 
         // Collect tooltips.
-        List<String> tooltips = template.actions().stream().
+        List<String> tooltips = activeActions.stream().
             filter(action -> action.tooltip() != null).
             map(action -> this.user.getTranslation(this.world, action.tooltip())).
             filter(text -> !text.isBlank()).
@@ -266,47 +292,72 @@ public class LikesManagePanel extends CommonPanel
         else
         {
             builder.description(this.user.getTranslationOrNothing(reference + "description"));
+        }
 
-            if (this.addon.isEconomyProvided())
+        if (this.addon.isEconomyProvided())
+        {
+            if (hasDisliked && this.settings.getDislikeRemoveCost() > 0)
             {
-                if (hasDisliked && this.settings.getDislikeRemoveCost() > 0)
-                {
-                    builder.description(this.user.getTranslation(reference + "cost",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getDislikeRemoveCost())));
-                }
-                else if (!hasDisliked && this.settings.getDislikeAddCost() > 0)
-                {
-                    builder.description(this.user.getTranslation(reference + "cost",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getDislikeAddCost())));
-                }
+                builder.description(this.user.getTranslation(reference + "cost",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getDislikeRemoveCost())));
+            }
+            else if (!hasDisliked && this.settings.getDislikeAddCost() > 0)
+            {
+                builder.description(this.user.getTranslation(reference + "cost",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getDislikeAddCost())));
             }
         }
+
+        // Get only possible actions, by removing all inactive ones.
+        List<ItemTemplateRecord.ActionRecords> activeActions = new ArrayList<>(template.actions());
+
+        activeActions.removeIf(action ->
+        {
+            switch (action.actionType().toUpperCase())
+            {
+                case "ADD_DISLIKE" -> {
+                    return hasDisliked;
+                }
+                case "REMOVE_DISLIKE" -> {
+                    return !hasDisliked;
+                }
+                default -> {
+                    return false;
+                }
+            }
+        });
 
         // Add ClickHandler
         builder.clickHandler((panel, user, clickType, i) ->
         {
-            if (hasDisliked)
+            for (ItemTemplateRecord.ActionRecords action : activeActions)
             {
-                if (this.hasPaid(this.settings.getDislikeRemoveCost()))
+                if (clickType == action.clickType() || action.clickType() == ClickType.UNKNOWN)
                 {
-                    this.addon.getAddonManager().removeDislike(this.target, this.island, this.world);
-                }
-            }
-            else
-            {
-                if (this.hasPaid(this.settings.getDislikeAddCost()))
-                {
-                    this.addon.getAddonManager().addDislike(this.target, this.island, this.world);
-                }
-            }
+                    if (hasDisliked)
+                    {
+                        if (this.hasPaid(this.settings.getDislikeRemoveCost()))
+                        {
+                            this.addon.getAddonManager().removeDislike(this.target, this.island, this.world);
+                        }
+                    }
+                    else
+                    {
+                        if (this.hasPaid(this.settings.getDislikeAddCost()))
+                        {
+                            this.addon.getAddonManager().addDislike(this.target, this.island, this.world);
+                        }
+                    }
 
-            if (this.parent != null)
-            {
-                this.parent.build();
-            }
-            else
-            {
-                user.closeInventory();
+                    if (this.parent != null)
+                    {
+                        this.parent.build();
+                    }
+                    else
+                    {
+                        user.closeInventory();
+                    }
+                }
             }
 
             // Always return true.
@@ -314,7 +365,7 @@ public class LikesManagePanel extends CommonPanel
         });
 
         // Collect tooltips.
-        List<String> tooltips = template.actions().stream().
+        List<String> tooltips = activeActions.stream().
             filter(action -> action.tooltip() != null).
             map(action -> this.user.getTranslation(this.world, action.tooltip())).
             filter(text -> !text.isBlank()).
@@ -385,58 +436,83 @@ public class LikesManagePanel extends CommonPanel
         else
         {
             builder.description(this.user.getTranslationOrNothing(reference + "description"));
+        }
 
-            if (this.addon.isEconomyProvided())
+        if (this.addon.isEconomyProvided())
+        {
+            if (hasStarred && this.settings.getLikeAddCost() > 0)
             {
-                if (hasStarred && this.settings.getLikeAddCost() > 0)
-                {
-                    builder.description(this.user.getTranslation(reference + "cost",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeAddCost())));
-                }
-                else if (!hasStarred && this.settings.getLikeRemoveCost() > 0)
-                {
-                    builder.description(this.user.getTranslation(reference + "cost",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeRemoveCost())));
-                }
+                builder.description(this.user.getTranslation(reference + "cost",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeAddCost())));
+            }
+            else if (!hasStarred && this.settings.getLikeRemoveCost() > 0)
+            {
+                builder.description(this.user.getTranslation(reference + "cost",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeRemoveCost())));
             }
         }
+
+        // Get only possible actions, by removing all inactive ones.
+        List<ItemTemplateRecord.ActionRecords> activeActions = new ArrayList<>(template.actions());
+
+        activeActions.removeIf(action ->
+        {
+            switch (action.actionType().toUpperCase())
+            {
+                case "ADD_STAR" -> {
+                    return hasStarred;
+                }
+                case "REMOVE_STAR" -> {
+                    return !hasStarred;
+                }
+                default -> {
+                    return false;
+                }
+            }
+        });
 
         // Add ClickHandler
         builder.clickHandler((panel, user, clickType, i) ->
         {
-            if (hasStarred)
+            for (ItemTemplateRecord.ActionRecords action : activeActions)
             {
-                if (value == starsValue)
+                if (clickType == action.clickType() || action.clickType() == ClickType.UNKNOWN)
                 {
-                    if (this.hasPaid(this.settings.getLikeRemoveCost()))
+                    if (hasStarred)
                     {
-                        this.addon.getAddonManager().removeStars(this.target, this.island, this.world);
-                    }
+                        if (value == starsValue)
+                        {
+                            if (this.hasPaid(this.settings.getLikeRemoveCost()))
+                            {
+                                this.addon.getAddonManager().removeStars(this.target, this.island, this.world);
+                            }
 
-                    if (this.parent != null)
-                    {
-                        this.parent.build();
+                            if (this.parent != null)
+                            {
+                                this.parent.build();
+                            }
+                            else
+                            {
+                                user.closeInventory();
+                            }
+                        }
                     }
                     else
                     {
-                        user.closeInventory();
-                    }
-                }
-            }
-            else
-            {
-                if (this.hasPaid(this.settings.getLikeAddCost()))
-                {
-                    this.addon.getAddonManager().addStars(this.target, starsValue, this.island, this.world);
-                }
+                        if (this.hasPaid(this.settings.getLikeAddCost()))
+                        {
+                            this.addon.getAddonManager().addStars(this.target, starsValue, this.island, this.world);
+                        }
 
-                if (this.parent != null)
-                {
-                    this.parent.build();
-                }
-                else
-                {
-                    user.closeInventory();
+                        if (this.parent != null)
+                        {
+                            this.parent.build();
+                        }
+                        else
+                        {
+                            user.closeInventory();
+                        }
+                    }
                 }
             }
 
@@ -445,7 +521,7 @@ public class LikesManagePanel extends CommonPanel
         });
 
         // Collect tooltips.
-        List<String> tooltips = template.actions().stream().
+        List<String> tooltips = activeActions.stream().
             filter(action -> action.tooltip() != null).
             map(action -> this.user.getTranslation(this.world, action.tooltip())).
             filter(text -> !text.isBlank()).
