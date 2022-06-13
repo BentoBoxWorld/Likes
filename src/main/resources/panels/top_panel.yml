@@ -11,153 +11,199 @@ top_panel:
   content:
     1:
       9:
+        # icon: DIAMOND # Currently there is no way how to specify dynamic icons.
+        # title: likes.gui.buttons.[ranking_type].name # Currently there is no way how to specify dynamic title.
+        # description: likes.gui.buttons.[ranking_type].description # Currently there is no way how to specify dynamic description.
         data:
           type: RANKING_TYPE
         actions:
-          left:
-            type: UP
+          up:
+            click-type: LEFT
             tooltip: likes.gui.tips.left-click-cycle
-          right:
-            type: DOWN
+          down:
+            click-type: RIGHT
             tooltip: likes.gui.tips.right-click-cycle
     2:
       5:
         icon: PLAYER_HEAD
+        title: likes.gui.buttons.island.name
+        description: likes.gui.buttons.island.description
         data:
           type: TOP
           index: 1
-          background: LIME_STAINED_GLASS_PANE
         actions:
-          left:
-            type: WARP
+          warp:
+            click-type: LEFT
             tooltip: likes.gui.tips.click-to-warp
-          right:
-            type: VISIT
-            tooltip: likes.gui.tips.click-to-visit
+          visit:
+            click-type: RIGHT
+            tooltip: likes.gui.tips.right-click-to-visit
+        fallback:
+          icon: LIME_STAINED_GLASS_PANE
+          title: likes.gui.buttons.island.empty
     3:
       4:
         icon: PLAYER_HEAD
+        title: likes.gui.buttons.island.name
+        description: likes.gui.buttons.island.description
         data:
           type: TOP
           index: 2
-          background: LIME_STAINED_GLASS_PANE
         actions:
-          left:
-            type: WARP
+          warp:
+            click-type: LEFT
             tooltip: likes.gui.tips.click-to-warp
-          right:
-            type: VISIT
-            tooltip: likes.gui.tips.click-to-visit
+          visit:
+            click-type: RIGHT
+            tooltip: likes.gui.tips.right-click-to-visit
+        fallback:
+          icon: LIME_STAINED_GLASS_PANE
+          title: likes.gui.buttons.island.empty
       6:
         icon: PLAYER_HEAD
+        title: likes.gui.buttons.island.name
+        description: likes.gui.buttons.island.description
         data:
           type: TOP
           index: 3
-          background: LIME_STAINED_GLASS_PANE
         actions:
-          left:
-            type: WARP
+          warp:
+            click-type: LEFT
             tooltip: likes.gui.tips.click-to-warp
-          right:
-            type: VISIT
-            tooltip: likes.gui.tips.click-to-visit
+          visit:
+            click-type: RIGHT
+            tooltip: likes.gui.tips.right-click-to-visit
+        fallback:
+          icon: LIME_STAINED_GLASS_PANE
+          title: likes.gui.buttons.island.empty
     4:
       2:
         icon: PLAYER_HEAD
+        title: likes.gui.buttons.island.name
+        description: likes.gui.buttons.island.description
         data:
           type: TOP
           index: 4
-          background: LIME_STAINED_GLASS_PANE
         actions:
-          left:
-            type: WARP
+          warp:
+            click-type: LEFT
             tooltip: likes.gui.tips.click-to-warp
-          right:
-            type: VISIT
-            tooltip: likes.gui.tips.click-to-visit
+          visit:
+            click-type: RIGHT
+            tooltip: likes.gui.tips.right-click-to-visit
+        fallback:
+          icon: LIME_STAINED_GLASS_PANE
+          title: likes.gui.buttons.island.empty
       3:
         icon: PLAYER_HEAD
+        title: likes.gui.buttons.island.name
+        description: likes.gui.buttons.island.description
         data:
           type: TOP
           index: 5
-          background: LIME_STAINED_GLASS_PANE
         actions:
-          left:
-            type: WARP
+          warp:
+            click-type: LEFT
             tooltip: likes.gui.tips.click-to-warp
-          right:
-            type: VISIT
-            tooltip: likes.gui.tips.click-to-visit
+          visit:
+            click-type: RIGHT
+            tooltip: likes.gui.tips.right-click-to-visit
+        fallback:
+          icon: LIME_STAINED_GLASS_PANE
+          title: likes.gui.buttons.island.empty
       4:
         icon: PLAYER_HEAD
+        title: likes.gui.buttons.island.name
+        description: likes.gui.buttons.island.description
         data:
           type: TOP
           index: 6
-          background: LIME_STAINED_GLASS_PANE
         actions:
-          left:
-            type: WARP
+          warp:
+            click-type: LEFT
             tooltip: likes.gui.tips.click-to-warp
-          right:
-            type: VISIT
-            tooltip: likes.gui.tips.click-to-visit
+          visit:
+            click-type: RIGHT
+            tooltip: likes.gui.tips.right-click-to-visit
+        fallback:
+          icon: LIME_STAINED_GLASS_PANE
+          title: likes.gui.buttons.island.empty
       5:
         icon: PLAYER_HEAD
+        title: likes.gui.buttons.island.name
+        description: likes.gui.buttons.island.description
         data:
           type: TOP
           index: 7
-          background: LIME_STAINED_GLASS_PANE
         actions:
-          left:
-            type: WARP
+          warp:
+            click-type: LEFT
             tooltip: likes.gui.tips.click-to-warp
-          right:
-            type: VISIT
-            tooltip: likes.gui.tips.click-to-visit
+          visit:
+            click-type: RIGHT
+            tooltip: likes.gui.tips.right-click-to-visit
+        fallback:
+          icon: LIME_STAINED_GLASS_PANE
+          title: likes.gui.buttons.island.empty
       6:
         icon: PLAYER_HEAD
+        title: likes.gui.buttons.island.name
+        description: likes.gui.buttons.island.description
         data:
           type: TOP
           index: 8
-          background: LIME_STAINED_GLASS_PANE
         actions:
-          left:
-            type: WARP
+          warp:
+            click-type: LEFT
             tooltip: likes.gui.tips.click-to-warp
-          right:
-            type: VISIT
-            tooltip: likes.gui.tips.click-to-visit
+          visit:
+            click-type: RIGHT
+            tooltip: likes.gui.tips.right-click-to-visit
+        fallback:
+          icon: LIME_STAINED_GLASS_PANE
+          title: likes.gui.buttons.island.empty
       7:
         icon: PLAYER_HEAD
+        title: likes.gui.buttons.island.name
+        description: likes.gui.buttons.island.description
         data:
           type: TOP
           index: 9
-          background: LIME_STAINED_GLASS_PANE
         actions:
-          left:
-            type: WARP
+          warp:
+            click-type: LEFT
             tooltip: likes.gui.tips.click-to-warp
-          right:
-            type: VISIT
-            tooltip: likes.gui.tips.click-to-visit
+          visit:
+            click-type: RIGHT
+            tooltip: likes.gui.tips.right-click-to-visit
+        fallback:
+          icon: LIME_STAINED_GLASS_PANE
+          title: likes.gui.buttons.island.empty
       8:
         icon: PLAYER_HEAD
+        title: likes.gui.buttons.island.name
+        description: likes.gui.buttons.island.description
         data:
           type: TOP
           index: 10
-          background: LIME_STAINED_GLASS_PANE
         actions:
-          left:
-            type: WARP
+          warp:
+            click-type: LEFT
             tooltip: likes.gui.tips.click-to-warp
-          right:
-            type: VISIT
-            tooltip: likes.gui.tips.click-to-visit
+          visit:
+            click-type: RIGHT
+            tooltip: likes.gui.tips.right-click-to-visit
+        fallback:
+          icon: LIME_STAINED_GLASS_PANE
+          title: likes.gui.buttons.island.empty
     6:
       5:
         icon: PLAYER_HEAD
+        title: likes.gui.buttons.island.name
+        description: likes.gui.buttons.island.description
         data:
           type: VIEW
         actions:
-          left:
+          view:
+            click-type: ANY
             tooltip: likes.gui.tips.click-to-view

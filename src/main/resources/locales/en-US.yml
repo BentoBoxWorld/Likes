@@ -371,6 +371,7 @@ likes:
       click-to-select: "&e Click &7 to select."
       click-to-choose: "&e Click &7 to choose."
       click-to-visit: "&e Click &7 to visit."
+      right-click-to-visit: "&e Right Click &7 to visit."
       left-click-cycle: "&e Left Click &7 to cycle up."
       right-click-cycle: "&e Left Click &7 to cycle down."
     types:
