@@ -9,11 +9,31 @@ likes_dislikes:
   content:
     1:
       2:
+        icon: GOLD_INGOT
+        title: likes.gui.buttons.add_like.name
+        description: likes.gui.buttons.add_like.description
         data:
           type: ADD_LIKE
+        actions:
+          add_like:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-add
+          remove_like:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-remove
       4:
+        icon: IRON_INGOT
+        title: likes.gui.buttons.add_dislike.name
+        description: likes.gui.buttons.add_dislike.description
         data:
           type: ADD_DISLIKE
+        actions:
+          add_dislike:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-add
+          remove_dislike:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-remove
 #
 # This panel is used when LIKES mode is enabled.
 likes:
@@ -26,8 +46,18 @@ likes:
   content:
     1:
       3:
+        icon: GOLD_INGOT
+        title: likes.gui.buttons.add_like.name
+        description: likes.gui.buttons.add_like.description
         data:
           type: ADD_LIKE
+        actions:
+          add_like:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-add
+          remove_like:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-remove
 #
 # This panel is used when STARS mode is enabled.
 stars:
@@ -40,22 +70,72 @@ stars:
   content:
     1:
       1:
+        icon: NETHER_STAR:1
+        title: likes.gui.buttons.add_star.name
+        description: likes.gui.buttons.add_star.description
         data:
           type: ADD_STAR
           value: 1
+        actions:
+          add_star:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-add
+          remove_star:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-remove
       2:
+        icon: NETHER_STAR:2
+        title: likes.gui.buttons.add_star.name
+        description: likes.gui.buttons.add_star.description
         data:
           type: ADD_STAR
           value: 2
+        actions:
+          add_star:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-add
+          remove_star:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-remove
       3:
+        icon: NETHER_STAR:3
+        title: likes.gui.buttons.add_star.name
+        description: likes.gui.buttons.add_star.description
         data:
           type: ADD_STAR
           value: 3
+        actions:
+          add_star:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-add
+          remove_star:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-remove
       4:
+        icon: NETHER_STAR:4
+        title: likes.gui.buttons.add_star.name
+        description: likes.gui.buttons.add_star.description
         data:
           type: ADD_STAR
           value: 4
+        actions:
+          add_star:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-add
+          remove_star:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-remove
       5:
+        icon: NETHER_STAR:5
+        title: likes.gui.buttons.add_star.name
+        description: likes.gui.buttons.add_star.description
         data:
           type: ADD_STAR
           value: 5
+        actions:
+          add_star:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-add
+          remove_star:
+            click-type: unknown
+            tooltip: likes.gui.tips.click-to-remove
