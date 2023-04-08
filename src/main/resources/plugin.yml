@@ -1,0 +1,9 @@
+name: BentoBox-Likes
+main: world.bentobox.likes.LikesPladdon
+version: ${project.version}${build.number}
+api-version: "1.16"
+
+authors: [BONNe]
+contributors: ["The BentoBoxWorld Community"]
+website: https://bentobox.world
+description: ${project.description}
