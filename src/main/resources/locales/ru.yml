@@ -1,0 +1,369 @@
+---
+likes:
+  commands:
+    admin:
+      main:
+        description: открывает интерфейс администратора
+      settings:
+        description: открывает графический интерфейс настроек администратора
+    player:
+      main:
+        description: открывает нравится GUI
+      top:
+        parameters: "<type>"
+        description: открывает верхний графический интерфейс
+      view:
+        parameters: "<player>"
+        description: открывает графический интерфейс, где вы можете увидеть свои лайки
+  gui:
+    titles:
+      view-likes: "&0&l Просмотреть понравившиеся острова"
+      view-likes-dislikes: "&0&l Просмотреть понравившиеся и не понравившиеся острова"
+      view-stars: "&0&l Просмотреть звезды острова"
+      top: "&0&l Лучшие острова"
+      manage-likes: "&0&l Управление Нравится"
+      manage-likes-dislikes: "&0&l Управление лайками и дизлайками"
+      manage-stars: "&0&l Управление пометками"
+      admin: "&0&l Панель администратора"
+      settings: "&0&l Настройки"
+      edit-view: "&0&l Редактировать остров [type]"
+      select-island: "&0&l Выберите остров"
+      select-player: "&0&l Выбрать игрока"
+      select-block: "&0&l Выбрать блок"
+    buttons:
+      add_like:
+        name: "&f&l Нравится"
+        description: |-
+          &7 Добавить или удалить
+          &7 нравится этому острову.
+        cost: "&7 Это будет стоить &b&o $[number]"
+      add_dislike:
+        name: "&f&l Не нравится"
+        description: |-
+          &7 Добавить или удалить
+          &7 неприязнь к этому острову.
+        cost: "&7 Это будет стоить &b&o $[number]"
+      add_star:
+        name: "&f&l [number] Звезда"
+        description: |-
+          &7 Позволяет добавлять или удалять
+          &7 звезда для этого острова.
+        cost: "&7 Это будет стоить &b&o $[number]"
+      like:
+        name: "&f&l Количество лайков"
+        description: "&7 Показывает количество лайков"
+        likes: "&o&b [number] лайков"
+      like_rank:
+        name: "&f&l Рейтинг по лайкам"
+        description: |-
+          &7 ранговых островов
+          &7 по лайкам
+        rank: "&o&b [number]. "
+        not-ranked: "&o&b Не в топе."
+      dislike:
+        name: "&f&l Количество не понравившихся"
+        description: "&7 Показывает количество дизлайков"
+        dislikes: "&o&b [number] не нравится"
+      dislike_rank:
+        name: "&f&l Ранг по количеству не понравившихся"
+        description: |-
+          &7 Ранговый остров
+          &7 по дизлайкам
+        rank: "&o&b [number]. "
+        not-ranked: "&o&b Не в топе."
+      overall:
+        name: "&f&l Ранг"
+        description: "&7 Показывает значение ранга"
+        value: "&o&b [number] ранг"
+      overall_rank:
+        name: "&f&l Место по рангу"
+        description: |-
+          &7 Показывает место на острове
+          &7 по рангу
+        rank: "&o&b [number]. "
+        not-ranked: "&o&b Без рейтинга."
+      stars:
+        name: "&f&l Среднее количество звезд"
+        description: "&7 Показывает количество средних звезд"
+        stars: "&o&b [number] звезд"
+      stars_rank:
+        name: "&f&l Ранг по звездам"
+        description: |-
+          &7 Ранговый остров
+          &7 по звездам
+        rank: "&o&b [number]. "
+        not-ranked: "&o&b Без рейтинга."
+      return:
+        name: "&f&l Возврат"
+        description: |-
+          &7 Возврат в предыдущее меню
+          &7 или выйти из графического интерфейса
+      previous:
+        name: "&f&l Предыдущая страница"
+        description: "&7 Перейти на [number] страницы"
+      next:
+        name: "&f&l Следующая страница"
+        description: "&7 Перейти на [number] страницы"
+      user:
+        name: "&f&l [name]"
+      view_mode:
+        name: "&f&l Тип рейтинга"
+        description: |-
+          &7 Позволяет переключаться между
+          &7 различных рейтингов
+        active: "&2 Показывает ранжирование по [type]"
+        inactive: "&c Показывает ранжирование по [type]"
+      island:
+        empty: "&f&l [name]. место"
+        name: "&f&l [name]"
+        description: |-
+          [owner]
+          [members]
+          [place]
+          [numbers]
+        owners-island: Остров [player]
+        owner: "&7&l Владелец: &r&b [player]"
+        members-title: "&7&l Члены:"
+        member: "&b - [player]"
+        unknown: неизвестный
+        spawn: Спавн острова
+        place: "&7&o [number]. &r&7 по &l [type]"
+        numbers_likes: "&7&l [likes] игрокам &r&7 понравился этот остров"
+        numbers_stars: "&7&l [stars] звезды &r&7 от [number] игроков"
+        numbers_likes_dislikes: |-
+          &7&l [likes] игрокам &r&7 понравился этот остров
+          &7&l [dislikes] игрокам &r&7 не понравился этот остров
+          &7 Ранг острова: &l [rank]
+      manage_likes:
+        name: "&f&l Управление данными острова"
+        description: |-
+          &7 Управление всеми данными
+          &7 хранится для острова.
+      likes_icon:
+        name: "&f&l Иконка Остров"
+        description: |-
+          &7 Изменить выбранное
+          Значок острова &7 в верхнем графическом интерфейсе.
+      wipe_data:
+        name: "&f&l Очистить данные"
+        description: |-
+          &7 Завершить удаление
+          &7 все сохраненные данные для текущего
+          &7 Аддон GameMode.
+      settings:
+        name: "&f&l Настройки"
+        description: |-
+          &7 Управление дополнением
+          &7 настройки через графический интерфейс.
+      add_like_user:
+        name: "&f&l Добавить лайк"
+        description: |-
+          &7 Выберите
+          &7 игрок, который добавит
+          &7 лайк.
+      remove_like_user:
+        name: "&f&l Удалить лайк"
+        description: |-
+          &7 Выбрать игрока
+          &7, который удалит
+          &7 нравится.
+      add_dislike_user:
+        name: "&f&l Добавить Дизлайк"
+        description: |-
+          &7 Выбрать игрока
+          &7 кто добавит
+          &7 неприязнь.
+      remove_dislike_user:
+        name: "&f&l Удалить дизлайк"
+        description: |-
+          &7 Выбрать игрока
+          &7, который удалит
+          &7 дизлайк.
+      add_star_user:
+        name: "&f&l Добавить звезду"
+        description: |-
+          &7 Выбрать игрока
+          &7 кто добавит
+          &7 звезд.
+      remove_star_user:
+        name: "&f&l Удалить звезду"
+        description: |-
+          &7 Выбрать игрока
+          &7 кто удалит
+          &7 звезд.
+      like_cost:
+        name: "&f&l Стоимость добавления лайка"
+        description: |-
+          &7 Изменить стоимость
+          &7 игроку поставить лайк.
+        cost: "&7&o Стоимость: &b [number]"
+      like_remove_cost:
+        name: "&f&l Удалить стоимость лайка"
+        description: |-
+          &7 Изменить стоимость
+          &7 игроку убрать лайк.
+        cost: "&7&o Стоимость: &b [number]"
+      dislike_cost:
+        name: "&f&l Добавить стоимость не нравится"
+        description: |-
+          &7 Изменить стоимость
+          &7 игрок, чтобы добавить дизлайк.
+        cost: "&7&o Стоимость: &b [number]"
+      dislike_remove_cost:
+        name: "&f&l Удалить стоимость не нравится"
+        description: |-
+          &7 Изменить стоимость
+          &7 игрок, чтобы удалить дизлайк.
+        cost: "&7&o Стоимость: &b [number]"
+      stars_cost:
+        name: "&f&l Стоимость добавления звезд"
+        description: |-
+          &7 Изменить стоимость
+          &7 игрок, чтобы добавить звезды.
+        cost: "&7&o Стоимость: &b [number]"
+      stars_remove_cost:
+        name: "&f&l Стоимость удаления звезд"
+        description: |-
+          &7 Изменить стоимость
+          &7 игрок, чтобы удалить звезды.
+        cost: "&7&o Стоимость: &b [number]"
+      default_icon:
+        name: "&f&l Значок по умолчанию"
+        description: |-
+          &7 Изменить значение по умолчанию
+          значок &7 для островов в
+          &7 Графический интерфейс рейтинга.
+      inform_players:
+        name: "&f&l Информировать игроков"
+        description: |-
+          &7 Переключить, если игроки
+          &7 должен получить сообщение, когда
+          &7 кто-то любит/не любит/звезды
+          &7 их остров.
+        enabled: "&7 Информирование игрока &2 включено"
+        disabled: "&7 Информирование игроков &c отключено"
+      log_history:
+        name: "&f&l История журнала"
+        description: |-
+          &7 Переключить, если история
+          &7 о добавлении и удалении
+          &7 нравится/не нравится/звезды должны
+          &7 сохранить.
+          &7 Нигде не отображается.
+        enabled: "&7 Ведение журнала истории &2 включено"
+        disabled: "&7 Регистрация истории &c отключена"
+      reset_likes:
+        name: "&f&l Сбросить лайки"
+        description: |-
+          &7 Удалить все данные
+          &7 об острове, когда владелец
+          &7 сбрасывает свой остров.
+          &7 В противном случае данные будут сохранены
+          &7 и острова останутся в
+          &7 рейтинги.
+        enabled: "&7 Сброс &2 включен"
+        disabled: "&7 Сброс &c отключен"
+      is_online:
+        name: "&f&l Онлайн-игроки"
+        description: |-
+          &7 Список онлайн-плееров
+          &7 островов.
+      has_data:
+        name: "&f&l есть данные"
+        description: |-
+          &7 Список островов,
+          &7 есть некоторые данные.
+      all_islands:
+        name: "&f&l Все острова"
+        description: "&7 Список всех островов."
+      search:
+        name: "&f&l Поиск"
+        description: |-
+          &7 Поиск определенного
+          &7 значение.
+        search: "&b Значение: [vault]"
+      material:
+        name: "&f&l [material]"
+        description: "&7 Идентификатор материала: [id]"
+      all_players:
+        name: "&f&l Все игроки"
+        description: "&7 Список всех игроков."
+      online_players:
+        name: "&f&l Онлайн-игроки"
+        description: "&7 Список онлайн-игроков."
+      cancel:
+        name: "&f&l Отмена"
+        description: |-
+          &7 Отменить и вернуться к
+          &7 предыдущее меню.
+    tips:
+      click-to-open: "&e Нажмите &7, чтобы открыть."
+      click-to-change: "&e Нажмите &7, чтобы изменить."
+      click-to-wipe: "&e Нажмите &7, чтобы стереть данные."
+      click-to-manage: "&e Нажмите &7 для управления."
+      click-to-add: "&e Нажмите &7, чтобы добавить."
+      click-to-remove: "&e Нажмите &7, чтобы удалить."
+      click-to-set: "&e Нажмите &7, чтобы установить."
+      click-to-next: "&e Нажмите &7, чтобы перейти к следующему."
+      click-to-previous: "&e Нажмите &7 для перехода к предыдущему."
+      click-to-quit: "&e Нажмите &7, чтобы выйти."
+      click-to-return: "&e Нажмите &7, чтобы вернуться."
+      click-to-warp: "&e Нажмите &7 для деформации."
+      click-to-enable: "&e Нажмите &7, чтобы включить."
+      click-to-disable: "&e Нажмите &7, чтобы отключить."
+      click-to-view: "&e Нажмите &7 для просмотра."
+      left-click-to-edit: "&e Щелкните левой кнопкой мыши &7 для редактирования."
+      right-click-to-clear: "&e Щелкните правой кнопкой мыши &7, чтобы очистить."
+      shift-click-to-remove: "&e Shift Нажмите &7, чтобы удалить."
+      click-to-cancel: "&e Нажмите &7 для отмены."
+      click-to-select: "&e Нажмите &7, чтобы выбрать."
+      click-to-choose: "&e Нажмите &7, чтобы выбрать."
+      click-to-visit: "&e Нажмите &7, чтобы посетить."
+      right-click-to-visit: "&e Щелкните правой кнопкой мыши &7, чтобы посетить."
+      left-click-cycle: "&e Щелкните левой кнопкой мыши &7 для перехода вверх."
+      right-click-cycle: "&e Щелкните правой кнопкой мыши &7, чтобы переключиться
+        вниз."
+    types:
+      likes: Нравится
+      dislikes: Дизлайк
+      rank: Ранг
+      stars: Звезды
+  errors:
+    not-on-island: "&c Вы должны быть на острове, чтобы запустить эту команду!"
+    your-island: "&c Вы не можете поставить лайк или дизлайк своему острову!"
+    top-is-empty: "&c Извините, в рейтинге никого нет!"
+    database-error: "&c Извините, произошла ошибка с базой данных. Не удается найти
+      данные вашего острова."
+    not-enough-money: "&c Извините, на вашем счете недостаточно кредитов."
+    no-data-about-island: "&c Нет данных об этом острове."
+    no-data-about-your-island: "&c Нет данных о вашем острове."
+    island-not-owned: "&c Этот остров не принадлежит вам. Вам не может это нравиться/не
+      нравиться!"
+  conversations:
+    confirm-string: true, on, yes, confirm, y, valid, correct
+    deny-string: false, выключено, нет, отрицать, n, недопустимо, неправильно
+    cancel-string: отменить
+    exit-string: cancel, exit, quit
+    cancelled: "&c Разговор отменен!"
+    prefix: "&l&6 [BentoBox]: &r"
+    numeric-only: "&c Данное [value] не является числом!"
+    not-valid-value: "&c Заданное число [value] недействительно. Оно должно быть больше
+      [min] и меньше [max]!"
+    write-search: "&e Введите значение для поиска. (Напишите 'cancel' чтобы выйти)"
+    search-updated: "&a Значение поиска обновлено."
+    input-number: "&e Пожалуйста, введите номер в чат."
+    confirm-island-data-deletion: "&e Подтвердите, что вы хотите удалить все пользовательские
+      данные из базы данных для [gamemode]."
+    user-data-removed: "&a Успех, все пользовательские данные для [gamemode] удалены!"
+    add-like: "&a Вам понравился остров [name]."
+    player-add-like: "&a [name] понравился ваш остров."
+    remove-like: "&c Вы удалили лайк с острова [name]."
+    player-remove-like: "&c [name] удалил лайки с вашего острова."
+    add-dislike: "&c Вам не понравился остров [name]."
+    player-add-dislike: "&c [name] поставил дизлайк на ваш остров."
+    remove-dislike: "&a Вы снимаете неприязнь с острова [name]."
+    player-remove-dislike: "&a [name] удалили свою неприязнь с вашего острова."
+    add-stars: "&a Вы добавили [number] звезд на остров [name]."
+    player-add-stars: "&a [name] добавило [number] звезд на ваш остров."
+    remove-stars: "&c Вы удаляете свои звезды с острова [name]."
+    player-remove-stars: "&c [name] удалили свои звезды с вашего острова."
