@@ -653,7 +653,7 @@ public class TopLikesPanel extends CommonPanel
         // Template specific description is always more important than custom one.
         if (template.description() != null && !template.description().isBlank())
         {
-            builder.name(this.user.getTranslationOrNothing(template.description(),
+            builder.description(this.user.getTranslationOrNothing(template.description(),
                     Constants.PARAMETER_OWNER, ownerText,
                     Constants.PARAMETER_MEMBERS, memberText,
                     Constants.PARAMETER_PLACE, placeText,
