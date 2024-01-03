@@ -72,7 +72,7 @@
         <!-- Bank addon version -->
         <bank.version>1.4.0</bank.version>
         <!-- Panel Utils version -->
-        <panelutils.version>1.0.0</panelutils.version>
+        <panelutils.version>1.2.0</panelutils.version>
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- This allows to change between versions and snapshots. -->
