@@ -1,0 +1,371 @@
+---
+likes:
+  commands:
+    admin:
+      main:
+        description: abre la GUI de administración
+      settings:
+        description: abre la GUI de configuración de administrador
+    player:
+      main:
+        description: abre me gusta GUI
+      top:
+        parameters: "<tipo>"
+        description: abre la GUI superior
+      view:
+        parameters: "<jugador>"
+        description: abre GUI donde puedes ver tus gustos
+  gui:
+    titles:
+      view-likes: "&0&l Ver los Me gusta en la isla"
+      view-likes-dislikes: "&0&l Ver los Me gusta y los No me gusta de la isla"
+      view-stars: "&0&l Ver estrellas de la isla"
+      top: "&0 &l Islas principales por [type]"
+      manage-likes: "&0&l Administrar Me gusta"
+      manage-likes-dislikes: "&0&l Administrar Me gusta y No me gusta"
+      manage-stars: "&0&l Administrar estrellas"
+      admin: "&0 &l Panel de administración"
+      settings: "&0 &l Configuración"
+      edit-view: "&0 &l Editar isla [type]"
+      select-island: "&0 &l Seleccione una isla"
+      select-player: "&0 &l Seleccionar un jugador"
+      select-block: "&dSeleccione un bloque"
+    buttons:
+      add_like:
+        name: "&f &l Me gusta"
+        description: |-
+          &7 Agregar o quitar
+          &7 me gusta para esta isla.
+        cost: "&7 Te costará &b&o $ [number]"
+      add_dislike:
+        name: "&f &l No me gusta"
+        description: |-
+          &7 Agregar o quitar
+          &7 no me gusta esta isla.
+        cost: "&7 Te costará &b&o $ [number]"
+      add_star:
+        name: "&f &l [number] Estrella"
+        description: |-
+          &7 Permite agregar o eliminar
+          &7 una estrella para esta isla.
+        cost: "&7 Te costará &b&o $ [number]"
+      like:
+        name: "&f &l Likes Count"
+        description: "&7 Muestra el número de Me gusta"
+        likes: "&o &b [number] me gusta"
+      like_rank:
+        name: "&f &l Clasificación por Me gusta"
+        description: |-
+          &7 islas de rango
+          &7 por me gusta
+        rank: "&o &b [number]."
+        not-ranked: "& o & b No en la parte superior."
+      dislike:
+        name: "& f & l No me gusta el recuento"
+        description: "& 7 Muestra el número de no me gusta"
+        dislikes: "& o & b [número] no me gusta"
+      dislike_rank:
+        name: "& f & l Clasificación por No me gusta"
+        description: |-
+          & Isla de 7 rangos
+          & 7 por disgustos
+        rank: "&o &b [number]."
+        not-ranked: "&o &b No en la parte superior."
+      overall:
+        name: "&f &l Rango"
+        description: "&7 Muestra el valor de la clasificación"
+        value: "&o &b [number] rango"
+      overall_rank:
+        name: "&f &l Lugar por rango"
+        description: |-
+          &7 Muestra el lugar de la isla
+          &7 por rango
+        rank: "&o &b [number]."
+        not-ranked: "&o &b No clasificado."
+      stars:
+        name: "&f &l Promedio de estrellas"
+        description: "& 7 Muestra el número de estrellas promedio"
+        stars: "& o & b [número] estrellas"
+      stars_rank:
+        name: "& f & l Clasificación por estrellas"
+        description: |-
+          & Isla de 7 rangos
+          & 7 por estrellas
+        rank: "& o & b [número]."
+        not-ranked: "& o & b No clasificado."
+      return:
+        name: "& f & l Volver"
+        description: |-
+          & 7 Regresar al menú anterior
+          & 7 o salir de la GUI
+      previous:
+        name: "& f & l Página anterior"
+        description: "& 7 Cambiar a la página [número]"
+      next:
+        name: "& f & l Página siguiente"
+        description: "& 7 Cambiar a la página [número]"
+      user:
+        name: "& f & l [nombre]"
+      view_mode:
+        name: "& f & l Tipo de clasificación"
+        description: |-
+          & 7 Permite cambiar entre
+          & 7 clasificaciones diferentes
+        active: "& 2 Muestra la clasificación por [tipo]"
+        inactive: "& c Muestra la clasificación por [tipo]"
+      island:
+        empty: "&f&l [nombre]. lugar"
+        name: "& f & l [nombre]"
+        description: |-
+          [dueño]
+          [miembros]
+          [lugar]
+          [números]
+        owners-island: Isla de [jugador]
+        owner: "& 7 & l Propietario: & r & b [jugador]"
+        members-title: "& 7 & l Miembros:"
+        member: "& b - [jugador]"
+        unknown: desconocido
+        spawn: Isla de spawn
+        place: "& 7 & o [número]. & r & 7 de & l [tipo]"
+        numbers_likes: A & 7 & l [me gusta] A los jugadores & r & 7 les gustó esta
+          isla
+        numbers_stars: "& 7 & l [estrellas] estrellas & r & 7 de [número] jugadores"
+        numbers_likes_dislikes: |-
+          A & 7 & l [me gusta] A los jugadores & r & 7 les gustó esta isla
+          A & 7 & l [no me gusta] los jugadores & r & 7 no les gustó esta isla
+          & 7 Clasificación de la isla: & l [clasificación]
+      manage_likes:
+        name: "& f & l Administrar datos de la isla"
+        description: |-
+          & 7 Gestionar todos los datos
+          & 7 almacenados para isla.
+      likes_icon:
+        name: "& f & l icono de la isla"
+        description: |-
+          & 7 Cambiar seleccionado
+          & 7 icono de isla en la GUI superior.
+      wipe_data:
+        name: "& f & l Borrar datos"
+        description: |-
+          & 7 Eliminar completamente
+          & 7 todos los datos almacenados para la
+          & 7 complemento GameMode.
+      settings:
+        name: "& f & l Configuración"
+        description: |-
+          & 7 Administrar complemento
+          & 7 configuraciones a través de GUI.
+      add_like_user:
+        name: "& f & l Agregar Me gusta"
+        description: |-
+          & 7 Seleccione un
+          & 7 jugador que agregará
+          & 7 me gusta.
+      remove_like_user:
+        name: "& f & l Eliminar Me gusta"
+        description: |-
+          & 7 Selecciona un jugador
+          & 7 que eliminará un
+          & 7 me gusta.
+      add_dislike_user:
+        name: "& f & l Agregar No me gusta"
+        description: |-
+          & 7 Selecciona un jugador
+          & 7 quién agregará
+          & 7 un disgusto.
+      remove_dislike_user:
+        name: "& f & l Eliminar No me gusta"
+        description: |-
+          & 7 Selecciona un jugador
+          & 7 que eliminará un
+          & 7 no me gusta.
+      add_star_user:
+        name: "& f & l Agregar estrellas"
+        description: |-
+          & 7 Selecciona un jugador
+          & 7 quién agregará
+          & 7 estrellas.
+      remove_star_user:
+        name: "& f & l Eliminar estrellas"
+        description: |-
+          & 7 Selecciona un jugador
+          & 7 Whoe eliminará
+          & 7 estrellas.
+      like_cost:
+        name: "& f & l Agregar costo similar"
+        description: |-
+          & 7 Cambie el costo de un
+          & 7 jugador para agregar un me gusta.
+        cost: "& 7 & o Costo: & b [número]"
+      like_remove_cost:
+        name: "& f & l Eliminar costo similar"
+        description: |-
+          & 7 Cambie el costo de un
+          & 7 jugador para eliminar un me gusta.
+        cost: "& 7 & o Costo: & b [número]"
+      dislike_cost:
+        name: "& f & l Agregar costo de No me gusta"
+        description: |-
+          & 7 Cambie el costo de un
+          & 7 jugador para agregar un disgusto.
+        cost: "& 7 & o Costo: & b [número]"
+      dislike_remove_cost:
+        name: "& f & l Eliminar el costo de No me gusta"
+        description: |-
+          & 7 Cambie el costo de un
+          & 7 jugador para eliminar un disgusto.
+        cost: "& 7 & o Costo: & b [número]"
+      stars_cost:
+        name: "& f & l Agregar costo de estrellas"
+        description: |-
+          & 7 Cambie el costo de un
+          & 7 jugador a para agregar estrellas.
+        cost: "& 7 & o Costo: & b [número]"
+      stars_remove_cost:
+        name: "& f & l Eliminar costo de estrellas"
+        description: |-
+          & 7 Cambie el costo de un
+          & 7 jugador para eliminar estrellas.
+        cost: "& 7 & o Costo: & b [número]"
+      default_icon:
+        name: "& f & l Icono predeterminado"
+        description: |-
+          & 7 Cambiar el valor predeterminado
+          & 7 icono de islas en el
+          & 7 GUI de clasificación.
+      inform_players:
+        name: "& f & l Informar a los jugadores"
+        description: |-
+          & 7 Alternar si jugadores
+          & 7 debería recibir un mensaje cuando
+          & 7 a alguien le gusta / no le gusta / estrellas
+          & 7 su isla.
+        enabled: "& 7 La información de jugador está & 2 habilitada"
+        disabled: "& 7 La información del jugador está & c deshabilitada"
+      log_history:
+        name: "& f & l Historial de registro"
+        description: |-
+          & 7 Alternar si historial
+          & 7 sobre agregar y eliminar
+          & 7 gustos / disgustos / estrellas deberían
+          & 7 almacenarse.
+          & 7 No se muestra en ninguna parte.
+        enabled: "& 7 El registro de historial está & 2 habilitado"
+        disabled: "& 7 El registro de historial está & c deshabilitado"
+      reset_likes:
+        name: "& f & l Restablecer Me gusta"
+        description: |-
+          & 7 Eliminar todos los datos
+          & 7 sobre una isla cuando un propietario
+          & 7 restablece su isla.
+          & 7 De lo contrario, se conservarán los datos
+          & 7 y las islas permanecerán en el
+          & 7 rankings.
+        enabled: "& 7 El reinicio está & 2 habilitado"
+        disabled: "& 7 El reinicio está & c desactivado"
+      is_online:
+        name: "& f & l Jugadores online"
+        description: |-
+          & 7 Lista de jugadores en línea
+          Y 7 islas.
+      has_data:
+        name: "& f & l tiene datos"
+        description: |-
+          & 7 Lista de islas que
+          & 7 tienen algunos datos.
+      all_islands:
+        name: "& f & l Todas las islas"
+        description: "& 7 Lista de todas las islas."
+      search:
+        name: "& f & l Buscar"
+        description: |-
+          & 7 Busque un
+          & 7 valor.
+        search: "& b Valor: [valor]"
+      material:
+        name: "&f&l [material]"
+        description: "&7 Material ID: [id]"
+      all_players:
+        name: "& f & l Todos los jugadores"
+        description: "& 7 Lista de todos los jugadores."
+      online_players:
+        name: "& f & l Jugadores online"
+        description: "& 7 Lista de jugadores en línea."
+      cancel:
+        name: "&f&l Cancelar"
+        description: |-
+          &7 Cancelar y volver al
+          &7 menú anterior.
+    tips:
+      click-to-open: "& e Haga clic en & 7 para abrir."
+      click-to-change: "& e Haga clic en & 7 para cambiar."
+      click-to-wipe: "& e Haga clic en & 7 para limpiar."
+      click-to-manage: "& e Haga clic en & 7 para administrar."
+      click-to-add: "& e Haga clic en & 7 para agregar."
+      click-to-remove: "& e Haga clic en & 7 para eliminar."
+      click-to-set: "& e Haga clic en & 7 para configurar."
+      click-to-next: "& e Haga clic en & 7 para el siguiente."
+      click-to-previous: "& e Haga clic en & 7 para ver la anterior."
+      click-to-quit: "& e Haga clic en & 7 para salir."
+      click-to-return: "& e Haga clic en & 7 para volver."
+      click-to-warp: "& e Haga clic en & 7 para deformar."
+      click-to-enable: "& e Haga clic en & 7 para habilitar."
+      click-to-disable: "& e Haga clic en & 7 para desactivar."
+      click-to-view: "& e Haga clic en & 7 para ver."
+      left-click-to-edit: "& e Clic izquierdo & 7 para editar."
+      right-click-to-clear: "& e Haga clic con el botón derecho del ratón & 7 para
+        borrar."
+      shift-click-to-remove: "& e Shift Haga clic & 7 para eliminar."
+      click-to-cancel: "& e Haga clic & 7 para cancelar."
+      click-to-select: "& e Haga clic & 7 para seleccionar."
+      click-to-choose: "&e Haga clic &7 para elegir."
+      click-to-visit: "&e Haga clic &7 para visitar."
+      right-click-to-visit: "&e Haga clic derecho &7 para visitar."
+      left-click-cycle: "&e Haga clic izquierdo &7 para subir."
+      right-click-cycle: "&e Haga clic derecho &7 para bajar."
+    types:
+      likes: Gustos
+      dislikes: No me gusta
+      rank: Rango
+      stars: Estrellas
+  errors:
+    not-on-island: "&c ¡Debes estar en la isla para ejecutar este comando!"
+    your-island: "&c ¡No puedes agregar un me gusta o disgusto a tu propia isla!"
+    top-is-empty: "&c ¡Lo siento, no hay nadie en el ranking!"
+    database-error: "&c Lo siento, hubo un error con la base de datos. No se pueden
+      encontrar los datos de su isla."
+    not-enough-money: "& c Lo sentimos, no tiene suficientes créditos en su cuenta."
+    no-data-about-island: "& c No hay datos sobre esta isla."
+    no-data-about-your-island: "& c No hay datos sobre su isla."
+    island-not-owned: "&c Esta isla no es de propiedad. ¡No puedes dar me gusta/no
+      me gusta!"
+  conversations:
+    confirm-string: verdadero, encendido, sí, confirmar, y, válido, correcto
+    deny-string: falso, desactivado, no, denegar, n, inválido, incorrecto
+    cancel-string: cancelar
+    exit-string: cancelar, salir, salir
+    cancelled: "& c ¡Conversación cancelada!"
+    prefix: "& l & 6 [BentoBox]: & r"
+    numeric-only: "& c ¡El [valor] dado no es un número!"
+    not-valid-value: "& c El número [valor] proporcionado no es válido. ¡Debe ser
+      mayor que [min] y menor que [max]!"
+    write-search: "& e Introduzca un valor de búsqueda. (Escriba 'cancelar' para salir)"
+    search-updated: "& un valor de búsqueda actualizado."
+    input-number: "& e Introduzca un número en el chat."
+    confirm-island-data-deletion: "& e Confirme que desea eliminar todos los datos
+      de usuario de la base de datos para [modo de juego]."
+    user-data-removed: "& ¡Éxito, se eliminaron todos los datos de usuario de [modo
+      de juego]!"
+    add-like: "& a Te gustó la isla de [nombre]."
+    player-add-like: "& A [nombre] le gustó tu isla."
+    remove-like: "& c Quitaste tu me gusta de la isla de [nombre]."
+    player-remove-like: "& c [nombre] eliminó a sus semejantes de tu isla."
+    add-dislike: "& c No te gustó la isla de [nombre]."
+    player-add-dislike: "& c [nombre] no le gustaba tu isla."
+    remove-dislike: "& a Eliminas tu disgusto de la isla de [nombre]."
+    player-remove-dislike: "& a [nombre] eliminó su disgusto de tu isla."
+    add-stars: "& a Agregaste [número] estrellas a la isla de [nombre]."
+    player-add-stars: "& un [nombre] agregó [número] estrellas a tu isla."
+    remove-stars: "& c Quitas tus estrellas de la isla de [nombre]."
+    player-remove-stars: "& c [nombre] quitó sus estrellas de tu isla."

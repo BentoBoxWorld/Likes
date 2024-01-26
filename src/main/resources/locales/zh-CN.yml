@@ -1,37 +1,36 @@
+---
 likes:
-  # 指令区域.
   commands:
     admin:
       main:
-        parameters: ""
-        description: "打开管理员 GUI"
+        description: 打开管理员菜单
       settings:
-        parameters: ""
-        description: "打开管理员设置 GUI"
+        description: 打开管理员设置菜单
     player:
       main:
-        parameters: ""
-        description: "打开点赞 GUI"
+        description: 打开点赞菜单
       top:
         parameters: "<类型>"
-        description: "打开排行 GUI"
+        description: 打开获赞排行榜
       view:
         parameters: "<玩家>"
-        description: "打开 GUI 以查看您的点赞"
-  # 用户 GUI 区域.
+        description: 查看获赞量
   gui:
     titles:
-      view: "&0&l 查看 [type] 岛屿"
-      top: "&0&l [type] 岛屿排行"
-      manage: "&0&l 管理 [type]"
-      admin: "&0&l 管理员面板"
+      view-likes: "&0&l 岛屿获赞信息"
+      view-likes-dislikes: "&0&l 岛屿表态信息"
+      view-stars: "&0&l 查看岛屿评价信息"
+      top: "&0&l 获赞排行榜"
+      manage-likes: "&0&l 管理点赞"
+      manage-likes-dislikes: "&0&l 管理表态"
+      manage-stars: "&0&l 管理评价"
+      admin: "&0&l 管理员菜单"
       settings: "&0&l 设置"
-      edit-view: "&0&l E编辑 [type] 岛屿"
+      edit-view: "&0&l 编辑 [type] 岛屿"
       select-island: "&0&l 选择一个岛屿"
       select-player: "&0&l 选择一名玩家"
       select-block: "&0&l 选择一个方块"
     buttons:
-      # 点赞管理 GUI 中的按钮 (可以 点赞/移除点赞 的玩家 GUI)
       add_like:
         name: "&f&l 点赞"
         description: |-
@@ -39,80 +38,72 @@ likes:
           &7 此岛屿的一个赞.
         cost: "&7 此操作将花费 &b&o $[number]"
       add_dislike:
-        name: "&f&l 倒彩"
+        name: "&f&l 不喜欢"
         description: |-
-          &7 增加或移除
-          &7 此岛屿的一个倒彩.
+          &7 增加或移除此岛屿的
+          &7 一个不喜欢表态.
         cost: "&7 此操作将花费 &b&o $[number]"
       add_star:
-        name: "&f&l [number] 星标"
+        name: "&f&l [number] 人评价过"
         description: |-
           &7 增加或移除
-          &7 此岛屿的一个星标.
+          &7 此岛屿的一个评价
         cost: "&7 此操作将花费 &b&o $[number]"
-      # 点赞查看面板中的按钮
       like:
         name: "&f&l 点赞数"
-        description: |-
-          &7 显示赞数
-        likes: "&o&b [number] 个赞"
+        description: "&7 显示点赞数"
+        likes: "&o&b [number] 人表示很赞"
       like_rank:
-        name: "&f&l 赞数排行"
+        name: "&f&l 获赞排行"
         description: |-
           &7 岛屿
           &7 点赞排行
         rank: "&o&b [number]. "
-        not-ranked: "&o&b 不在排行中."
+        not-ranked: "&o&b 未上榜."
       dislike:
-        name: "&f&l 倒彩数"
-        description: |-
-          &7 显示倒彩数
-        dislikes: "&o&b [number] 个倒彩"
+        name: "&f&l 不喜欢表态数量"
+        description: "&7 显示不喜欢表态数量"
+        dislikes: "&o&b [number] 人表示不喜欢"
       dislike_rank:
-        name: "&f&l 倒彩数排行"
+        name: "&f&l 不喜欢排行榜"
         description: |-
-          &7 岛屿
-          &7 倒彩排行
+          &7 最令人
+          &7 讨厌的岛屿
         rank: "&o&b [number]. "
-        not-ranked: "&o&b 不在排行中."
+        not-ranked: "&o&b 未上榜."
       overall:
-        name: "&f&l 排行"
-        description: |-
-          &7 显示排行中的位置
-        value: "&o&b 第 [number] 名"
+        name: "&f&l 等级"
+        description: "&7 你的等级"
+        value: "&o&b [number] 级"
       overall_rank:
-        name: "&f&l 位置排行"
+        name: "&f&l 位次"
         description: |-
-          &7 显示岛屿
-          &7 位置排行
+          &7 你的岛屿的
+          &7 排行榜位次
         rank: "&o&b [number]. "
-        not-ranked: "&o&b 不在排行中."
+        not-ranked: "&o&b 未上榜."
       stars:
-        name: "&f&l 平均星标"
-        description: |-
-          &7 显示平均星标数
-        stars: "&o&b [number] 个星标"
+        name: "&f&l 平均分数"
+        description: "&7 显示平均分数"
+        stars: "&o&b [number] 分"
       stars_rank:
-        name: "&f&l 星标排行"
+        name: "&f&l 评价排行榜"
         description: |-
           &7 岛屿
-          &7 星标排行
+          &7 评价排行
         rank: "&o&b [number]. "
-        not-ranked: "&o&b 不在排行中."
-      # 通用 GUI 中的按钮
+        not-ranked: "&o&b 未上榜."
       return:
         name: "&f&l 返回"
         description: |-
           &7 返回前一个菜单
-          &7 或退出 GUI
+          &7 或退出菜单
       previous:
         name: "&f&l 上一页"
-        description: |-
-          &7 切换到第 [number] 页
+        description: "&7 跳转到第 [number] 页"
       next:
         name: "&f&l 下一页"
-        description: |-
-          &7 切换到第 [number] 页
+        description: "&7 跳转到第 [number] 页"
       user:
         name: "&f&l [name]"
       view_mode:
@@ -123,27 +114,26 @@ likes:
         active: "&2 显示 [type] 的排行"
         inactive: "&c 显示 [type] 的排行"
       island:
-        name: '&f&l [name]'
+        empty: "&f&l [name]. place"
+        name: "&f&l [name]"
         description: |-
           [owner]
           [members]
           [place]
           [numbers]
         owners-island: "[player] 的岛屿"
-        owner: "&7&l 主人: &r&b [player]"
+        owner: "&7&l 岛主: &r&b [player]"
         members-title: "&7&l 成员:"
         member: "&b - [player]"
-        unknown: "未知玩家"
+        unknown: 未知玩家
+        spawn: 主城岛
         place: "&7&l[type] 中的第&7&o [number] &r&7&l名."
-        numbers_likes: |-
-          &7&l [likes] 名玩家 &r&7 给此岛屿点赞了
-        numbers_stars: |-
-          &7 [number] 名玩家为此岛屿添加&7&l [stars] 个星标
+        numbers_likes: "&7&l [likes] 名玩家 &r&7 给此岛屿点赞了"
+        numbers_stars: "&7 [number] 名玩家为此岛屿进行了评价: &7&l [stars] 分"
         numbers_likes_dislikes: |-
-          &7&l [likes] 名玩家 &r&7 给此岛屿点赞了
-          &7&l [dislikes] 名玩家 &r&7 给此岛屿倒彩了
+          &7&l [likes] &r&7人觉得很赞
+          &7&l [dislikes] &r&7人表示不喜欢
           &7 岛屿排行: &l [rank]
-      # 管理员主 GUI 中的按钮.
       manage_likes:
         name: "&f&l 管理岛屿数据"
         description: |-
@@ -153,24 +143,18 @@ likes:
         name: "&f&l 岛屿图标"
         description: |-
           &7 更改选定岛屿
-          &7 在排行 GUI 中的图标.
+          &7 在排行榜中的图标.
       wipe_data:
         name: "&f&l 清除数据"
         description: |-
-          &7 永久移除
-          &7 此 addon 储存的
-          &7 所有数据.
+          &7 彻底清除
+          &7 此扩展的所有
+          &7 存储数据
       settings:
         name: "&f&l 设置"
         description: |-
-          &7 通过 GUI
-          &7 来更改设置.
-
-
-
-
-
-      # 管理员查看岛屿 GUI 中的按钮
+          &7 通过菜单
+          &7 来设置扩展.
       add_like_user:
         name: "&f&l 增加点赞"
         description: |-
@@ -182,97 +166,95 @@ likes:
           &7 选择一个
           &7 取消点赞的玩家.
       add_dislike_user:
-        name: "&f&l 增加倒彩"
+        name: "&f&l 增加不喜欢表态"
         description: |-
-          &7 选择一个
-          &7 倒彩的玩家.
+          &7 选择一个表示
+          &7 不喜欢的玩家.
       remove_dislike_user:
-        name: "&f&l 减少倒彩"
+        name: "&f&l 减少不喜欢表态"
         description: |-
           &7 选择一个
-          &7 取消倒彩的玩家.
+          &7 取消不喜欢的玩家.
       add_star_user:
-        name: "&f&l 增加星标"
+        name: "&f&l 增加评价"
         description: |-
           &7 选择一个
-          &7 添加星标的玩家.
+          &7 添加评价的玩家.
       remove_star_user:
-        name: "&f&l 减少星标"
+        name: "&f&l 减少评价"
         description: |-
           &7 选择一个
-          &7 取消星标的玩家.
-      # 管理员设置 GUI 中的按钮
+          &7 取消评价的玩家.
       like_cost:
         name: "&f&l 设置点赞费用"
         description: |-
           &7 设置玩家点赞
-          &7 花费的金额.
-        cost: "&7&o 金额: &b [number]"
+          &7 所需的金钱.
+        cost: "&7&o 价格: &b [number]"
       like_remove_cost:
         name: "&f&l 取消点赞费用"
         description: |-
-          &7 取消玩家点赞
-          &7 花费的金额.
-        cost: "&7&o 金额: &b [number]"
+          &7 玩家取消点赞
+          &7 需要的金钱
+        cost: "&7&o 价格: &b [number]"
       dislike_cost:
-        name: "&f&l 设置倒彩费用"
+        name: "&f&l 设置不喜欢费用"
         description: |-
-          &7 设置玩家倒彩
-          &7 花费的金额.
-        cost: "&7&o 金额: &b [number]"
+          &7 设置玩家表示
+          &7 不喜欢需要的金钱.
+        cost: "&7&o 价格: &b [number]"
       dislike_remove_cost:
-        name: "&f&l 取消倒彩费用"
+        name: "&f&l 取消不喜欢的费用"
         description: |-
-          &7 取消玩家倒彩
-          &7 花费的金额.
-        cost: "&7&o 金额: &b [number]"
+          &7 玩家取消不喜欢
+          &7 需要的金钱.
+        cost: "&7&o 价格: &b [number]"
       stars_cost:
-        name: "&f&l 设置星标费用"
+        name: "&f&l 设置评价费用"
         description: |-
-          &7 设置玩家添加星标
-          &7 花费的金额.
-        cost: "&7&o 金额: &b [number]"
+          &7 设置玩家添加评价
+          &7 需要的金钱.
+        cost: "&7&o 价格: &b [number]"
       stars_remove_cost:
-        name: "&f&l 取消星标费用"
+        name: "&f&l 删除评价的费用"
         description: |-
-          &7 取消玩家添加星标
-          &7 花费的金额.
-        cost: "&7&o 金额: &b [number]"
+          &7 玩家删除评价
+          &7 需要的金钱.
+        cost: "&7&o 价格: &b [number]"
       default_icon:
         name: "&f&l 默认图标"
         description: |-
-          &7 更改排行 GUI 中
+          &7 更改排行榜中
           &7 岛屿的默认图标.
       inform_players:
         name: "&f&l 通知玩家"
         description: |-
-          &7 切换当玩家的岛屿
-          &7 收到 点赞/倒彩/星标 时
+          &7 当玩家的岛屿
+          &7 收到点赞/不喜欢/评价时
           &7 是否通知他们.
-        enabled: "&7 通知玩家 已 &2 开启"
-        disabled: "&7 通知玩家 已 &c 关闭"
+        enabled: "&2 已开启&7通知"
+        disabled: "&c 已关闭&7通知"
       log_history:
         name: "&f&l 历史记录"
         description: |-
-          &7 切换是否储存
-          &7 所有 点赞/倒彩/星标
+          &7 是否储存
+          &7 所有点赞/不喜欢/评价
           &7 的历史记录.
           &7 此记录不会展示在任何地方.
-        enabled: "&7 历史记录 已 &2 开启"
-        disabled: "&7 历史记录 已 &c 关闭"
+        enabled: "&2 已开启&7历史记录"
+        disabled: "&c 已关闭&7历史记录"
       reset_likes:
-        name: "&f&l 重置赞数"
+        name: "&f&l 重置点赞数据"
         description: |-
-          &7 切换当主人
+          &7 当岛主
           &7 重置其岛屿时,
           &7 是否重置该岛屿
-          &7 的所有赞数数据
-          &7 如不重置,
-          &7 岛屿将仍然在排行
-          &7 中显示.
-        enabled: "&7 重置 已 &2 开启"
-        disabled: "&7 重置 已 &c 关闭"
-      # 管理员岛屿选择 GUI 中的按钮
+          &7 的所有点赞数据
+          &7 如果不重置,
+          &7 数据将保留且岛屿将
+          &7 仍然在排行榜中显示.
+        enabled: "&7 重置: &2是"
+        disabled: "&7 重置: &c否"
       is_online:
         name: "&f&l 在线玩家"
         description: |-
@@ -285,67 +267,73 @@ likes:
           &7 的岛屿.
       all_islands:
         name: "&f&l 所有岛屿"
-        description: |-
-          &7 列出所有岛屿.
+        description: "&7 列出所有岛屿."
       search:
         name: "&f&l 搜索"
         description: |-
-          &7 搜索一个
-          &7 指定的值.
-        search: "&b Value: [value]"
-      # 管理员方块选择 GUI 中的按钮
-      material-icon:
+          &7 搜索
+          &7 指定岛屿.
+        search: "&b 搜索: [value]"
+      material:
         name: "&f&l [material]"
-      # 管理员用户选择 GUI 中的按钮
+        description: "&7 物品 ID: [id]"
       all_players:
         name: "&f&l 所有玩家"
-        description: |-
-          &7 列出所有玩家.
+        description: "&7 列出所有玩家."
       online_players:
         name: "&f&l 在线玩家"
+        description: "&7 列出所有在线玩家."
+      cancel:
+        name: "&f&l 取消"
         description: |-
-          &7 列出所有在线玩家.
-    # GUI 中的按钮信息.
+          &7 取消并返回
+          &7 上一级菜单.
     tips:
-      click-to-open: "&e 点击 &7 打开."
-      click-to-change: "&e 点击 &7 更改."
-      click-to-wipe: "&e 点击 &7 清除."
-      click-to-manage: "&e 点击 &7 管理."
-      click-to-add: "&e 点击 &7 增加."
-      click-to-remove: "&e 点击 &7 减少."
-      click-to-set: "&e 点击 &7 设置."
-      click-to-next: "&e 点击前往 &7 下一页."
-      click-to-previous: "&e 点击前往 &7 上一页."
-      click-to-quit: "&e 点击 &7 关闭."
-      click-to-return: "&e 点击 &7 返回."
-      click-to-warp: "&e 点击 &7 传送."
-      click-to-enable: "&e 点击 &7 启用."
-      click-to-disable: "&e 点击 &7 禁用."
-      click-to-view: "&e 点击 &7 查看."
-      left-click-to-edit: "&e Left 点击 &7 编辑."
-      right-click-to-clear: "&e Right 点击 &7 清除."
-      shift-click-to-remove: "&e Shift 点击 &7 移除."
-      click-to-cancel: "&e 点击 &7 取消."
-      click-to-select: "&e 点击 &7 选择."
+      click-to-open: "&e 点击&7打开."
+      click-to-change: "&e 点击&7修改"
+      click-to-wipe: "&e 点击&7删除"
+      click-to-manage: "&e 点击&7管理."
+      click-to-add: "&e 点击&7增加."
+      click-to-remove: "&e 点击&7减少."
+      click-to-set: "&e 点击&7以设置."
+      click-to-next: "&e 点击前往&7下一页."
+      click-to-previous: "&e 点击前往&7上一页."
+      click-to-quit: "&e 点击&7关闭."
+      click-to-return: "&e 点击&7返回."
+      click-to-warp: "&e 点击&7传送."
+      click-to-enable: "&e 点击&7启用."
+      click-to-disable: "&e 点击&7禁用."
+      click-to-view: "&e 点击&7查看."
+      left-click-to-edit: "&e 鼠标左键点击&7以编辑."
+      right-click-to-clear: "&e 鼠标右键点击&7以清除."
+      shift-click-to-remove: "&e Shift+点击&7以移除."
+      click-to-cancel: "&e 点击&7取消."
+      click-to-select: "&e 点击&7选择."
+      click-to-choose: "&e 点击&7选择"
+      click-to-visit: "&e 点击&7访问此岛屿"
+      right-click-to-visit: "&e 右键点击&7访问此岛屿."
+      left-click-cycle: "&e 左键点击&7向上滚动."
+      right-click-cycle: "&e 右键点击&7向下滚动."
     types:
-      likes: "点赞"
-      dislikes: "倒彩"
-      rank: "排行"
-      stars: "星标"
+      likes: 点赞
+      dislikes: 不喜欢
+      rank: 排行
+      stars: 评价
   errors:
     not-on-island: "&c 您必须要在岛屿上才能执行此命令!"
-    your-island: "&c 您不能给自己的岛屿点赞或倒彩!"
+    your-island: "&c 您不能给自己的岛屿表态!"
     top-is-empty: "&c 抱歉, 没有岛屿在排行中!"
     database-error: "&c 抱歉, 数据库出错. 无法找到您岛屿的数据."
     not-enough-money: "&c 抱歉, 您的余额不足."
     no-data-about-island: "&c 此岛屿还不存在数据."
     no-data-about-your-island: "&c 您的岛屿还不存在数据."
+    island-not-owned: "&c 此岛屿无人认领. 你不能表态!"
   conversations:
-    confirm-string: "true, on, yes, confirm, y, valid, correct"
-    deny-string: "false, off, no, deny, n, invalid, incorrect"
-    cancel-string: "cancel"
-    exit-string: "cancel, exit, quit"
-    cancelled: "&c 对话取消!"
+    confirm-string: true, on, yes, confirm, y, valid, correct
+    deny-string: false, off, no, deny, n, invalid, incorrect
+    cancel-string: cancel
+    exit-string: cancel, exit, quit
+    cancelled: "&c 会话已取消!"
     prefix: "&l&6 [BentoBox]: &r"
     numeric-only: "&c [value] 不是数字!"
     not-valid-value: "&c [value] 无效. 必须大于 [min] 且小于 [max]!"
@@ -353,17 +341,16 @@ likes:
     search-updated: "&a 搜索完成."
     input-number: "&e 请在聊天栏中输入一个数字."
     confirm-island-data-deletion: "&e 请确认您要移除 [gamemode] 中的所有数据."
-    user-data-removed: "&a 成功, [gamemode] 的所有用户数据已移除!"
-    # 发送给用户的信息
+    user-data-removed: "&a 成功, [gamemode] 的所有玩家数据已移除!"
     add-like: "&a 您点赞了 [name] 的岛屿."
-    player-add-like: "&a [name] 点赞了您的岛屿."
+    player-add-like: "&a [name] 觉得您的岛屿很赞."
     remove-like: "&c 您取消点赞了 [name] 的岛屿."
     player-remove-like: "&c [name] 取消了对您岛屿的点赞."
-    add-dislike: "&c 您倒彩了 [name] 的岛屿."
-    player-add-dislike: "&c [name] 倒彩了您的岛屿."
-    remove-dislike: "&a 您取消倒彩了 [name] 的岛屿."
-    player-remove-dislike: "&a [name] 取消了对您岛屿的倒彩."
-    add-stars: "&a 您为 [name] 的岛屿 添加了 [number] 个星标."
-    player-add-stars: "&a [name] 为您的岛屿添加了 [number] 个星标."
-    remove-stars: "&c 您移除了您给 [name] 的岛屿的星标."
-    player-remove-stars: "&c [name] 移除了对您岛屿的星标."
+    add-dislike: "&c 您表示不喜欢 [name] 的岛屿."
+    player-add-dislike: "&c [name] 表示不喜欢您的岛屿."
+    remove-dislike: "&a 您取消不喜欢了 [name] 的岛屿."
+    player-remove-dislike: "&a [name] 取消了对您岛屿的表态."
+    add-stars: "&a 您为 [name] 的岛屿打了 [number] 分."
+    player-add-stars: "&a [name] 为您的岛屿打了 [number] 分."
+    remove-stars: "&c 您移除了您给 [name] 的岛屿的评价."
+    player-remove-stars: "&c [name] 移除了对您岛屿的评价."
