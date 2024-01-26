@@ -1,0 +1,109 @@
+---
+likes:
+  commands:
+    admin:
+      main: {}
+      settings: {}
+    player:
+      main: {}
+      top: {}
+      view: {}
+  gui:
+    titles:
+      top: "&0 &l Islas principales por [type]"
+      admin: "&0 &l Panel de administración"
+      settings: "&0 &l Configuración"
+      edit-view: "&0 &l Editar isla [type]"
+      select-island: "&0 &l Seleccione una isla"
+      select-player: "&0 &l Seleccionar un jugador"
+      select-block: "&dSeleccione un bloque"
+    buttons:
+      add_like:
+        name: "&f &l Me gusta"
+        description: |-
+          &7 Agregar o quitar
+          &7 me gusta para esta isla.
+        cost: "&7 Te costará &b&o $ [number]"
+      add_dislike:
+        name: "&f &l No me gusta"
+        description: |-
+          &7 Agregar o quitar
+          &7 no me gusta esta isla.
+        cost: "&7 Te costará &b&o $ [number]"
+      add_star:
+        name: "&f &l [number] Estrella"
+        description: |-
+          &7 Permite agregar o eliminar
+          &7 una estrella para esta isla.
+        cost: "&7 Te costará &b&o $ [number]"
+      like:
+        name: "&f &l Likes Count"
+        description: "&7 Muestra el número de Me gusta"
+        likes: "&o &b [number] me gusta"
+      like_rank:
+        name: "&f &l Clasificación por Me gusta"
+        description: |-
+          &7 islas de rango
+          &7 por me gusta
+        rank: "&o &b [number]."
+      dislike: {}
+      dislike_rank:
+        rank: "&o &b [number]."
+        not-ranked: "&o &b No en la parte superior."
+      overall:
+        name: "&f &l Rango"
+        description: "&7 Muestra el valor de la clasificación"
+        value: "&o &b [number] rango"
+      overall_rank:
+        name: "&f &l Lugar por rango"
+        description: |-
+          &7 Muestra el lugar de la isla
+          &7 por rango
+        rank: "&o &b [number]."
+        not-ranked: "&o &b No clasificado."
+      stars:
+        name: "&f &l Promedio de estrellas"
+      stars_rank: {}
+      return: {}
+      previous: {}
+      next: {}
+      user: {}
+      view_mode: {}
+      island: {}
+      manage_likes: {}
+      likes_icon: {}
+      wipe_data: {}
+      settings: {}
+      add_like_user: {}
+      remove_like_user: {}
+      add_dislike_user: {}
+      remove_dislike_user: {}
+      add_star_user: {}
+      remove_star_user: {}
+      like_cost: {}
+      like_remove_cost: {}
+      dislike_cost: {}
+      dislike_remove_cost: {}
+      stars_cost: {}
+      stars_remove_cost: {}
+      default_icon: {}
+      inform_players: {}
+      log_history: {}
+      reset_likes: {}
+      is_online: {}
+      has_data: {}
+      all_islands: {}
+      search: {}
+      material: {}
+      all_players: {}
+      online_players: {}
+      cancel: {}
+    tips: {}
+    types: {}
+  errors:
+    not-on-island: "&c ¡Debes estar en la isla para ejecutar este comando!"
+    your-island: "&c ¡No puedes agregar un me gusta o disgusto a tu propia isla!"
+    top-is-empty: "&c ¡Lo siento, no hay nadie en el ranking!"
+    database-error: "&c Lo siento, hubo un error con la base de datos. No se pueden
+      encontrar los datos de su isla."
+  conversations: {}
