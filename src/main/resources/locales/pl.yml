@@ -2,11 +2,13 @@
 likes:
   commands:
     admin:
-      main: {}
+      main:
+        description: otwiera GUI administratora
       settings:
         description: otwiera GUI ustawień administratora
     player:
-      main: {}
+      main:
+        description: Otwiera GUI polubień
       top:
         parameters: "<typ>"
         description: otwiera górne GUI
@@ -287,6 +289,7 @@ likes:
         name: "&f&l Wszyscy gracze"
         description: "&7 Lista wszystkich graczy."
       online_players:
+        name: "&f&l Gracze online"
         description: "&7 Lista graczy online."
       cancel:
         name: "&f&l Anuluj"
@@ -294,6 +297,7 @@ likes:
           &7 Anuluj i wróć do
           &7 poprzednie menu.
     tips:
+      click-to-open: "&e Kliknij &7, aby otworzyć."
       click-to-change: "&e Kliknij &7, aby zmienić."
       click-to-wipe: "&e Kliknij &7, aby wyczyścić."
       click-to-manage: "&e Kliknij &7, aby zarządzać."
