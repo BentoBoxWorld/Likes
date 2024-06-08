@@ -1,0 +1,370 @@
+---
+likes:
+  commands:
+    admin:
+      main:
+        description: otwiera GUI administratora
+      settings:
+        description: otwiera GUI ustawień administratora
+    player:
+      main:
+        description: Otwiera GUI polubień
+      top:
+        parameters: "<typ>"
+        description: otwiera górne GUI
+      view:
+        parameters: "<gracz>"
+        description: otwiera GUI, w którym możesz zobaczyć swoje polubienia
+  gui:
+    titles:
+      view-likes: "&O&l Wyświetl polubienia wysp"
+      view-likes-dislikes: "&0&l Wyświetl ulubione i nielubiane wyspy"
+      view-stars: "&0&l Wyświetl gwiazdy na wyspie"
+      top: "&0 Najlepsze wyspy"
+      manage-likes: "&0Zarządzaj polubieniami"
+      manage-likes-dislikes: "&0&l Zarządzaj polubieniami i niechęcią"
+      manage-stars: "&0&l Zarządzaj gwiazdkami"
+      admin: "&0 Panel administracyjny"
+      settings: "&O&l ustawienia"
+      edit-view: "&0&l Edytuj wyspę [typ]"
+      select-island: "&0&l Wybierz wyspę"
+      select-player: "&0&l Wybierz gracza"
+      select-block: "&0&l Wybierz blok"
+    buttons:
+      add_like:
+        name: "&f&l Like"
+        description: |-
+          &7 Dodaj lub usuń
+          &7 polubienie tej wyspy.
+        cost: "&7 Będzie to kosztować &b&o $[liczba]"
+      add_dislike:
+        name: "&f&l Nie lubię"
+        description: |-
+          &7 Dodaj lub usuń
+          &7 niechęć do tej wyspy.
+        cost: "&7 Będzie to kosztować &b&o $[liczba]"
+      add_star:
+        name: "&f&l [liczba] Gwiazdka"
+        description: |-
+          &7 Pozwala dodawać lub usuwać
+          &7 gwiazda dla tej wyspy.
+        cost: "&7 Będzie to kosztować &b&o $[liczba]"
+      like:
+        name: "&f&l Liczba polubień"
+        description: "&7 Pokazuje liczbę polubień"
+        likes: "&o&b [liczba] polubień"
+      like_rank:
+        name: "&f&l Ranking według polubień"
+        description: |-
+          &7 wysp rangi
+          &7 według polubień
+        rank: "&o&b [liczba]."
+        not-ranked: "&o&b Nie na górze."
+      dislike:
+        name: "&f&l Liczba nielubi"
+        description: "&7 Pokazuje liczbę niechęci"
+        dislikes: "&o&b [liczba] nie lubi"
+      dislike_rank:
+        name: "&f&l Ranking według Nielubi"
+        description: |-
+          &7 ranga wyspa
+          &7 według niechęci
+        rank: "&o&b [liczba]."
+        not-ranked: "&o&b Nie na górze."
+      overall:
+        name: "&f&l Ranga"
+        description: "&7 Pokazuje wartość rangi"
+        value: "&o&b [liczba] pozycja"
+      overall_rank:
+        name: "&f&l Miejsce według rangi"
+        description: |-
+          &7 Pokazuje miejsce na wyspie
+          &7 według rangi
+        rank: "&o&b [liczba]."
+        not-ranked: "&o&b Brak rankingu."
+      stars:
+        name: "&f&l Średnie gwiazdki"
+        description: "&7 Pokazuje liczbę średnich gwiazdek"
+        stars: "&o&b [liczba] gwiazdek"
+      stars_rank:
+        name: "&f&l Ranking według gwiazdek"
+        description: |-
+          &7 ranga wyspa
+          &7 według gwiazdek
+        rank: "&o&b [liczba]."
+        not-ranked: "&o&b Brak rankingu."
+      return:
+        name: "&f&l Powrót"
+        description: |-
+          &7 Powrót do poprzedniego menu
+          &7 lub wyjdź z GUI
+      previous:
+        name: "&f&l Poprzednia strona"
+        description: "&7 Przełącz na stronę [numer]"
+      next:
+        name: "&f&l Następna strona"
+        description: "&7 Przełącz na stronę [numer]"
+      user:
+        name: "&f&l [nazwa]"
+      view_mode:
+        name: "&f&l Typ rankingu"
+        description: |-
+          &7 Umożliwia przełączanie między
+          &7 różnych rankingów
+        active: "&2 Pokazuje ranking według [typu]"
+        inactive: "&c Pokazuje ranking według [typ]"
+      island:
+        empty: "&f&l [nazwa]. miejsce"
+        name: "&f&l [nazwa]"
+        description: |-
+          [właściciel]
+          [członkowie]
+          [miejsce]
+          [liczby]
+        owners-island: Wyspa [player]
+        owner: "&7&l Właściciel: &r&b [gracz]"
+        members-title: "&7&l Członkowie:"
+        member: "&b - [gracz]"
+        unknown: nieznany
+        spawn: Wyspa Spawnu
+        place: "&7&o [liczba]. &r&7 przez &l [typ]"
+        numbers_likes: "&7&l [lubi] graczy &r&7 lubi tę wyspę"
+        numbers_stars: "&7&l [gwiazdki] gwiazdki &r&7 od [liczba] graczy"
+        numbers_likes_dislikes: |-
+          &7&l [lubi] graczy &r&7 lubi tę wyspę
+          &7&l [nie lubi] graczy &r&7 nie lubi tej wyspy
+          &7 Pozycja wyspy: &l [ranga]
+      manage_likes:
+        name: "&f&l Zarządzaj danymi wysp"
+        description: |-
+          &7 Zarządzaj wszystkimi danymi
+          &7 przechowywane na wyspie.
+      likes_icon:
+        name: "&f&l Ikona wyspy"
+        description: |-
+          &7 Zmień wybrane
+          Ikona wyspy &7 w górnym interfejsie graficznym.
+      wipe_data:
+        name: "&f&l Wyczyść dane"
+        description: |-
+          &7 Całkowite usunięcie
+          &7 wszystkie zapisane dane dla prądu
+          &7 Dodatek GameMode.
+      settings:
+        name: "&f&l Ustawienia"
+        description: |-
+          &7 Zarządzaj dodatkiem
+          &7 ustawienia przez GUI.
+      add_like_user:
+        name: "&f&l Dodaj polubienie"
+        description: |-
+          &7 Wybierz
+          &7 graczy, którzy dodadzą
+          &7 podobny.
+      remove_like_user:
+        name: "&f&l Usuń polubienie"
+        description: |-
+          &7 Wybierz gracza
+          &7, które usuną
+          &7 polubień.
+      add_dislike_user:
+        name: "&f&l Dodaj niechęć"
+        description: |-
+          &7 Wybierz gracza
+          &7 kto doda?
+          &7 niechęć.
+      remove_dislike_user:
+        name: "&f&l Usuń niechęć"
+        description: |-
+          &7 Wybierz gracza
+          &7, które usuną
+          &7 niechęć.
+      add_star_user:
+        name: "&f&l Dodaj gwiazdki"
+        description: |-
+          &7 Wybierz gracza
+          &7 kto doda?
+          &7 gwiazdek.
+      remove_star_user:
+        name: "&f&l Usuń gwiazdki"
+        description: |-
+          &7 Wybierz gracza
+          &7 kto usunie
+          &7 gwiazdek.
+      like_cost:
+        name: "&f&l Dodaj koszt polubienia"
+        description: |-
+          &7 Zmień koszt dla
+          &7 gracz, aby dodać polubienie.
+        cost: "&7&o Koszt: &b [liczba]"
+      like_remove_cost:
+        name: "&f&l Usuń podobny koszt"
+        description: |-
+          &7 Zmień koszt dla
+          &7 gracz, aby usunąć polubienie.
+        cost: "&7&o Koszt: &b [liczba]"
+      dislike_cost:
+        name: "&f&l Dodaj koszt niechęci"
+        description: |-
+          &7 Zmień koszt dla
+          &7 gracz, aby dodać niechęć.
+        cost: "&7&o Koszt: &b [liczba]"
+      dislike_remove_cost:
+        name: "&f&l Usuń koszt niechęci"
+        description: |-
+          &7 Zmień koszt dla
+          &7 gracz, aby usunąć niechęć.
+        cost: "&7&o Koszt: &b [liczba]"
+      stars_cost:
+        name: "&f&l Dodaj koszt gwiazdek"
+        description: |-
+          &7 Zmień koszt dla
+          &7 gracz a, aby dodać gwiazdki.
+        cost: "&7&o Koszt: &b [liczba]"
+      stars_remove_cost:
+        name: "&f&l Usuń koszt gwiazdek"
+        description: |-
+          &7 Zmień koszt dla
+          &7 gracz, aby usunąć gwiazdki.
+        cost: "&7&o Koszt: &b [liczba]"
+      default_icon:
+        name: "&f&l Domyślna ikona"
+        description: |-
+          &7 Zmień ustawienie domyślne
+          Ikona &7 dla wysp w
+          &7 Rankingowy interfejs użytkownika.
+      inform_players:
+        name: "&f&l Poinformuj graczy"
+        description: |-
+          &7 Przełącz, jeśli gracze
+          &7 powinien otrzymać wiadomość, gdy
+          &7 ktoś lubi/nie lubi/gwiazdki
+          &7 ich wyspa.
+        enabled: "&7 Informacje o graczach są &2 włączone"
+        disabled: "&7 Informacje o graczach są &c wyłączone"
+      log_history:
+        name: "&f&l Historia dziennika"
+        description: |-
+          &7 Przełącz, jeśli historia
+          &7 o dodawaniu i usuwaniu
+          &7 polubień/nielubień/gwiazd powinno
+          &7 być przechowywane.
+          &7 Nie jest nigdzie wyświetlany.
+        enabled: "&7 Rejestrowanie historii jest &2 włączone"
+        disabled: "&7 Rejestrowanie historii jest &c wyłączone"
+      reset_likes:
+        name: "&f&l Resetuj polubienia"
+        description: |-
+          &7 Usuń wszystkie dane
+          &7 o wyspie, gdy właściciel
+          &7 resetuje swoją wyspę.
+          &7 W przeciwnym razie dane zostaną zachowane
+          &7 i wyspy pozostaną w
+          &7 rankingi.
+        enabled: "&7 Resetowanie jest &2 włączone"
+        disabled: "&7 Resetowanie jest &c wyłączone"
+      is_online:
+        name: "&f&l Gracze online"
+        description: |-
+          &7 Lista odtwarzaczy online
+          &7 wysp.
+      has_data:
+        name: "&f&l ma dane"
+        description: |-
+          &7 Lista wysp, które
+          &7 mają jakieś dane.
+      all_islands:
+        name: "&f&l Wszystkie wyspy"
+        description: "&7 Lista wszystkich wysp."
+      search:
+        name: "&f&l Szukaj"
+        description: |-
+          &7 Wyszukaj konkretny
+          &7 wartość.
+        search: "&b Wartość: [wartość]"
+      material:
+        name: "&f&l [materiał]"
+        description: "&7 Identyfikator materiału: [id]"
+      all_players:
+        name: "&f&l Wszyscy gracze"
+        description: "&7 Lista wszystkich graczy."
+      online_players:
+        name: "&f&l Gracze online"
+        description: "&7 Lista graczy online."
+      cancel:
+        name: "&f&l Anuluj"
+        description: |-
+          &7 Anuluj i wróć do
+          &7 poprzednie menu.
+    tips:
+      click-to-open: "&e Kliknij &7, aby otworzyć."
+      click-to-change: "&e Kliknij &7, aby zmienić."
+      click-to-wipe: "&e Kliknij &7, aby wyczyścić."
+      click-to-manage: "&e Kliknij &7, aby zarządzać."
+      click-to-add: "&e Kliknij &7, aby dodać."
+      click-to-remove: "&e Kliknij &7, aby usunąć."
+      click-to-set: "&e Kliknij &7, aby ustawić."
+      click-to-next: "&e Kliknij &7, aby przejść dalej."
+      click-to-previous: "&e Kliknij &7, aby przejść do poprzedniego."
+      click-to-quit: "&e Kliknij &7, aby zakończyć."
+      click-to-return: "&e Kliknij &7, aby powrócić."
+      click-to-warp: "&e Kliknij &7, aby wypaczyć."
+      click-to-enable: "&e Kliknij &7, aby włączyć."
+      click-to-disable: "&e Kliknij &7, aby wyłączyć."
+      click-to-view: "&e Kliknij &7, aby wyświetlić."
+      left-click-to-edit: "&e Kliknij lewym przyciskiem &7, aby edytować."
+      right-click-to-clear: "&e Kliknij prawym przyciskiem &7, aby wyczyścić."
+      shift-click-to-remove: "&e Shift Kliknij &7, aby usunąć."
+      click-to-cancel: "&e Kliknij &7, aby anulować."
+      click-to-select: "&e Kliknij &7, aby wybrać."
+      click-to-choose: "&e Kliknij &7, aby wybrać."
+      click-to-visit: "& e Kliknij &7, aby odwiedzić."
+      right-click-to-visit: "&e Kliknij prawym przyciskiem myszy &7, aby odwiedzić."
+      left-click-cycle: "&e Kliknij lewym przyciskiem &7, aby przejść w górę."
+      right-click-cycle: "&e Kliknij prawym przyciskiem myszy &7, aby przejść w dół."
+    types:
+      likes: Lubi
+      dislikes: nie lubi
+      rank: Ranga
+      stars: Gwiazdy
+  errors:
+    not-on-island: "&c Musisz być na wyspie, aby uruchomić to polecenie!"
+    your-island: "&c Nie możesz dodać upodobań ani niechęci do swojej własnej wyspy!"
+    top-is-empty: "&c Przepraszamy, nie ma nikogo w rankingu!"
+    database-error: "&c Przepraszamy, wystąpił błąd w bazie danych. Nie można znaleźć
+      danych Twojej wyspy."
+    not-enough-money: "&c Przepraszamy, nie masz wystarczającej liczby kredytów na
+      swoim koncie."
+    no-data-about-island: "&c Nie ma danych o tej wyspie."
+    no-data-about-your-island: "&c Nie ma danych o twojej wyspie."
+    island-not-owned: "& c Ta wyspa nie jest własnością. Nie da się tego lubić/nie
+      lubić!"
+  conversations:
+    confirm-string: prawda, wł., tak, potwierdź, y, poprawny, poprawny
+    deny-string: fałszywe, wyłączone, nie, odmówić, n, nieprawidłowe, nieprawidłowe
+    cancel-string: Anuluj
+    exit-string: anuluj, wyjdź, wyjdź
+    cancelled: "&c Rozmowa została anulowana!"
+    prefix: "&l&6 [BentoBox]: &r"
+    numeric-only: "&c Podana [wartość] nie jest liczbą!"
+    not-valid-value: "&c Podana liczba [wartość] jest nieprawidłowa. Musi być większy
+      niż [min] i mniejszy niż [max]!"
+    write-search: "&e Wprowadź wartość wyszukiwania. (Napisz „anuluj”, aby wyjść)"
+    search-updated: "&a Zaktualizowano wartość wyszukiwania."
+    input-number: "&e Proszę podać numer na czacie."
+    confirm-island-data-deletion: "&e Potwierdź, że chcesz usunąć wszystkie dane użytkownika
+      z bazy danych dla [gamemode]."
+    user-data-removed: "&a Sukces, wszystkie dane użytkownika dla [gamemode] zostały
+      usunięte!"
+    add-like: "&a Podobała Ci się wyspa użytkownika [name]."
+    player-add-like: "&a [nazwa] polubiła Twoją wyspę."
+    remove-like: "&c Usunąłeś swoje polubienie z wyspy użytkownika [name]."
+    player-remove-like: "&c [name] usunął swoje polubienia z twojej wyspy."
+    add-dislike: "&c Nie podobała Ci się wyspa użytkownika [name]."
+    player-add-dislike: "&c [nazwa] nie lubił twojej wyspy."
+    remove-dislike: "&a Usuwasz swoją niechęć z wyspy [name]."
+    player-remove-dislike: "&a [nazwa] usunęła swoją niechęć z Twojej wyspy."
+    add-stars: "&a Dodano gwiazdki [liczba] do wyspy użytkownika [name]."
+    player-add-stars: "&a [name] dodał [liczba] gwiazdki na twojej wyspie."
+    remove-stars: "&c Usuwasz swoje gwiazdy z wyspy [name]."
+    player-remove-stars: "&c [name] usunął swoje gwiazdy z twojej wyspy."
