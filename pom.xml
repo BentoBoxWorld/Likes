@@ -40,13 +40,9 @@
         addon -->
     <!-- Can be removed -->
     <distributionManagement>
-        <snapshotRepository>
-            <id>codemc-snapshots</id>
-            <url>https://repo.codemc.org/repository/maven-snapshots</url>
-        </snapshotRepository>
         <repository>
-            <id>codemc-releases</id>
-            <url>https://repo.codemc.org/repository/maven-releases</url>
+            <id>bentoboxworld</id>
+            <url>https://repo.codemc.org/repository/bentoboxworld</url>
         </repository>
     </distributionManagement>
 
@@ -56,15 +52,15 @@
         <!-- Some JAVA encoding settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>16</java.version>
+        <java.version>17</java.version>
 
         <!-- SPIGOT API version -->
-        <spigot.version>1.20.2-R0.1-SNAPSHOT</spigot.version>
+        <spigot.version>1.21.3-R0.1-SNAPSHOT</spigot.version>
         <!-- Vault API version -->
         <vault.version>1.7</vault.version>
 
         <!-- BentoBox API version -->
-        <bentobox.version>2.0.0-SNAPSHOT</bentobox.version>
+        <bentobox.version>2.7.1-SNAPSHOT</bentobox.version>
         <!-- Warps addon version -->
         <warps.version>1.12.0</warps.version>
         <!-- Visit addon version -->
@@ -76,7 +72,7 @@
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- This allows to change between versions and snapshots. -->
-        <build.version>2.4.0</build.version>
+        <build.version>2.5.0</build.version>
         <build.number>-LOCAL</build.number>
     </properties>
 
@@ -120,6 +116,10 @@
         <repository>
             <id>spigotmc-public</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>bentoboxworld</id>
+            <url>https://repo.codemc.org/repository/bentoboxworld/</url>
         </repository>
         <repository>
             <id>codemc-repo</id>
@@ -237,11 +237,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.1.1</version>
                 <configuration>
                     <show>public</show>
                     <failOnError>false</failOnError>
                     <additionalJOption>-Xdoclint:none</additionalJOption>
+                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
                 </configuration>
                 <executions>
                     <execution>
