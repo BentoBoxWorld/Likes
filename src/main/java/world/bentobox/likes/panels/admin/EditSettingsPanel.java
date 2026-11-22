@@ -11,9 +11,13 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.eclipse.jdt.annotation.NonNull;
+import java.util.Objects;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
 
 import lv.id.bonne.panelutils.PanelUtils;
 import world.bentobox.bentobox.api.panels.PanelItem;
@@ -56,7 +60,7 @@ public class EditSettingsPanel extends CommonPanel
     private EditSettingsPanel(CommonPanel parent)
     {
         super(parent);
-        this.settings = this.addon.getSettings();
+        this.settings = Objects.requireNonNull(this.addon, "addon").getSettings();
     }
 
 
@@ -101,276 +105,176 @@ public class EditSettingsPanel extends CommonPanel
      */
     private PanelItem createButton(Button button)
     {
-        ItemStack icon;
-        PanelItem.ClickHandler clickHandler;
-        boolean glow;
-
         final String reference = Constants.BUTTONS + button.name().toLowerCase();
-        String name = this.user.getTranslation(reference + ".name");
 
-        List<String> description = new ArrayList<>(4);
-        description.add(this.user.getTranslationOrNothing(reference + ".description"));
-
-        switch (button)
+        return switch (button)
         {
-            case STARS_COST:
-            case LIKE_COST:
+            case STARS_COST, LIKE_COST -> this.createCostButton(reference,
+                Material.GOLD_INGOT,
+                this.settings::getLikeAddCost,
+                value -> this.addon.getSettings().setLikeAddCost(value));
+            case STARS_REMOVE_COST, LIKE_REMOVE_COST -> this.createCostButton(reference,
+                Material.GOLD_NUGGET,
+                this.settings::getLikeRemoveCost,
+                value -> this.addon.getSettings().setLikeRemoveCost(value));
+            case DISLIKE_COST -> this.createCostButton(reference,
+                Material.IRON_INGOT,
+                this.settings::getDislikeAddCost,
+                value -> this.addon.getSettings().setDislikeAddCost(value));
+            case DISLIKE_REMOVE_COST -> this.createCostButton(reference,
+                Material.IRON_NUGGET,
+                this.settings::getDislikeRemoveCost,
+                value -> this.addon.getSettings().setDislikeRemoveCost(value));
+            case DEFAULT_ICON -> this.createDefaultIconButton(reference);
+            case INFORM_PLAYERS -> this.createToggleButton(button,
+                Material.JUKEBOX,
+                this.settings::isInformPlayers,
+                this.settings::setInformPlayers);
+            case LOG_HISTORY -> this.createToggleButton(button,
+                Material.WRITABLE_BOOK,
+                this.settings::isLogHistory,
+                this.settings::setLogHistory);
+            case RESET_LIKES -> this.createToggleButton(button,
+                Material.LAVA_BUCKET,
+                this.settings::isResetLikes,
+                this.settings::setResetLikes);
+            // this should never happen.
+            default -> PanelItem.empty();
+        };
+    }
+
+
+    /**
+     * This method creates button that allows to change a cost value.
+     *
+     * @param reference Translation reference of the button.
+     * @param material Icon of the button.
+     * @param getter Getter of the current cost.
+     * @param setter Setter of the new cost.
+     * @return PanelItem object that represents cost button.
+     */
+    private PanelItem createCostButton(String reference,
+        Material material,
+        DoubleSupplier getter,
+        DoubleConsumer setter)
+    {
+        List<String> description = new ArrayList<>(4);
+        description.add(this.user.getTranslationOrNothing(reference + DESCRIPTION_KEY_SUFFIX));
+        description.add(this.user.getTranslation(reference + COST_KEY_SUFFIX,
+            Constants.PARAMETER_NUMBER, String.valueOf(getter.getAsDouble())));
+        description.add("");
+        description.add(this.user.getTranslation(Constants.TIPS + CLICK_TO_CHANGE_TIP));
+
+        PanelItem.ClickHandler clickHandler = (panel, clicker, clickType, slot) ->
+        {
+            Consumer<Number> numberConsumer = number ->
             {
-                description.add(this.user.getTranslation(reference + ".cost",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeAddCost())));
-                description.add("");
-                description.add(this.user.getTranslation(Constants.TIPS + "click-to-change"));
-
-                icon = new ItemStack(Material.GOLD_INGOT);
-
-                clickHandler = (panel, user, clickType, slot) ->
+                if (number != null)
                 {
-                    Consumer<Number> numberConsumer = number ->
-                    {
-                        if (number != null)
-                        {
-                            this.addon.getSettings().setLikeAddCost(number.doubleValue());
-                            this.addon.saveSettings();
-                        }
-
-                        // reopen panel
-                        this.build();
-                    };
-
-                    ConversationUtils.createNumericInput(numberConsumer,
-                        this.user,
-                        this.user.getTranslation(Constants.CONVERSATIONS + "input-number"),
-                        0,
-                        Double.MAX_VALUE);
-
-                    return true;
-                };
-                glow = false;
-                break;
-            }
-            case STARS_REMOVE_COST:
-            case LIKE_REMOVE_COST:
-            {
-                description.add(this.user.getTranslation(reference + ".cost",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getLikeRemoveCost())));
-                description.add("");
-                description.add(this.user.getTranslation(Constants.TIPS + "click-to-change"));
-
-                icon = new ItemStack(Material.GOLD_NUGGET);
-
-                clickHandler = (panel, user, clickType, slot) ->
-                {
-                    Consumer<Number> numberConsumer = number ->
-                    {
-                        if (number != null)
-                        {
-                            this.addon.getSettings().setLikeRemoveCost(number.doubleValue());
-                            this.addon.saveSettings();
-                        }
-
-                        // reopen panel
-                        this.build();
-                    };
-
-                    ConversationUtils.createNumericInput(numberConsumer,
-                        this.user,
-                        this.user.getTranslation(Constants.CONVERSATIONS + "input-number"),
-                        0,
-                        Double.MAX_VALUE);
-
-                    return true;
-                };
-                glow = false;
-                break;
-            }
-            case DISLIKE_COST:
-            {
-                description.add(this.user.getTranslation(reference + ".cost",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getDislikeAddCost())));
-                description.add("");
-                description.add(this.user.getTranslation(Constants.TIPS + "click-to-change"));
-
-                icon = new ItemStack(Material.IRON_INGOT);
-
-                clickHandler = (panel, user, clickType, slot) ->
-                {
-                    Consumer<Number> numberConsumer = number ->
-                    {
-                        if (number != null)
-                        {
-                            this.addon.getSettings().setDislikeAddCost(number.doubleValue());
-                            this.addon.saveSettings();
-                        }
-
-                        // reopen panel
-                        this.build();
-                    };
-
-                    ConversationUtils.createNumericInput(numberConsumer,
-                        this.user,
-                        this.user.getTranslation(Constants.CONVERSATIONS + "input-number"),
-                        0,
-                        Double.MAX_VALUE);
-
-                    return true;
-                };
-                glow = false;
-                break;
-            }
-            case DISLIKE_REMOVE_COST:
-            {
-                description.add(this.user.getTranslation(reference + ".cost",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.settings.getDislikeRemoveCost())));
-                description.add("");
-                description.add(this.user.getTranslation(Constants.TIPS + "click-to-change"));
-
-                icon = new ItemStack(Material.IRON_NUGGET);
-
-                clickHandler = (panel, user, clickType, slot) ->
-                {
-                    Consumer<Number> numberConsumer = number ->
-                    {
-                        if (number != null)
-                        {
-                            this.addon.getSettings().setDislikeRemoveCost(number.doubleValue());
-                            this.addon.saveSettings();
-                        }
-
-                        // reopen panel
-                        this.build();
-                    };
-
-                    ConversationUtils.createNumericInput(numberConsumer,
-                        this.user,
-                        this.user.getTranslation(Constants.CONVERSATIONS + "input-number"),
-                        0,
-                        Double.MAX_VALUE);
-
-                    return true;
-                };
-                glow = false;
-                break;
-            }
-            case DEFAULT_ICON:
-            {
-                description.add("");
-                description.add(this.user.getTranslation(Constants.TIPS + "click-to-change"));
-
-                icon = new ItemStack(this.settings.getDefaultIcon());
-                clickHandler = (panel, user, clickType, slot) ->
-                {
-                    SingleBlockSelector.open(this.user,
-                        SingleBlockSelector.Mode.ANY,
-                        (status, block) -> {
-                            if (status)
-                            {
-                                this.settings.setDefaultIcon(block);
-                                this.addon.saveSettings();
-                            }
-
-                            this.build();
-                        });
-
-                    return true;
-                };
-                glow = false;
-
-                break;
-            }
-            case INFORM_PLAYERS:
-            {
-                glow = this.settings.isInformPlayers();
-
-                if (glow)
-                {
-                    description.add(this.user.getTranslation(reference + ".enabled"));
-                    description.add("");
-                    description.add(this.user.getTranslation(Constants.TIPS + "click-to-disable"));
-                }
-                else
-                {
-                    description.add(this.user.getTranslation(reference + ".disabled"));
-                    description.add("");
-                    description.add(this.user.getTranslation(Constants.TIPS + "click-to-enable"));
-                }
-
-                icon = new ItemStack(Material.JUKEBOX);
-                clickHandler = (panel, user, clickType, slot) ->
-                {
-                    this.settings.setInformPlayers(!this.settings.isInformPlayers());
+                    setter.accept(number.doubleValue());
                     this.addon.saveSettings();
-                    panel.getInventory().setItem(slot, this.createButton(button).getItem());
-                    return true;
-                };
-
-                break;
-            }
-            case LOG_HISTORY:
-            {
-                glow = this.settings.isLogHistory();
-
-                if (glow)
-                {
-                    description.add(this.user.getTranslation(reference + ".enabled"));
-                    description.add("");
-                    description.add(this.user.getTranslation(Constants.TIPS + "click-to-disable"));
-                }
-                else
-                {
-                    description.add(this.user.getTranslation(reference + ".disabled"));
-                    description.add("");
-                    description.add(this.user.getTranslation(Constants.TIPS + "click-to-enable"));
                 }
 
-                icon = new ItemStack(Material.WRITABLE_BOOK);
-                clickHandler = (panel, user, clickType, slot) ->
-                {
-                    this.settings.setLogHistory(!this.settings.isLogHistory());
-                    this.addon.saveSettings();
-                    panel.getInventory().setItem(slot, this.createButton(button).getItem());
-                    return true;
-                };
+                // reopen panel
+                this.build();
+            };
 
-                break;
-            }
-            case RESET_LIKES:
-            {
-                glow = this.settings.isResetLikes();
+            ConversationUtils.createNumericInput(numberConsumer,
+                this.user,
+                this.user.getTranslation(Constants.CONVERSATIONS + INPUT_NUMBER_KEY),
+                0,
+                Double.MAX_VALUE);
 
-                if (glow)
-                {
-                    description.add(this.user.getTranslation(reference + ".enabled"));
-                    description.add("");
-                    description.add(this.user.getTranslation(Constants.TIPS + "click-to-disable"));
-                }
-                else
-                {
-                    description.add(this.user.getTranslation(reference + ".disabled"));
-                    description.add("");
-                    description.add(this.user.getTranslation(Constants.TIPS + "click-to-enable"));
-                }
-
-                icon = new ItemStack(Material.LAVA_BUCKET);
-                clickHandler = (panel, user, clickType, slot) ->
-                {
-                    this.settings.setResetLikes(!this.settings.isResetLikes());
-                    this.addon.saveSettings();
-                    panel.getInventory().setItem(slot, this.createButton(button).getItem());
-                    return true;
-                };
-
-                break;
-            }
-            default:
-                // this should never happen.
-                return PanelItem.empty();
-        }
+            return true;
+        };
 
         return new PanelItemBuilder().
-            icon(icon).
-            name(name).
+            icon(new ItemStack(material)).
+            name(this.user.getTranslation(reference + NAME_KEY_SUFFIX)).
             description(description).
-            glow(glow).
+            glow(false).
+            clickHandler(clickHandler).
+            build();
+    }
+
+
+    /**
+     * This method creates button that allows to change the default icon.
+     *
+     * @param reference Translation reference of the button.
+     * @return PanelItem object that represents default icon button.
+     */
+    private PanelItem createDefaultIconButton(String reference)
+    {
+        List<String> description = new ArrayList<>(4);
+        description.add(this.user.getTranslationOrNothing(reference + DESCRIPTION_KEY_SUFFIX));
+        description.add("");
+        description.add(this.user.getTranslation(Constants.TIPS + CLICK_TO_CHANGE_TIP));
+
+        PanelItem.ClickHandler clickHandler = (panel, clicker, clickType, slot) ->
+        {
+            SingleBlockSelector.open(this.user,
+                SingleBlockSelector.Mode.ANY,
+                (status, block) -> {
+                    if (Boolean.TRUE.equals(status))
+                    {
+                        this.settings.setDefaultIcon(block);
+                        this.addon.saveSettings();
+                    }
+
+                    this.build();
+                });
+
+            return true;
+        };
+
+        return new PanelItemBuilder().
+            icon(new ItemStack(this.settings.getDefaultIcon())).
+            name(this.user.getTranslation(reference + NAME_KEY_SUFFIX)).
+            description(description).
+            glow(false).
+            clickHandler(clickHandler).
+            build();
+    }
+
+
+    /**
+     * This method creates button that allows to enable and disable a setting.
+     *
+     * @param button Button that must be created.
+     * @param material Icon of the button.
+     * @param getter Getter of the current value.
+     * @param setter Setter of the new value.
+     * @return PanelItem object that represents toggle button.
+     */
+    private PanelItem createToggleButton(Button button,
+        Material material,
+        BooleanSupplier getter,
+        Consumer<Boolean> setter)
+    {
+        final String reference = Constants.BUTTONS + button.name().toLowerCase();
+        final boolean enabled = getter.getAsBoolean();
+
+        List<String> description = new ArrayList<>(4);
+        description.add(this.user.getTranslationOrNothing(reference + DESCRIPTION_KEY_SUFFIX));
+        description.add(this.user.getTranslation(reference + (enabled ? ENABLED_KEY_SUFFIX : DISABLED_KEY_SUFFIX)));
+        description.add("");
+        description.add(this.user.getTranslation(Constants.TIPS +
+            (enabled ? CLICK_TO_DISABLE_TIP : CLICK_TO_ENABLE_TIP)));
+
+        PanelItem.ClickHandler clickHandler = (panel, clicker, clickType, slot) ->
+        {
+            setter.accept(!getter.getAsBoolean());
+            this.addon.saveSettings();
+            panel.getInventory().setItem(slot, this.createButton(button).getItem());
+            return true;
+        };
+
+        return new PanelItemBuilder().
+            icon(new ItemStack(material)).
+            name(this.user.getTranslation(reference + NAME_KEY_SUFFIX)).
+            description(description).
+            glow(enabled).
             clickHandler(clickHandler).
             build();
     }
@@ -409,6 +313,48 @@ public class EditSettingsPanel extends CommonPanel
 
 
 // ---------------------------------------------------------------------
+// Section: Constants
+// ---------------------------------------------------------------------
+
+    /**
+     * String constant for ".cost" button key suffix.
+     */
+    private static final String NAME_KEY_SUFFIX = ".name";
+
+    private static final String DESCRIPTION_KEY_SUFFIX = ".description";
+
+    private static final String COST_KEY_SUFFIX = ".cost";
+
+    /**
+     * String constant for "click-to-change" tip key.
+     */
+    private static final String CLICK_TO_CHANGE_TIP = "click-to-change";
+
+    /**
+     * String constant for "input-number" conversation key.
+     */
+    private static final String INPUT_NUMBER_KEY = "input-number";
+
+    /**
+     * String constant for ".enabled" button key suffix.
+     */
+    private static final String ENABLED_KEY_SUFFIX = ".enabled";
+
+    /**
+     * String constant for "click-to-disable" tip key.
+     */
+    private static final String CLICK_TO_DISABLE_TIP = "click-to-disable";
+
+    /**
+     * String constant for ".disabled" button key suffix.
+     */
+    private static final String DISABLED_KEY_SUFFIX = ".disabled";
+
+    /**
+     * String constant for "click-to-enable" tip key.
+     */
+    private static final String CLICK_TO_ENABLE_TIP = "click-to-enable";
+
 // Section: Enums
 // ---------------------------------------------------------------------
 

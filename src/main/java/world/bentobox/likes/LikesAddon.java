@@ -194,6 +194,7 @@ public class LikesAddon extends Addon
     @Override
     public void onDisable()
     {
+        // Nothing to do. Likes data is saved when it is changed.
     }
 
 

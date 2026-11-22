@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import org.bukkit.World;
 import org.eclipse.jdt.annotation.NonNull;
@@ -384,7 +383,7 @@ public class LikesManager
             if (this.addon.getSettings().isLogHistory())
             {
                 object.addLogRecord(new LogEntry.Builder("ADD_LIKE").
-                    data("user-id", user.toString()).
+                    data(USER_ID, user.toString()).
                     build());
             }
 
@@ -393,7 +392,7 @@ public class LikesManager
 
             if (island.isSpawn())
             {
-                name = user.getTranslation("likes.gui.buttons.island.spawn");
+                name = user.getTranslation(SPAWN_NAME);
             }
 
             Utils.sendMessage(user,
@@ -442,7 +441,7 @@ public class LikesManager
             if (this.addon.getSettings().isLogHistory())
             {
                 object.addLogRecord(new LogEntry.Builder("REMOVE_LIKE").
-                    data("user-id", user.toString()).
+                    data(USER_ID, user.toString()).
                     build());
             }
 
@@ -451,7 +450,7 @@ public class LikesManager
 
             if (island.isSpawn())
             {
-                name = user.getTranslation("likes.gui.buttons.island.spawn");
+                name = user.getTranslation(SPAWN_NAME);
             }
 
             Utils.sendMessage(user,
@@ -513,7 +512,7 @@ public class LikesManager
             if (this.addon.getSettings().isLogHistory())
             {
                 object.addLogRecord(new LogEntry.Builder("ADD_DISLIKE").
-                    data("user-id", user.toString()).
+                    data(USER_ID, user.toString()).
                     build());
             }
 
@@ -522,7 +521,7 @@ public class LikesManager
 
             if (island.isSpawn())
             {
-                name = user.getTranslation("likes.gui.buttons.island.spawn");
+                name = user.getTranslation(SPAWN_NAME);
             }
 
             Utils.sendMessage(user,
@@ -571,7 +570,7 @@ public class LikesManager
             if (this.addon.getSettings().isLogHistory())
             {
                 object.addLogRecord(new LogEntry.Builder("REMOVE_DISLIKE").
-                    data("user-id", user.toString()).
+                    data(USER_ID, user.toString()).
                     build());
             }
 
@@ -580,7 +579,7 @@ public class LikesManager
 
             if (island.isSpawn())
             {
-                name = user.getTranslation("likes.gui.buttons.island.spawn");
+                name = user.getTranslation(SPAWN_NAME);
             }
 
             Utils.sendMessage(user,
@@ -643,7 +642,7 @@ public class LikesManager
             if (this.addon.getSettings().isLogHistory())
             {
                 object.addLogRecord(new LogEntry.Builder("ADD_STARS").
-                    data("user-id", user.toString()).
+                    data(USER_ID, user.toString()).
                     data("value", Integer.toString(value)).
                     build());
             }
@@ -653,7 +652,7 @@ public class LikesManager
 
             if (island.isSpawn())
             {
-                name = user.getTranslation("likes.gui.buttons.island.spawn");
+                name = user.getTranslation(SPAWN_NAME);
             }
 
             Utils.sendMessage(user,
@@ -705,7 +704,7 @@ public class LikesManager
             if (this.addon.getSettings().isLogHistory())
             {
                 object.addLogRecord(new LogEntry.Builder("REMOVE_STARS").
-                    data("user-id", user.toString()).
+                    data(USER_ID, user.toString()).
                     build());
             }
 
@@ -714,7 +713,7 @@ public class LikesManager
 
             if (island.isSpawn())
             {
-                name = user.getTranslation("likes.gui.buttons.island.spawn");
+                name = user.getTranslation(SPAWN_NAME);
             }
 
             Utils.sendMessage(user,
@@ -793,7 +792,7 @@ public class LikesManager
         if (this.addon.getSettings().isLogHistory())
         {
             object.addLogRecord(new LogEntry.Builder("RESET_ISLAND").
-                data("user-id", user.toString()).
+                data(USER_ID, user.toString()).
                 build());
         }
 
@@ -837,7 +836,7 @@ public class LikesManager
         return this.getSortedLikes(world).stream().
 //            filter(LikesObject::isNotEmpty).
             limit(10).
-            collect(Collectors.toList());
+            toList();
     }
 
 
@@ -852,7 +851,7 @@ public class LikesManager
         return this.getSortedDislikes(world).stream().
 //            filter(LikesObject::isNotEmpty).
             limit(10).
-            collect(Collectors.toList());
+            toList();
     }
 
 
@@ -867,7 +866,7 @@ public class LikesManager
         return this.getSortedRank(world).stream().
 //            filter(LikesObject::isNotEmpty).
             limit(10).
-            collect(Collectors.toList());
+            toList();
     }
 
 
@@ -882,7 +881,7 @@ public class LikesManager
         return this.getSortedStars(world).stream().
 //            filter(LikesObject::isNotEmpty).
             limit(10).
-            collect(Collectors.toList());
+            toList();
     }
 
 
@@ -1110,6 +1109,16 @@ public class LikesManager
     // ---------------------------------------------------------------------
     // Section: Static variables
     // ---------------------------------------------------------------------
+
+    /**
+     * Key of the user id in history log entries.
+     */
+    private static final String USER_ID = "user-id";
+
+    /**
+     * Translation reference to the name of the spawn island.
+     */
+    private static final String SPAWN_NAME = "likes.gui.buttons.island.spawn";
 
     /**
      * This comparator is used to sort by highest likes and smallest dislikes number.

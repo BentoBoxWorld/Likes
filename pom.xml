@@ -55,6 +55,8 @@
         <sonar.projectKey>BentoBoxWorld_Likes</sonar.projectKey>
         <sonar.organization>bentobox-world</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <!-- Third-party indexed tree collections (Vitaly Sazanovich, adapted from the JDK TreeMap) are not analysed -->
+        <sonar.exclusions>src/main/java/world/bentobox/likes/utils/collections/**</sonar.exclusions>
     </properties>
 
     <profiles>

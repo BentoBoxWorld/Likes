@@ -50,16 +50,16 @@ public class LikesRequestHandler extends AddonRequestHandler
          */
 
         if (map == null || map.isEmpty() ||
-            map.get("world-name") == null || !(map.get("world-name") instanceof String) ||
-            map.get("island") == null || !(map.get("island") instanceof String) ||
-            Bukkit.getWorld((String) map.get("world-name")) == null)
+            map.get(WORLD_NAME) == null || !(map.get(WORLD_NAME) instanceof String) ||
+            map.get(ISLAND) == null || !(map.get(ISLAND) instanceof String) ||
+            Bukkit.getWorld((String) map.get(WORLD_NAME)) == null)
         {
             return Collections.emptyMap();
         }
 
-        World world = Bukkit.getWorld((String) map.get("world-name"));
+        World world = Bukkit.getWorld((String) map.get(WORLD_NAME));
 
-        LikesObject likesObject = this.addon.getAddonManager().getIslandLikes((String) map.get("island"), world);
+        LikesObject likesObject = this.addon.getAddonManager().getIslandLikes((String) map.get(ISLAND), world);
 
         Map<String, Object> returnMap = new HashMap<>(8);
         returnMap.put("likes", likesObject.getLikes());
@@ -89,4 +89,14 @@ public class LikesRequestHandler extends AddonRequestHandler
      * Likes addon instance.
      */
     private final LikesAddon addon;
+
+    /**
+     * Key of the world name in the request.
+     */
+    private static final String WORLD_NAME = "world-name";
+
+    /**
+     * Key of the island id in the request.
+     */
+    private static final String ISLAND = "island";
 }

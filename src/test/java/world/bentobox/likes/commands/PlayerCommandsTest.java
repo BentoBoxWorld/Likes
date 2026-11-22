@@ -92,7 +92,8 @@ class PlayerCommandsTest extends CommonTestSetup
         super.setUp();
 
         // Command manager
-        when(this.plugin.getCommandsManager()).thenReturn(mock(CommandsManager.class));
+        CommandsManager commandsManager = mock(CommandsManager.class);
+        when(this.plugin.getCommandsManager()).thenReturn(commandsManager);
 
         // Parent command
         when(this.parent.getWorld()).thenReturn(this.world);

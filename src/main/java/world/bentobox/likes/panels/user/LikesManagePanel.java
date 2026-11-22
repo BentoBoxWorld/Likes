@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.event.inventory.ClickType;
 import java.io.File;
+import java.util.Objects;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +35,11 @@ import world.bentobox.likes.utils.Utils;
  */
 public class LikesManagePanel extends CommonPanel
 {
+    private static final String MANAGE_PANELS = "manage_panels";
+    private static final String PANELS = "panels";
+    private static final String ADD_LIKE = "ADD_LIKE";
+    private static final String DESCRIPTION = "description";
+    private static final String CLICK_TO_REMOVE = "click-to-remove";
     /**
      * This is internal constructor. It is used internally in current class to avoid creating objects everywhere.
      *
@@ -63,7 +69,7 @@ public class LikesManagePanel extends CommonPanel
     private LikesManagePanel(CommonPanel parent, User target, Island island)
     {
         super(parent);
-        this.settings = this.addon.getSettings();
+        this.settings = Objects.requireNonNull(this.addon, "addon").getSettings();
         this.target = target;
 
         this.island = island;
@@ -84,18 +90,18 @@ public class LikesManagePanel extends CommonPanel
         switch (this.settings.getMode())
         {
             case LIKES -> {
-                panelBuilder.template("likes", "manage_panels", new File(this.addon.getDataFolder(), "panels"));
+                panelBuilder.template("likes", MANAGE_PANELS, new File(this.addon.getDataFolder(), PANELS));
 
-                panelBuilder.registerTypeBuilder("ADD_LIKE", this::createLikeButton);
+                panelBuilder.registerTypeBuilder(ADD_LIKE, this::createLikeButton);
             }
             case LIKES_DISLIKES -> {
-                panelBuilder.template("likes_dislikes", "manage_panels", new File(this.addon.getDataFolder(), "panels"));
+                panelBuilder.template("likes_dislikes", MANAGE_PANELS, new File(this.addon.getDataFolder(), PANELS));
 
-                panelBuilder.registerTypeBuilder("ADD_LIKE", this::createLikeButton);
+                panelBuilder.registerTypeBuilder(ADD_LIKE, this::createLikeButton);
                 panelBuilder.registerTypeBuilder("ADD_DISLIKE", this::createDislikeButton);
             }
             case STARS -> {
-                panelBuilder.template("stars", "manage_panels",  new File(this.addon.getDataFolder(), "panels"));
+                panelBuilder.template("stars", MANAGE_PANELS,  new File(this.addon.getDataFolder(), PANELS));
 
                 final int starCount = this.addon.getAddonManager().getStarred(
                     this.target.getUniqueId(),
@@ -150,7 +156,7 @@ public class LikesManagePanel extends CommonPanel
         }
         else
         {
-            builder.description(this.user.getTranslationOrNothing(reference + "description"));
+            builder.description(this.user.getTranslationOrNothing(reference + DESCRIPTION));
         }
 
         if (this.addon.isEconomyProvided())
@@ -187,7 +193,17 @@ public class LikesManagePanel extends CommonPanel
         });
 
         // Add ClickHandler
-        builder.clickHandler((panel, user, clickType, i) ->
+        builder.clickHandler(this.createLikeClickHandler(activeActions, hasLiked));
+        builder.glow(hasLiked);
+        this.addActionTooltips(builder, activeActions, template.actions().size(), hasLiked, CLICK_TO_REMOVE, "click-to-add");
+
+        return builder.build();
+    }
+
+    /** Create like button click handler. */
+    private PanelItem.ClickHandler createLikeClickHandler(List<ItemTemplateRecord.ActionRecords> activeActions, boolean hasLiked)
+    {
+        return (panel, user, clickType, i) ->
         {
             for (ItemTemplateRecord.ActionRecords action : activeActions)
             {
@@ -221,18 +237,19 @@ public class LikesManagePanel extends CommonPanel
 
             // Always return true.
             return true;
-        });
+        };
+    }
 
-        builder.glow(hasLiked);
-
-        // Collect tooltips.
+    /** Add action tooltips to button. */
+    private void addActionTooltips(PanelItemBuilder builder, List<ItemTemplateRecord.ActionRecords> activeActions,
+        int actionCount, boolean hasStatus, String removeKey, String addKey)
+    {
         List<String> tooltips = activeActions.stream().
             filter(action -> action.tooltip() != null).
             map(action -> this.user.getTranslation(this.world, action.tooltip())).
             filter(text -> !text.isBlank()).
-            collect(Collectors.toCollection(() -> new ArrayList<>(template.actions().size())));
+            collect(Collectors.toCollection(() -> new ArrayList<>(actionCount)));
 
-        // Add tooltips.
         if (!tooltips.isEmpty())
         {
             // Empty line and tooltips.
@@ -243,17 +260,15 @@ public class LikesManagePanel extends CommonPanel
         {
             builder.description("");
 
-            if (hasLiked)
+            if (hasStatus)
             {
-                builder.description(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
+                builder.description(this.user.getTranslation(Constants.TIPS + removeKey));
             }
             else
             {
-                builder.description(this.user.getTranslation(Constants.TIPS + "click-to-add"));
+                builder.description(this.user.getTranslation(Constants.TIPS + addKey));
             }
         }
-
-        return builder.build();
     }
 
 
@@ -291,7 +306,7 @@ public class LikesManagePanel extends CommonPanel
         }
         else
         {
-            builder.description(this.user.getTranslationOrNothing(reference + "description"));
+            builder.description(this.user.getTranslationOrNothing(reference + DESCRIPTION));
         }
 
         if (this.addon.isEconomyProvided())
@@ -328,7 +343,17 @@ public class LikesManagePanel extends CommonPanel
         });
 
         // Add ClickHandler
-        builder.clickHandler((panel, user, clickType, i) ->
+        builder.clickHandler(this.createDislikeClickHandler(activeActions, hasDisliked));
+        builder.glow(hasDisliked);
+        this.addActionTooltips(builder, activeActions, template.actions().size(), hasDisliked, CLICK_TO_REMOVE, "click-to-add");
+
+        return builder.build();
+    }
+
+    /** Create dislike button click handler. */
+    private PanelItem.ClickHandler createDislikeClickHandler(List<ItemTemplateRecord.ActionRecords> activeActions, boolean hasDisliked)
+    {
+        return (panel, user, clickType, i) ->
         {
             for (ItemTemplateRecord.ActionRecords action : activeActions)
             {
@@ -362,39 +387,7 @@ public class LikesManagePanel extends CommonPanel
 
             // Always return true.
             return true;
-        });
-
-        // Collect tooltips.
-        List<String> tooltips = activeActions.stream().
-            filter(action -> action.tooltip() != null).
-            map(action -> this.user.getTranslation(this.world, action.tooltip())).
-            filter(text -> !text.isBlank()).
-            collect(Collectors.toCollection(() -> new ArrayList<>(template.actions().size())));
-
-        builder.glow(hasDisliked);
-
-        // Add tooltips.
-        if (!tooltips.isEmpty())
-        {
-            // Empty line and tooltips.
-            builder.description("");
-            builder.description(tooltips);
-        }
-        else
-        {
-            builder.description("");
-
-            if (hasDisliked)
-            {
-                builder.description(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
-            }
-            else
-            {
-                builder.description(this.user.getTranslation(Constants.TIPS + "click-to-add"));
-            }
-        }
-
-        return builder.build();
+        };
     }
 
 
@@ -435,7 +428,7 @@ public class LikesManagePanel extends CommonPanel
         }
         else
         {
-            builder.description(this.user.getTranslationOrNothing(reference + "description"));
+            builder.description(this.user.getTranslationOrNothing(reference + DESCRIPTION));
         }
 
         if (this.addon.isEconomyProvided())
@@ -472,7 +465,18 @@ public class LikesManagePanel extends CommonPanel
         });
 
         // Add ClickHandler
-        builder.clickHandler((panel, user, clickType, i) ->
+        builder.clickHandler(this.createStarClickHandler(activeActions, hasStarred, value, starsValue));
+        builder.glow(hasStarred && value >= starsValue);
+        this.addStarTooltips(builder, activeActions, template.actions().size(), hasStarred, value, starsValue);
+
+        return builder.build();
+    }
+
+    /** Create star button click handler. */
+    private PanelItem.ClickHandler createStarClickHandler(List<ItemTemplateRecord.ActionRecords> activeActions,
+        boolean hasStarred, int value, int starsValue)
+    {
+        return (panel, user, clickType, i) ->
         {
             for (ItemTemplateRecord.ActionRecords action : activeActions)
             {
@@ -518,18 +522,19 @@ public class LikesManagePanel extends CommonPanel
 
             // Always return true.
             return true;
-        });
+        };
+    }
 
-        // Collect tooltips.
+    /** Add star button tooltips. */
+    private void addStarTooltips(PanelItemBuilder builder, List<ItemTemplateRecord.ActionRecords> activeActions,
+        int actionCount, boolean hasStarred, int value, int starsValue)
+    {
         List<String> tooltips = activeActions.stream().
             filter(action -> action.tooltip() != null).
             map(action -> this.user.getTranslation(this.world, action.tooltip())).
             filter(text -> !text.isBlank()).
-            collect(Collectors.toCollection(() -> new ArrayList<>(template.actions().size())));
+            collect(Collectors.toCollection(() -> new ArrayList<>(actionCount)));
 
-        builder.glow(hasStarred && value >= starsValue);
-
-        // Add tooltips.
         if (!tooltips.isEmpty())
         {
             // Empty line and tooltips.
@@ -541,7 +546,7 @@ public class LikesManagePanel extends CommonPanel
             if (value == starsValue)
             {
                 builder.description("");
-                builder.description(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
+                builder.description(this.user.getTranslation(Constants.TIPS + CLICK_TO_REMOVE));
             }
         }
         else
@@ -549,8 +554,6 @@ public class LikesManagePanel extends CommonPanel
             builder.description("");
             builder.description(this.user.getTranslation(Constants.TIPS + "click-to-set"));
         }
-
-        return builder.build();
     }
 
 

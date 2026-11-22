@@ -226,9 +226,7 @@ public enum LikesAddonPlaceholderType
     {
         LikesObject object = LikesAddonPlaceholderType.getSortedLikes(addon, gameModeAddon).exact(0);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -255,9 +253,7 @@ public enum LikesAddonPlaceholderType
     BY_LIKES_ISLAND_NAME_2("top_likes_island_name_2", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedLikes(addon, gameModeAddon).exact(1);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -284,9 +280,7 @@ public enum LikesAddonPlaceholderType
     BY_LIKES_ISLAND_NAME_3("top_likes_island_name_3", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedLikes(addon, gameModeAddon).exact(2);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -313,9 +307,7 @@ public enum LikesAddonPlaceholderType
     BY_LIKES_ISLAND_NAME_4("top_likes_island_name_4", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedLikes(addon, gameModeAddon).exact(3);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -342,9 +334,7 @@ public enum LikesAddonPlaceholderType
     BY_LIKES_ISLAND_NAME_5("top_likes_island_name_5", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedLikes(addon, gameModeAddon).exact(4);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -371,9 +361,7 @@ public enum LikesAddonPlaceholderType
     BY_LIKES_ISLAND_NAME_6("top_likes_island_name_6", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedLikes(addon, gameModeAddon).exact(5);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -400,9 +388,7 @@ public enum LikesAddonPlaceholderType
     BY_LIKES_ISLAND_NAME_7("top_likes_island_name_7", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedLikes(addon, gameModeAddon).exact(6);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -429,9 +415,7 @@ public enum LikesAddonPlaceholderType
     BY_LIKES_ISLAND_NAME_8("top_likes_island_name_8", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedLikes(addon, gameModeAddon).exact(7);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -458,9 +442,7 @@ public enum LikesAddonPlaceholderType
     BY_LIKES_ISLAND_NAME_9("top_likes_island_name_9", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedLikes(addon, gameModeAddon).exact(8);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -487,9 +469,7 @@ public enum LikesAddonPlaceholderType
     BY_LIKES_ISLAND_NAME_10("top_likes_island_name_10", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedLikes(addon, gameModeAddon).exact(9);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -521,9 +501,7 @@ public enum LikesAddonPlaceholderType
     BY_DISLIKES_ISLAND_NAME_1("top_dislikes_island_name_1", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedDislikes(addon, gameModeAddon).exact(0);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -550,9 +528,7 @@ public enum LikesAddonPlaceholderType
     BY_DISLIKES_ISLAND_NAME_2("top_dislikes_island_name_2", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedDislikes(addon, gameModeAddon).exact(1);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -579,9 +555,7 @@ public enum LikesAddonPlaceholderType
     BY_DISLIKES_ISLAND_NAME_3("top_dislikes_island_name_3", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedDislikes(addon, gameModeAddon).exact(2);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -608,9 +582,7 @@ public enum LikesAddonPlaceholderType
     BY_DISLIKES_ISLAND_NAME_4("top_dislikes_island_name_4", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedDislikes(addon, gameModeAddon).exact(3);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -637,9 +609,7 @@ public enum LikesAddonPlaceholderType
     BY_DISLIKES_ISLAND_NAME_5("top_dislikes_island_name_5", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedDislikes(addon, gameModeAddon).exact(4);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -666,9 +636,7 @@ public enum LikesAddonPlaceholderType
     BY_DISLIKES_ISLAND_NAME_6("top_dislikes_island_name_6", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedDislikes(addon, gameModeAddon).exact(5);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -695,9 +663,7 @@ public enum LikesAddonPlaceholderType
     BY_DISLIKES_ISLAND_NAME_7("top_dislikes_island_name_7", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedDislikes(addon, gameModeAddon).exact(6);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -724,9 +690,7 @@ public enum LikesAddonPlaceholderType
     BY_DISLIKES_ISLAND_NAME_8("top_dislikes_island_name_8", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedDislikes(addon, gameModeAddon).exact(7);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -753,9 +717,7 @@ public enum LikesAddonPlaceholderType
     BY_DISLIKES_ISLAND_NAME_9("top_dislikes_island_name_9", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedDislikes(addon, gameModeAddon).exact(8);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -782,9 +744,7 @@ public enum LikesAddonPlaceholderType
     BY_DISLIKES_ISLAND_NAME_10("top_dislikes_island_name_10", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedDislikes(addon, gameModeAddon).exact(9);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -816,9 +776,7 @@ public enum LikesAddonPlaceholderType
     BY_RANK_ISLAND_NAME_1("top_rank_island_name_1", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedRank(addon, gameModeAddon).exact(0);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -845,9 +803,7 @@ public enum LikesAddonPlaceholderType
     BY_RANK_ISLAND_NAME_2("top_rank_island_name_2", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedRank(addon, gameModeAddon).exact(1);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -874,9 +830,7 @@ public enum LikesAddonPlaceholderType
     BY_RANK_ISLAND_NAME_3("top_rank_island_name_3", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedRank(addon, gameModeAddon).exact(2);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -903,9 +857,7 @@ public enum LikesAddonPlaceholderType
     BY_RANK_ISLAND_NAME_4("top_rank_island_name_4", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedRank(addon, gameModeAddon).exact(3);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -932,9 +884,7 @@ public enum LikesAddonPlaceholderType
     BY_RANK_ISLAND_NAME_5("top_rank_island_name_5", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedRank(addon, gameModeAddon).exact(4);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -961,9 +911,7 @@ public enum LikesAddonPlaceholderType
     BY_RANK_ISLAND_NAME_6("top_rank_island_name_6", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedRank(addon, gameModeAddon).exact(5);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -990,9 +938,7 @@ public enum LikesAddonPlaceholderType
     BY_RANK_ISLAND_NAME_7("top_rank_island_name_7", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedRank(addon, gameModeAddon).exact(6);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1019,9 +965,7 @@ public enum LikesAddonPlaceholderType
     BY_RANK_ISLAND_NAME_8("top_rank_island_name_8", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedRank(addon, gameModeAddon).exact(7);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1048,9 +992,7 @@ public enum LikesAddonPlaceholderType
     BY_RANK_ISLAND_NAME_9("top_rank_island_name_9", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedRank(addon, gameModeAddon).exact(8);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1077,9 +1019,7 @@ public enum LikesAddonPlaceholderType
     BY_RANK_ISLAND_NAME_10("top_rank_island_name_10", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedRank(addon, gameModeAddon).exact(9);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1112,9 +1052,7 @@ public enum LikesAddonPlaceholderType
     BY_STARS_ISLAND_NAME_1("top_stars_island_name_1", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(0);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1141,9 +1079,7 @@ public enum LikesAddonPlaceholderType
     BY_STARS_ISLAND_NAME_2("top_stars_island_name_2", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(1);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1170,9 +1106,7 @@ public enum LikesAddonPlaceholderType
     BY_STARS_ISLAND_NAME_3("top_stars_island_name_3", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(2);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1199,9 +1133,7 @@ public enum LikesAddonPlaceholderType
     BY_STARS_ISLAND_NAME_4("top_stars_island_name_4", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(3);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1228,9 +1160,7 @@ public enum LikesAddonPlaceholderType
     BY_STARS_ISLAND_NAME_5("top_stars_island_name_5", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(4);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1257,9 +1187,7 @@ public enum LikesAddonPlaceholderType
     BY_STARS_ISLAND_NAME_6("top_stars_island_name_6", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(5);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1286,9 +1214,7 @@ public enum LikesAddonPlaceholderType
     BY_STARS_ISLAND_NAME_7("top_stars_island_name_7", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(6);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1315,9 +1241,7 @@ public enum LikesAddonPlaceholderType
     BY_STARS_ISLAND_NAME_8("top_stars_island_name_8", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(7);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1344,9 +1268,7 @@ public enum LikesAddonPlaceholderType
     BY_STARS_ISLAND_NAME_9("top_stars_island_name_9", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(8);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1373,9 +1295,7 @@ public enum LikesAddonPlaceholderType
     BY_STARS_ISLAND_NAME_10("top_stars_island_name_10", (addon, gameModeAddon, user) -> {
         LikesObject object = LikesAddonPlaceholderType.getSortedStars(addon, gameModeAddon).exact(9);
 
-        return object == null ? "" : addon.getIslands().getIslandById(object.getUniqueId()).
-            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
-            orElse("");
+        return LikesAddonPlaceholderType.getIslandName(addon, object);
     }),
 
     /**
@@ -1430,6 +1350,27 @@ public enum LikesAddonPlaceholderType
 // ---------------------------------------------------------------------
 // Section: Static method
 // ---------------------------------------------------------------------
+
+
+    /**
+     * This method returns the name of the island that is linked to the given likes object. If island does not
+     * have a name, then the name of its owner is returned.
+     *
+     * @param addon Likes Addon instance.
+     * @param object Likes object of the island. Can be {@code null}.
+     * @return Name of the island, or empty string if island does not exist.
+     */
+    private static String getIslandName(LikesAddon addon, LikesObject object)
+    {
+        if (object == null)
+        {
+            return "";
+        }
+
+        return addon.getIslands().getIslandById(object.getUniqueId()).
+            map(value -> value.getName() == null ? addon.getPlayers().getName(value.getOwner()) : value.getName()).
+            orElse("");
+    }
 
 
     /**

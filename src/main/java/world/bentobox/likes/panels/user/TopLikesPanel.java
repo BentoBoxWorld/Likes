@@ -58,15 +58,9 @@ public class TopLikesPanel extends CommonPanel
     private TopLikesPanel(LikesAddon addon, User user, World world, String permissionPrefix, VIEW_MODE mode)
     {
         super(addon, user, world, permissionPrefix);
-        this.addon = addon;
-        this.user = user;
-        this.world = world;
 
         this.iconPermission = permissionPrefix + "likes.icon";
         this.viewMode = mode;
-
-        this.hundredsFormat = (DecimalFormat) NumberFormat.getNumberInstance(this.user.getLocale());
-        this.hundredsFormat.applyPattern("###.##");
     }
 
 
@@ -120,9 +114,55 @@ public class TopLikesPanel extends CommonPanel
     private PanelItem createViewModeButton(ItemTemplateRecord template, TemplatedPanel.ItemSlot itemSlot)
     {
         final String reference = Constants.BUTTONS + "view_mode.";
-
         PanelItemBuilder builder = new PanelItemBuilder();
 
+        this.setViewModeIcon(builder, template, reference);
+        this.setViewModeTitle(builder, template, reference);
+        this.setViewModeDescription(builder, template, reference);
+
+        VIEW_MODE[] values = new VIEW_MODE[3];
+        values[0] = VIEW_MODE.LIKES;
+        values[1] = VIEW_MODE.DISLIKES;
+        values[2] = VIEW_MODE.RANK;
+
+        builder.clickHandler((panel, clicker, clickType, i) ->
+        {
+            for (ItemTemplateRecord.ActionRecords action : template.actions())
+            {
+                if (clickType == action.clickType() || action.clickType() == ClickType.UNKNOWN)
+                {
+                    if ("UP".equalsIgnoreCase(action.actionType()))
+                    {
+                        this.viewMode = Utils.getPreviousValue(values, this.viewMode);
+                        this.build();
+                    }
+                    else if ("DOWN".equalsIgnoreCase(action.actionType()))
+                    {
+                        this.viewMode = Utils.getNextValue(values, this.viewMode);
+                        this.build();
+                    }
+                }
+            }
+
+            return true;
+        });
+
+        this.addViewModeTooltips(builder, template);
+
+        // Click Handlers are managed by custom addon buttons.
+        return builder.build();
+    }
+
+
+    /**
+     * Set icon for view mode button.
+     *
+     * @param builder the builder
+     * @param template the template
+     * @param reference the reference key
+     */
+    private void setViewModeIcon(PanelItemBuilder builder, ItemTemplateRecord template, String reference)
+    {
         // Template specification are always more important than dynamic content.
         if (template.icon() != null)
         {
@@ -135,9 +175,22 @@ public class TopLikesPanel extends CommonPanel
                 case LIKES -> builder.icon(Material.DIAMOND);
                 case DISLIKES -> builder.icon(Material.IRON_INGOT);
                 case RANK -> builder.icon(Material.GOLD_INGOT);
+                case STARS -> builder.icon(Material.NETHER_STAR);
+                default -> {} // All enum values handled
             }
         }
+    }
 
+
+    /**
+     * Set title for view mode button.
+     *
+     * @param builder the builder
+     * @param template the template
+     * @param reference the reference key
+     */
+    private void setViewModeTitle(PanelItemBuilder builder, ItemTemplateRecord template, String reference)
+    {
         // Template specific title is always more important than biomesObject name.
         if (template.title() != null && !template.title().isBlank())
         {
@@ -147,7 +200,18 @@ public class TopLikesPanel extends CommonPanel
         {
             builder.name(this.user.getTranslationOrNothing(reference + "name"));
         }
+    }
 
+
+    /**
+     * Set description for view mode button.
+     *
+     * @param builder the builder
+     * @param template the template
+     * @param reference the reference key
+     */
+    private void setViewModeDescription(PanelItemBuilder builder, ItemTemplateRecord template, String reference)
+    {
         VIEW_MODE[] values = new VIEW_MODE[3];
         values[0] = VIEW_MODE.LIKES;
         values[1] = VIEW_MODE.DISLIKES;
@@ -177,30 +241,17 @@ public class TopLikesPanel extends CommonPanel
                 }
             }
         }
+    }
 
-        // Add Click handler
-        builder.clickHandler((panel, user, clickType, i) ->
-        {
-            for (ItemTemplateRecord.ActionRecords action : template.actions())
-            {
-                if (clickType == action.clickType() || action.clickType() == ClickType.UNKNOWN)
-                {
-                    if ("UP".equalsIgnoreCase(action.actionType()))
-                    {
-                        this.viewMode = Utils.getPreviousValue(values, this.viewMode);
-                        this.build();
-                    }
-                    else if ("DOWN".equalsIgnoreCase(action.actionType()))
-                    {
-                        this.viewMode = Utils.getNextValue(values, this.viewMode);
-                        this.build();
-                    }
-                }
-            }
 
-            return true;
-        });
-
+    /**
+     * Add tooltips to view mode button.
+     *
+     * @param builder the builder
+     * @param template the template
+     */
+    private void addViewModeTooltips(PanelItemBuilder builder, ItemTemplateRecord template)
+    {
         // Collect tooltips.
         List<String> tooltips = template.actions().stream().
             filter(action -> action.tooltip() != null).
@@ -215,9 +266,6 @@ public class TopLikesPanel extends CommonPanel
             builder.description("");
             builder.description(tooltips);
         }
-
-        // Click Handlers are managed by custom addon buttons.
-        return builder.build();
     }
 
 
@@ -255,57 +303,95 @@ public class TopLikesPanel extends CommonPanel
 
         PanelItemBuilder builder = new PanelItemBuilder();
 
-        this.populateIslandIcon(builder, template, island);        
+        this.populateIslandIcon(builder, template, island);
         this.populateIslandTitle(builder, template, island);
         this.populateIslandDescription(builder, template, island, likesObject, false);
 
         builder.amount(index);
 
         // Get only possible actions, by removing all inactive ones.
+        List<ItemTemplateRecord.ActionRecords> activeActions = this.getActivePlayerActions(template, island);
+
+        // Add Click handler
+        builder.clickHandler((panel, clicker, clickType, i) ->
+        {
+            this.handlePlayerButtonClick(activeActions, island, clickType);
+            return true;
+        });
+
+        this.addPlayerButtonTooltips(builder, activeActions, template);
+
+        return builder.build();
+    }
+
+
+    /**
+     * Get active player actions for the island.
+     *
+     * @param template the template
+     * @param island the island
+     * @return list of active actions
+     */
+    private List<ItemTemplateRecord.ActionRecords> getActivePlayerActions(ItemTemplateRecord template, Island island)
+    {
         List<ItemTemplateRecord.ActionRecords> activeActions = new ArrayList<>(template.actions());
 
         activeActions.removeIf(action ->
         {
-            switch (action.actionType().toUpperCase())
+            String actionType = action.actionType().toUpperCase();
+            if ("WARP".equals(actionType))
             {
-                case "WARP" -> {
-                    return !this.hasWarp(island);
-                }
-                case "VISIT" -> {
-                    return island.getOwner() == null ||
-                        this.addon.getVisitHook() == null ||
-                        !this.addon.getVisitHook().getAddonManager().preprocessTeleportation(this.user, island, true);
-                }
-                default -> {
-                    return false;
-                }
+                return !this.hasWarp(island);
             }
+            else if ("VISIT".equals(actionType))
+            {
+                return island.getOwner() == null ||
+                    this.addon.getVisitHook() == null ||
+                    !this.addon.getVisitHook().getAddonManager().preprocessTeleportation(this.user, island, true);
+            }
+            return false;
         });
 
-        // Add Click handler
-        builder.clickHandler((panel, user, clickType, i) ->
+        return activeActions;
+    }
+
+
+    /**
+     * Handle player button click.
+     *
+     * @param activeActions the list of active actions
+     * @param island the island
+     * @param clickType the click type
+     */
+    private void handlePlayerButtonClick(List<ItemTemplateRecord.ActionRecords> activeActions, Island island, ClickType clickType)
+    {
+        for (ItemTemplateRecord.ActionRecords action : activeActions)
         {
-            for (ItemTemplateRecord.ActionRecords action : activeActions)
+            if (clickType == action.clickType() || action.clickType() == ClickType.UNKNOWN)
             {
-                if (clickType == action.clickType() || action.clickType() == ClickType.UNKNOWN)
+                switch (action.actionType().toUpperCase())
                 {
-                    switch (action.actionType().toUpperCase())
-                    {
-                        case "WARP" -> {
-                            this.user.closeInventory();
-                            this.addon.getWarpHook().getWarpSignsManager().warpPlayer(this.world, this.user, island.getOwner());
-                        }
-                        case "VISIT" -> this.visitIsland(island);
-                        default -> {
-                            // Other actions do nothing.
-                        }
+                    case "WARP" -> {
+                        this.user.closeInventory();
+                        this.addon.getWarpHook().getWarpSignsManager().warpPlayer(this.world, this.user, island.getOwner());
                     }
+                    case "VISIT" -> this.visitIsland(island);
+                    default -> {} // Other actions do nothing.
                 }
             }
+        }
+    }
 
-            return true;
-        });
 
+    /**
+     * Add tooltips to player button.
+     *
+     * @param builder the builder
+     * @param activeActions the list of active actions
+     * @param template the template
+     */
+    private void addPlayerButtonTooltips(PanelItemBuilder builder, List<ItemTemplateRecord.ActionRecords> activeActions, ItemTemplateRecord template)
+    {
         // Collect tooltips.
         List<String> tooltips = activeActions.stream().
             filter(action -> action.tooltip() != null).
@@ -320,8 +406,6 @@ public class TopLikesPanel extends CommonPanel
             builder.description("");
             builder.description(tooltips);
         }
-
-        return builder.build();
     }
 
 
@@ -406,7 +490,7 @@ public class TopLikesPanel extends CommonPanel
         if (background != null)
         {
             return new PanelItemBuilder().
-                name(this.user.getTranslation(reference + "empty", "[name]", String.valueOf(index))).
+                name(this.user.getTranslation(reference + "empty", NAME_PARAMETER, String.valueOf(index))).
                 icon(background).
                 build();
         }
@@ -426,12 +510,12 @@ public class TopLikesPanel extends CommonPanel
         if (template.title() != null)
         {
             builder.name(this.user.getTranslation(this.world, template.title(),
-                "[name]", String.valueOf(index)));
+                NAME_PARAMETER, String.valueOf(index)));
         }
         else
         {
             builder.name(this.user.getTranslation(this.world, reference,
-                "[name]", String.valueOf(index)));
+                NAME_PARAMETER, String.valueOf(index)));
         }
 
         if (template.description() != null)
@@ -440,7 +524,7 @@ public class TopLikesPanel extends CommonPanel
                 "[number]", String.valueOf(index)));
         }
 
-        builder.amount(index != 0 ? (int) index : 1);
+        builder.amount(index == 0 ? 1 : (int) index);
 
         return builder.build();
     }
@@ -453,24 +537,45 @@ public class TopLikesPanel extends CommonPanel
      * @param template the template
      * @param island the island
      */
-    private void populateIslandTitle(PanelItemBuilder builder, 
-        ItemTemplateRecord template, 
+    private void populateIslandTitle(PanelItemBuilder builder,
+        ItemTemplateRecord template,
         Island island)
     {
         final String reference = Constants.BUTTONS + "island.";
+        String nameText = this.getIslandNameText(reference, island);
 
-        // Get Island Name
-        String nameText;
+        // Template specific title is always more important than custom one.
+        if (template.title() != null && !template.title().isBlank())
+        {
+            builder.name(this.user.getTranslation(this.world, template.title(),
+                NAME_PARAMETER, nameText,
+                "[owner]", this.addon.getPlayers().getName(island.getOwner())));
+        }
+        else
+        {
+            builder.name(this.user.getTranslation(reference + "name", Constants.PARAMETER_NAME, nameText));
+        }
+    }
 
+
+    /**
+     * Get island name text.
+     *
+     * @param reference the reference key
+     * @param island the island
+     * @return island name text
+     */
+    private String getIslandNameText(String reference, Island island)
+    {
         if (island.getName() == null || island.getName().isEmpty())
         {
             if (island.isSpawn())
             {
-                nameText = this.user.getTranslation(reference + "spawn");
+                return this.user.getTranslation(reference + "spawn");
             }
             else
             {
-                nameText = this.user.getTranslation(reference + "owners-island",
+                return this.user.getTranslation(reference + "owners-island",
                     "[player]",
                     island.getOwner() == null ?
                         this.user.getTranslation(reference + "unknown") :
@@ -479,19 +584,7 @@ public class TopLikesPanel extends CommonPanel
         }
         else
         {
-            nameText = island.getName();
-        }
-
-        // Template specific title is always more important than custom one.
-        if (template.title() != null && !template.title().isBlank())
-        {
-            builder.name(this.user.getTranslation(this.world, template.title(),
-                "[name]", nameText,
-                "[owner]", this.addon.getPlayers().getName(island.getOwner())));
-        }
-        else
-        {
-            builder.name(this.user.getTranslation(reference + "name", Constants.PARAMETER_NAME, nameText));
+            return island.getName();
         }
     }
 
@@ -580,127 +673,18 @@ public class TopLikesPanel extends CommonPanel
      * @param likesObject the likes object
      * @param generatePlaceText the value that force to generate place text
      */
-    private void populateIslandDescription(PanelItemBuilder builder, 
+    private void populateIslandDescription(PanelItemBuilder builder,
         ItemTemplateRecord template,
-        Island island, 
+        Island island,
         LikesObject likesObject,
         boolean generatePlaceText)
     {
         final String reference = Constants.BUTTONS + "island.";
 
-        // Get Owner Name
-        String ownerText;
-
-        if (island.isSpawn())
-        {
-            ownerText = "";
-        }
-        else
-        {
-            ownerText = this.user.getTranslation(reference + "owner",
-                Constants.PARAMETER_PLAYER,
-                island.getOwner() == null ?
-                    this.user.getTranslation(reference + "unknown") :
-                    this.addon.getPlayers().getName(island.getOwner()));
-        }
-
-        // Get Members Text
-        String memberText;
-
-        if (island.getMemberSet().size() > 1)
-        {
-            StringBuilder memberBuilder = new StringBuilder(
-                this.user.getTranslationOrNothing(reference + "members-title"));
-
-            for (UUID uuid : island.getMemberSet())
-            {
-                String name = this.addon.getPlayers().getName(uuid);
-
-                if (memberBuilder.length() > 0)
-                {
-                    memberBuilder.append("\n");
-                }
-
-                memberBuilder.append(
-                    this.user.getTranslationOrNothing(reference + "member",
-                        Constants.PARAMETER_PLAYER, name));
-            }
-
-            memberText = memberBuilder.toString();
-        }
-        else
-        {
-            memberText = "";
-        }
-
-        // Get Numbers Text
-        String numbersText = switch (this.addon.getSettings().getMode()) {
-            case LIKES -> this.user.getTranslation(reference + "numbers_likes",
-                Constants.PARAMETER_LIKES, String.valueOf(likesObject.getLikes()));
-            case LIKES_DISLIKES -> this.user.getTranslation(reference + "numbers_likes_dislikes",
-                Constants.PARAMETER_LIKES, String.valueOf(likesObject.getLikes()),
-                Constants.PARAMETER_DISLIKES, String.valueOf(likesObject.getDislikes()),
-                Constants.PARAMETER_RANK, String.valueOf(likesObject.getRank()));
-            case STARS -> this.user.getTranslation(reference + "numbers_stars",
-                Constants.PARAMETER_STARS, this.hundredsFormat.format(likesObject.getStarsValue()),
-                Constants.PARAMETER_NUMBER, String.valueOf(likesObject.numberOfStars()));
-        };
-
-        String placeText = "";
-
-        // Generate place text
-        if (generatePlaceText)
-        {
-            switch (this.addon.getSettings().getMode())
-            {
-                case LIKES -> {
-                    int rank = this.addon.getAddonManager().getIslandRankByLikes(this.world, likesObject);
-
-                    if (rank != -1)
-                    {
-                        placeText = this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(rank),
-                            Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes"));
-                    }
-                }
-                case LIKES_DISLIKES -> {
-                    int byLikes = this.addon.getAddonManager().getIslandRankByLikes(this.world, likesObject);
-                    int byDislikes = this.addon.getAddonManager().getIslandRankByDislikes(this.world, likesObject);
-                    int byRank = this.addon.getAddonManager().getIslandRankByRank(this.world, likesObject);
-
-                    if (byLikes != -1)
-                    {
-                        placeText = this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(byLikes),
-                            Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes"));
-                    }
-
-                    if (byDislikes != -1)
-                    {
-                        placeText += "\n" + this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(byDislikes),
-                            Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "dislikes"));
-                    }
-
-                    if (byRank != -1)
-                    {
-                        placeText += "\n" + this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(byRank),
-                            Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "rank"));
-                    }
-                }
-                case STARS -> {
-                    int rank = this.addon.getAddonManager().getIslandRankByStars(this.world, likesObject);
-
-                    if (rank != -1)
-                    {
-                        placeText = this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(rank),
-                            Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "stars"));
-                    }
-                }
-            }
-        }
+        String ownerText = this.generateOwnerText(reference, island);
+        String memberText = this.generateMemberText(reference, island);
+        String numbersText = this.generateNumbersText(reference, likesObject);
+        String placeText = generatePlaceText ? this.generatePlaceText(reference, likesObject) : "";
 
         // Template specific description is always more important than custom one.
         if (template.description() != null && !template.description().isBlank())
@@ -712,7 +696,7 @@ public class TopLikesPanel extends CommonPanel
                     Constants.PARAMETER_NUMBERS, numbersText).
                 replaceAll("(?m)^[ \\t]*\\r?\\n", "").
                 replaceAll("(?<!\\\\)\\|", "\n").
-                replaceAll("\\\\\\|", "|"));
+                replace("\\|", "|"));
         }
         else
         {
@@ -726,8 +710,157 @@ public class TopLikesPanel extends CommonPanel
             builder.description(descriptionText.
                 replaceAll("(?m)^[ \\t]*\\r?\\n", "").
                 replaceAll("(?<!\\\\)\\|", "\n").
-                replaceAll("\\\\\\|", "|"));
+                replace("\\|", "|"));
         }
+    }
+
+
+    /**
+     * Generate owner text for description.
+     *
+     * @param reference the reference key
+     * @param island the island
+     * @return owner text
+     */
+    private String generateOwnerText(String reference, Island island)
+    {
+        if (island.isSpawn())
+        {
+            return "";
+        }
+        else
+        {
+            return this.user.getTranslation(reference + "owner",
+                Constants.PARAMETER_PLAYER,
+                island.getOwner() == null ?
+                    this.user.getTranslation(reference + "unknown") :
+                    this.addon.getPlayers().getName(island.getOwner()));
+        }
+    }
+
+
+    /**
+     * Generate member text for description.
+     *
+     * @param reference the reference key
+     * @param island the island
+     * @return member text
+     */
+    private String generateMemberText(String reference, Island island)
+    {
+        if (island.getMemberSet().size() > 1)
+        {
+            StringBuilder memberBuilder = new StringBuilder(
+                this.user.getTranslationOrNothing(reference + "members-title"));
+
+            for (UUID uuid : island.getMemberSet())
+            {
+                String name = this.addon.getPlayers().getName(uuid);
+
+                if (!memberBuilder.isEmpty())
+                {
+                    memberBuilder.append("\n");
+                }
+
+                memberBuilder.append(
+                    this.user.getTranslationOrNothing(reference + "member",
+                        Constants.PARAMETER_PLAYER, name));
+            }
+
+            return memberBuilder.toString();
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+
+    /**
+     * Generate numbers text for description.
+     *
+     * @param reference the reference key
+     * @param likesObject the likes object
+     * @return numbers text
+     */
+    private String generateNumbersText(String reference, LikesObject likesObject)
+    {
+        return switch (this.addon.getSettings().getMode()) {
+            case LIKES -> this.user.getTranslation(reference + "numbers_likes",
+                Constants.PARAMETER_LIKES, String.valueOf(likesObject.getLikes()));
+            case LIKES_DISLIKES -> this.user.getTranslation(reference + "numbers_likes_dislikes",
+                Constants.PARAMETER_LIKES, String.valueOf(likesObject.getLikes()),
+                Constants.PARAMETER_DISLIKES, String.valueOf(likesObject.getDislikes()),
+                Constants.PARAMETER_RANK, String.valueOf(likesObject.getRank()));
+            case STARS -> this.user.getTranslation(reference + "numbers_stars",
+                Constants.PARAMETER_STARS, this.hundredsFormat.format(likesObject.getStarsValue()),
+                Constants.PARAMETER_NUMBER, String.valueOf(likesObject.numberOfStars()));
+        };
+    }
+
+
+    /**
+     * Generate place text for description.
+     *
+     * @param reference the reference key
+     * @param likesObject the likes object
+     * @return place text
+     */
+    private String generatePlaceText(String reference, LikesObject likesObject)
+    {
+        String placeText = "";
+
+        switch (this.addon.getSettings().getMode())
+        {
+            case LIKES -> {
+                int rank = this.addon.getAddonManager().getIslandRankByLikes(this.world, likesObject);
+
+                if (rank != -1)
+                {
+                    placeText = this.user.getTranslation(reference + PLACE_BUTTON_KEY,
+                        Constants.PARAMETER_NUMBER, String.valueOf(rank),
+                        Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes"));
+                }
+            }
+            case LIKES_DISLIKES -> {
+                int byLikes = this.addon.getAddonManager().getIslandRankByLikes(this.world, likesObject);
+                int byDislikes = this.addon.getAddonManager().getIslandRankByDislikes(this.world, likesObject);
+                int byRank = this.addon.getAddonManager().getIslandRankByRank(this.world, likesObject);
+
+                if (byLikes != -1)
+                {
+                    placeText = this.user.getTranslation(reference + PLACE_BUTTON_KEY,
+                        Constants.PARAMETER_NUMBER, String.valueOf(byLikes),
+                        Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes"));
+                }
+
+                if (byDislikes != -1)
+                {
+                    placeText += "\n" + this.user.getTranslation(reference + PLACE_BUTTON_KEY,
+                        Constants.PARAMETER_NUMBER, String.valueOf(byDislikes),
+                        Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "dislikes"));
+                }
+
+                if (byRank != -1)
+                {
+                    placeText += "\n" + this.user.getTranslation(reference + PLACE_BUTTON_KEY,
+                        Constants.PARAMETER_NUMBER, String.valueOf(byRank),
+                        Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "rank"));
+                }
+            }
+            case STARS -> {
+                int rank = this.addon.getAddonManager().getIslandRankByStars(this.world, likesObject);
+
+                if (rank != -1)
+                {
+                    placeText = this.user.getTranslation(reference + PLACE_BUTTON_KEY,
+                        Constants.PARAMETER_NUMBER, String.valueOf(rank),
+                        Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "stars"));
+                }
+            }
+        }
+
+        return placeText;
     }
     
 
@@ -813,19 +946,14 @@ public class TopLikesPanel extends CommonPanel
 // ---------------------------------------------------------------------
 
     /**
-     * This variable allows to access addon object.
+     * String constant for "[name]" parameter.
      */
-    private final LikesAddon addon;
+    private static final String NAME_PARAMETER = "[name]";
 
     /**
-     * This variable holds user who opens panel. Without it panel cannot be opened.
+     * String constant for "place" button key.
      */
-    private final User user;
-
-    /**
-     * This variable holds a world to which gui referee.
-     */
-    private final World world;
+    private static final String PLACE_BUTTON_KEY = "place";
 
     /**
      * Location to icon permission.
@@ -841,9 +969,4 @@ public class TopLikesPanel extends CommonPanel
      * This list contains all currently displayed top players.
      */
     private IndexedTreeSet<LikesObject> topPlayerList;
-
-    /**
-     * Stores decimal format object for two digit after separator.
-     */
-    private final DecimalFormat hundredsFormat;
 }
