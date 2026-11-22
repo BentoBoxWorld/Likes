@@ -11,69 +11,50 @@
     <name>Likes</name>
     <description>Likes addon allows to like and dislike other player islands.</description>
     <url>https://github.com/BentoBoxWorld/Likes</url>
-
     <inceptionYear>2019</inceptionYear>
 
-    <!-- SCM is a GitHub link to your project -->
-    <!-- Can be removed -->
     <scm>
         <connection>scm:git:https://github.com/BentoBoxWorld/Likes.git</connection>
         <developerConnection>scm:git:git@github.com:BentoBoxWorld/Likes.git</developerConnection>
         <url>https://github.com/BentoBoxWorld/Likes</url>
     </scm>
 
-    <!-- ciManagement is a build server that runs builds for your project -->
-    <!-- Can be removed -->
     <ciManagement>
         <system>jenkins</system>
         <url>http://ci.codemc.org/job/BentoBoxWorld/job/Likes</url>
     </ciManagement>
 
-    <!-- issueManagement is a link to issues page. -->
-    <!-- Can be removed -->
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/BentoBoxWorld/Likes/issues</url>
     </issueManagement>
 
-    <!-- distributionManagement contains public maven repositories for your 
-        addon -->
-    <!-- Can be removed -->
-    <distributionManagement>
-        <repository>
-            <id>bentoboxworld</id>
-            <url>https://repo.codemc.org/repository/bentoboxworld</url>
-        </repository>
-    </distributionManagement>
-
-    <!-- Properties contains all variables that can offten change, f.e. BentoBox 
-        API version -->
     <properties>
-        <!-- Some JAVA encoding settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>17</java.version>
-
-        <!-- SPIGOT API version -->
-        <spigot.version>1.21.3-R0.1-SNAPSHOT</spigot.version>
-        <!-- Vault API version -->
+        <java.version>25</java.version>
+        <!-- Non-minecraft related dependencies -->
+        <junit.version>5.10.2</junit.version>
+        <mockito.version>5.20.0</mockito.version>
+        <mock-bukkit.version>4.119.0</mock-bukkit.version>
+        <!-- More visible way how to change dependency versions -->
+        <paper.version>26.3.build.231-stable</paper.version>
+        <bentobox.version>3.23.7</bentobox.version>
         <vault.version>1.7</vault.version>
-
-        <!-- BentoBox API version -->
-        <bentobox.version>2.7.1-SNAPSHOT</bentobox.version>
-        <!-- Warps addon version -->
-        <warps.version>1.12.0</warps.version>
-        <!-- Visit addon version -->
-        <visit.version>1.4.0</visit.version>
-        <!-- Bank addon version -->
-        <bank.version>1.4.0</bank.version>
-        <!-- Panel Utils version -->
         <panelutils.version>1.2.0</panelutils.version>
+        <!-- Optional addon hooks -->
+        <warps.version>1.19.0</warps.version>
+        <visit.version>1.6.0</visit.version>
+        <bank.version>1.10.0</bank.version>
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- This allows to change between versions and snapshots. -->
-        <build.version>2.5.0</build.version>
+        <build.version>2.6.0</build.version>
         <build.number>-LOCAL</build.number>
+        <!-- SonarQube Cloud -->
+        <sonar.projectKey>BentoBoxWorld_Likes</sonar.projectKey>
+        <sonar.organization>bentobox-world</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <profiles>
@@ -107,45 +88,52 @@
         </profile>
     </profiles>
 
-    <!-- Repositories contains links from were dependencies will be searched -->
-    <repositories>
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
-        </repository>
-        <repository>
-            <id>spigotmc-public</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-        </repository>
+    <distributionManagement>
         <repository>
             <id>bentoboxworld</id>
             <url>https://repo.codemc.org/repository/bentoboxworld/</url>
         </repository>
+    </distributionManagement>
+
+    <repositories>
+        <!-- BentoBox releases -->
+        <repository>
+            <id>bentoboxworld</id>
+            <url>https://repo.codemc.org/repository/bentoboxworld/</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+        <!-- BentoBox snapshots (Gradle publishes here, note .io vs .org) -->
+        <repository>
+            <id>bentoboxworld-snapshots</id>
+            <url>https://repo.codemc.io/repository/bentoboxworld/</url>
+            <releases><enabled>false</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+        <!-- Paper API -->
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+        <!-- General Maven public mirror (VaultAPI, PanelUtils) -->
         <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
-        </repository>
-        <repository>
-            <id>vault-repo</id>
-            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>false</enabled></snapshots>
         </repository>
     </repositories>
 
-    <!-- Your addon must contain Spigot and BentoBox APIs dependencies. -->
     <dependencies>
+        <!-- Paper API -->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>${spigot.version}</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>${paper.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>net.milkbowl.vault</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>${vault.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>world.bentobox</groupId>
             <artifactId>bentobox</artifactId>
@@ -181,10 +169,53 @@
             <version>22.0.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>${vault.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- MockBukkit -->
+        <dependency>
+            <groupId>org.mockbukkit.mockbukkit</groupId>
+            <artifactId>mockbukkit-v26.3</artifactId>
+            <version>${mock-bukkit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- JUnit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Mockito -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
-    <!-- Build contains information for maven. It allows to create correct 
-        jar file. -->
     <build>
         <finalName>${project.name}-${revision}${build.number}</finalName>
 
@@ -218,16 +249,40 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.14.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.0</version>
+                <version>3.5.4</version>
+                <configuration>
+                    <argLine>
+                        ${argLine}
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                        --add-opens java.base/java.math=ALL-UNNAMED
+                        --add-opens java.base/java.io=ALL-UNNAMED
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                        --add-opens java.base/java.util.stream=ALL-UNNAMED
+                        --add-opens java.base/java.text=ALL-UNNAMED
+                        --add-opens java.base/java.util.regex=ALL-UNNAMED
+                        --add-opens java.base/java.nio.channels.spi=ALL-UNNAMED
+                        --add-opens java.base/sun.nio.ch=ALL-UNNAMED
+                        --add-opens java.base/java.net=ALL-UNNAMED
+                        --add-opens java.base/java.util.concurrent=ALL-UNNAMED
+                        --add-opens java.base/sun.nio.fs=ALL-UNNAMED
+                        --add-opens java.base/sun.nio.cs=ALL-UNNAMED
+                        --add-opens java.base/java.nio.file=ALL-UNNAMED
+                        --add-opens java.base/java.nio.charset=ALL-UNNAMED
+                        --add-opens java.base/java.lang.reflect=ALL-UNNAMED
+                        --add-opens java.logging/java.util.logging=ALL-UNNAMED
+                        --add-opens java.base/java.lang.ref=ALL-UNNAMED
+                        --add-opens java.base/java.util.jar=ALL-UNNAMED
+                        --add-opens java.base/java.util.zip=ALL-UNNAMED
+                    </argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -237,7 +292,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.3.0</version>
                 <configuration>
                     <show>public</show>
                     <failOnError>false</failOnError>
@@ -247,6 +302,7 @@
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
+                        <phase>install</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
@@ -268,8 +324,13 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.6.2</version>
                 <configuration>
                     <minimizeJar>true</minimizeJar>
                     <artifactSet>
@@ -300,19 +361,18 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.2</version>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.1</version>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.10</version>
+                <version>0.8.15</version>
                 <configuration>
                     <append>true</append>
                     <excludes>
-                        <!-- This is required to prevent Jacoco from adding 
-                            synthetic fields to a JavaBean class (causes errors in testing) -->
-                        <exclude>**/*Names*</exclude>
+                        <!-- Prevents the Material is too large to mock error -->
+                        <exclude>org/bukkit/Material*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
