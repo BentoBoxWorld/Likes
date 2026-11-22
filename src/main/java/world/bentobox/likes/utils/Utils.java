@@ -7,17 +7,21 @@
 package world.bentobox.likes.utils;
 
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.eclipse.jdt.annotation.Nullable;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.hooks.LangUtilsHook;
+import world.bentobox.bentobox.managers.IslandsManager;
 
 
 public class Utils
@@ -91,6 +95,59 @@ public class Utils
     public static String getGameMode(GameModeAddon gameModeAddon)
     {
         return gameModeAddon.getDescription().getName();
+    }
+
+
+    /**
+     * Multi-island aware way to find the island of the given user. Players can have several islands in the same
+     * world, so the island where user currently stands is preferred if user is a member of it. Otherwise the
+     * primary island of the user is returned.
+     *
+     * @param islandsManager BentoBox islands manager.
+     * @param world GameMode world where island must be located.
+     * @param user User which island must be found.
+     * @return Island of the user or {@code null} if user does not have an island in the given world.
+     */
+    @Nullable
+    public static Island getIsland(IslandsManager islandsManager, World world, User user)
+    {
+        return Utils.getIsland(islandsManager,
+            world,
+            user.getUniqueId(),
+            user.isPlayer() ? user.getLocation() : null);
+    }
+
+
+    /**
+     * Multi-island aware way to find the island of the given player. Players can have several islands in the same
+     * world, so the island at the given location is preferred if player is a member of it. Otherwise the primary
+     * island of the player is returned.
+     *
+     * @param islandsManager BentoBox islands manager.
+     * @param world GameMode world where island must be located.
+     * @param playerUUID UUID of the player which island must be found.
+     * @param location Location that is checked first. Can be {@code null}.
+     * @return Island of the player or {@code null} if player does not have an island in the given world.
+     */
+    @Nullable
+    public static Island getIsland(IslandsManager islandsManager,
+        World world,
+        UUID playerUUID,
+        @Nullable Location location)
+    {
+        if (location != null)
+        {
+            Island current = islandsManager.getIslandAt(location).orElse(null);
+
+            if (current != null &&
+                world.equals(current.getWorld()) &&
+                current.getMemberSet().contains(playerUUID))
+            {
+                return current;
+            }
+        }
+
+        return islandsManager.getIsland(world, playerUUID);
     }
 
 

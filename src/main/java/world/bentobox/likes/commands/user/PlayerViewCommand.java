@@ -82,11 +82,10 @@ public class PlayerViewCommand extends CompositeCommand
             return false;
         }
 
-        Island island;
-
         if (args.isEmpty())
         {
-            island = this.getAddon().getIslands().getIsland(this.getWorld(), user);
+            // Multi-island: island where player stands, or their primary island.
+            this.island = Utils.getIsland(this.getAddon().getIslands(), this.getWorld(), user);
         }
         else
         {
@@ -99,10 +98,14 @@ public class PlayerViewCommand extends CompositeCommand
                 return false;
             }
 
-            island = this.getAddon().getIslands().getIsland(this.getWorld(), playerUUID);
+            // Multi-island: target player island where viewer stands, or target player primary island.
+            this.island = Utils.getIsland(this.getAddon().getIslands(),
+                this.getWorld(),
+                playerUUID,
+                user.getLocation());
         }
 
-        if (island == null)
+        if (this.island == null)
         {
             Utils.sendMessage(user, user.getTranslation(Constants.ERRORS + "not-on-island"));
             return false;
@@ -124,23 +127,11 @@ public class PlayerViewCommand extends CompositeCommand
     @Override
     public boolean execute(User user, String label, List<String> args)
     {
-        Island island;
-
-        if (args.isEmpty())
-        {
-            island = this.getAddon().getIslands().getIsland(this.getWorld(), user);
-        }
-        else
-        {
-            island = this.getAddon().getIslands().getIsland(this.getWorld(),
-                this.getAddon().getPlayers().getUUID(args.get(0)));
-        }
-
         LikesViewPanel.openPanel(this.getAddon(),
             user,
             this.getWorld(),
             this.getPermissionPrefix(),
-            island);
+            this.island);
 
         return true;
     }
@@ -168,4 +159,10 @@ public class PlayerViewCommand extends CompositeCommand
 
         return Optional.of(Util.tabLimit(new ArrayList<>(Util.getOnlinePlayerList(user)), lastArg));
     }
+
+
+    /**
+     * Island that was found in {@link #canExecute(User, String, List)} and will be displayed.
+     */
+    private Island island;
 }

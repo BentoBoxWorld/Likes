@@ -11,6 +11,7 @@ import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.likes.LikesAddon;
 import world.bentobox.likes.database.objects.LikesObject;
+import world.bentobox.likes.utils.Utils;
 import world.bentobox.likes.utils.collections.IndexedTreeSet;
 
 
@@ -28,7 +29,7 @@ public enum LikesAddonPlaceholderType
      */
     ISLAND_LIKES("island_likes_count", (addon, gameModeAddon, user) ->
     {
-        Island island = gameModeAddon.getIslands().getIsland(gameModeAddon.getOverWorld(), user);
+        Island island = Utils.getIsland(gameModeAddon.getIslands(), gameModeAddon.getOverWorld(), user);
         return island != null ?
             String.valueOf(LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island).getLikes()) : "";
     }),
@@ -38,7 +39,7 @@ public enum LikesAddonPlaceholderType
      */
     ISLAND_LIKES_PLACE("island_likes_place", (addon, gameModeAddon, user) ->
     {
-        Island island = gameModeAddon.getIslands().getIsland(gameModeAddon.getOverWorld(), user);
+        Island island = Utils.getIsland(gameModeAddon.getIslands(), gameModeAddon.getOverWorld(), user);
         return island != null ?
             String.valueOf(addon.getAddonManager().getIslandRankByLikes(
                 gameModeAddon.getOverWorld(),
@@ -50,7 +51,7 @@ public enum LikesAddonPlaceholderType
      */
     ISLAND_DISLIKES("island_dislikes_count", (addon, gameModeAddon, user) ->
     {
-        Island island = gameModeAddon.getIslands().getIsland(gameModeAddon.getOverWorld(), user);
+        Island island = Utils.getIsland(gameModeAddon.getIslands(), gameModeAddon.getOverWorld(), user);
         return island != null ?
             String.valueOf(LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island).getDislikes()) : "";
     }),
@@ -60,7 +61,7 @@ public enum LikesAddonPlaceholderType
      */
     ISLAND_DISLIKES_PLACE("island_dislikes_place", (addon, gameModeAddon, user) ->
     {
-        Island island = gameModeAddon.getIslands().getIsland(gameModeAddon.getOverWorld(), user);
+        Island island = Utils.getIsland(gameModeAddon.getIslands(), gameModeAddon.getOverWorld(), user);
         return island != null ?
             String.valueOf(addon.getAddonManager().getIslandRankByDislikes(
                 gameModeAddon.getOverWorld(),
@@ -72,7 +73,7 @@ public enum LikesAddonPlaceholderType
      */
     ISLAND_RANK("island_rank_count", (addon, gameModeAddon, user) ->
     {
-        Island island = gameModeAddon.getIslands().getIsland(gameModeAddon.getOverWorld(), user);
+        Island island = Utils.getIsland(gameModeAddon.getIslands(), gameModeAddon.getOverWorld(), user);
         return island != null ?
             String.valueOf(LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island).getRank()) : "";
     }),
@@ -82,7 +83,7 @@ public enum LikesAddonPlaceholderType
      */
     ISLAND_RANK_PLACE("island_rank_place", (addon, gameModeAddon, user) ->
     {
-        Island island = gameModeAddon.getIslands().getIsland(gameModeAddon.getOverWorld(), user);
+        Island island = Utils.getIsland(gameModeAddon.getIslands(), gameModeAddon.getOverWorld(), user);
         return island != null ?
             String.valueOf(addon.getAddonManager().getIslandRankByRank(
                 gameModeAddon.getOverWorld(),
@@ -94,7 +95,7 @@ public enum LikesAddonPlaceholderType
      */
     ISLAND_STARS("island_stars_value", (addon, gameModeAddon, user) ->
     {
-        Island island = gameModeAddon.getIslands().getIsland(gameModeAddon.getOverWorld(), user);
+        Island island = Utils.getIsland(gameModeAddon.getIslands(), gameModeAddon.getOverWorld(), user);
         return island != null ?
             String.valueOf(LikesAddonPlaceholderType.getObject(addon, gameModeAddon, island).getStarsValue()) : "";
     }),
@@ -104,7 +105,7 @@ public enum LikesAddonPlaceholderType
      */
     ISLAND_STARS_PLACE("island_stars_place", (addon, gameModeAddon, user) ->
     {
-        Island island = gameModeAddon.getIslands().getIsland(gameModeAddon.getOverWorld(), user);
+        Island island = Utils.getIsland(gameModeAddon.getIslands(), gameModeAddon.getOverWorld(), user);
         return island != null ?
             String.valueOf(addon.getAddonManager().getIslandRankByStars(
                 gameModeAddon.getOverWorld(),

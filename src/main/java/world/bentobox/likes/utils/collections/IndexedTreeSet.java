@@ -543,6 +543,12 @@ public class IndexedTreeSet<E> extends java.util.AbstractSet<E>
 
     public E exact(int index)
     {
+        if (index < 0 || index >= this.size())
+        {
+            // There is no element with such index.
+            return null;
+        }
+
         Map.Entry<E, ?> e = ((IndexedNavigableMap) m).exactEntry(index);
         return (e == null) ? null : e.getKey();
     }

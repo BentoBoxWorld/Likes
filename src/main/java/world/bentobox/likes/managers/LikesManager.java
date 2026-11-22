@@ -112,15 +112,30 @@ public class LikesManager
     {
         // Add object into Island to LikeObject cache.
         this.likesCache.put(likesObject.getUniqueId(), likesObject);
+        this.addToSorted(likesObject);
+    }
+
+
+    /**
+     * This method adds given likeObject to the sorted caches of its game mode.
+     *
+     * @param likesObject Object that must be added to sorted caches.
+     */
+    private void addToSorted(LikesObject likesObject)
+    {
+        if (likesObject.getGameMode() == null)
+        {
+            // Objects without game mode cannot be ranked.
+            return;
+        }
 
         switch (this.addon.getSettings().getMode())
         {
-            case LIKES -> {
+            case LIKES ->
                 // Add object into GameMode to sorted by likes cache.
                 this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
                         gameMode -> new IndexedTreeSet<>(LIKES_COMPARATOR)).
                     add(likesObject);
-            }
             case LIKES_DISLIKES -> {
                 // Add object into GameMode to sorted by likes cache.
                 this.sortedLikeCache.computeIfAbsent(likesObject.getGameMode(),
@@ -137,12 +152,55 @@ public class LikesManager
                         gameMode -> new IndexedTreeSet<>(RANK_COMPARATOR)).
                     add(likesObject);
             }
-            case STARS -> {
-                // Add object into GameMode to sorted by likes cache.
+            case STARS ->
+                // Add object into GameMode to sorted by stars cache.
                 this.sortedStarsCache.computeIfAbsent(likesObject.getGameMode(),
                         gameMode -> new IndexedTreeSet<>(STARS_COMPARATOR)).
                     add(likesObject);
+        }
+    }
+
+
+    /**
+     * This method removes given likeObject from the sorted caches of its game mode. The sorted caches are ordered by
+     * the object values, so this must be called BEFORE the values of the object are changed, and
+     * {@link #addToSorted(LikesObject)} must be called after the change.
+     *
+     * @param likesObject Object that must be removed from sorted caches.
+     */
+    private void removeFromSorted(LikesObject likesObject)
+    {
+        if (likesObject.getGameMode() == null)
+        {
+            return;
+        }
+
+        switch (this.addon.getSettings().getMode())
+        {
+            case LIKES -> this.removeFromSorted(this.sortedLikeCache, likesObject);
+            case LIKES_DISLIKES -> {
+                this.removeFromSorted(this.sortedLikeCache, likesObject);
+                this.removeFromSorted(this.sortedDislikeCache, likesObject);
+                this.removeFromSorted(this.sortedRankCache, likesObject);
             }
+            case STARS -> this.removeFromSorted(this.sortedStarsCache, likesObject);
+        }
+    }
+
+
+    /**
+     * This method removes given likeObject from the given sorted cache.
+     *
+     * @param cache Cache from which object must be removed.
+     * @param likesObject Object that must be removed.
+     */
+    private void removeFromSorted(Map<String, IndexedTreeSet<LikesObject>> cache, LikesObject likesObject)
+    {
+        IndexedTreeSet<LikesObject> sorted = cache.get(likesObject.getGameMode());
+
+        if (sorted != null)
+        {
+            sorted.remove(likesObject);
         }
     }
 
@@ -317,7 +375,10 @@ public class LikesManager
 
         if (!object.hasLiked(user.getUniqueId()))
         {
+            // Sorted caches are ordered by values: remove before the change and add after it.
+            this.removeFromSorted(object);
             object.addLike(user.getUniqueId());
+            this.addToSorted(object);
 
             // Log history
             if (this.addon.getSettings().isLogHistory())
@@ -372,7 +433,10 @@ public class LikesManager
 
         if (object.hasLiked(user.getUniqueId()))
         {
+            // Sorted caches are ordered by values: remove before the change and add after it.
+            this.removeFromSorted(object);
             object.removeLike(user.getUniqueId());
+            this.addToSorted(object);
 
             // Log history
             if (this.addon.getSettings().isLogHistory())
@@ -440,7 +504,10 @@ public class LikesManager
 
         if (!object.hasDisliked(user.getUniqueId()))
         {
+            // Sorted caches are ordered by values: remove before the change and add after it.
+            this.removeFromSorted(object);
             object.addDislike(user.getUniqueId());
+            this.addToSorted(object);
 
             // Log history
             if (this.addon.getSettings().isLogHistory())
@@ -495,7 +562,10 @@ public class LikesManager
 
         if (object.hasDisliked(user.getUniqueId()))
         {
+            // Sorted caches are ordered by values: remove before the change and add after it.
+            this.removeFromSorted(object);
             object.removeDislike(user.getUniqueId());
+            this.addToSorted(object);
 
             // Log history
             if (this.addon.getSettings().isLogHistory())
@@ -564,7 +634,10 @@ public class LikesManager
 
         if (!object.hasStarred(user.getUniqueId()))
         {
+            // Sorted caches are ordered by values: remove before the change and add after it.
+            this.removeFromSorted(object);
             object.addStars(user.getUniqueId(), value);
+            this.addToSorted(object);
 
             // Log history
             if (this.addon.getSettings().isLogHistory())
@@ -623,7 +696,10 @@ public class LikesManager
 
         if (object.hasStarred(user.getUniqueId()))
         {
+            // Sorted caches are ordered by values: remove before the change and add after it.
+            this.removeFromSorted(object);
             object.removeStars(user.getUniqueId());
+            this.addToSorted(object);
 
             // Log history
             if (this.addon.getSettings().isLogHistory())
@@ -703,11 +779,16 @@ public class LikesManager
         String gameMode = Utils.getGameMode(world);
         LikesObject object = this.getIslandLikes(islandId, gameMode);
 
+        // Sorted caches are ordered by values: remove before the change and add after it.
+        this.removeFromSorted(object);
+
         object.setLikes(0L);
         object.setDislikes(0L);
         object.setStars(0L);
 
         object.clearCollections();
+
+        this.addToSorted(object);
 
         if (this.addon.getSettings().isLogHistory())
         {
@@ -733,6 +814,8 @@ public class LikesManager
         if (object != null)
         {
             this.likesCache.remove(islandId);
+            // Remove from top lists too, otherwise deleted island leaves an empty spot in them.
+            this.removeFromSorted(object);
             this.likesDatabase.deleteObject(object);
         }
     }
