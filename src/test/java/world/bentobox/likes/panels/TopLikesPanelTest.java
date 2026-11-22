@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -228,6 +227,18 @@ class TopLikesPanelTest extends CommonTestSetup
         this.visitIsland(this.secondIsland);
 
         verify(this.user, never()).closeInventory();
+        verify(this.visitManager, never()).processTeleportation(any(), any(), any());
+    }
+
+
+    @Test
+    void testVisitUnownedIslandDoesNothing() throws Exception
+    {
+        when(this.secondIsland.getOwner()).thenReturn(null);
+
+        this.visitIsland(this.secondIsland);
+
+        verify(this.user, never()).performCommand(anyString());
         verify(this.visitManager, never()).processTeleportation(any(), any(), any());
     }
 

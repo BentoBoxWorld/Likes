@@ -296,6 +296,9 @@ public class TopLikesPanel extends CommonPanel
                             this.addon.getWarpHook().getWarpSignsManager().warpPlayer(this.world, this.user, island.getOwner());
                         }
                         case "VISIT" -> this.visitIsland(island);
+                        default -> {
+                            // Other actions do nothing.
+                        }
                     }
                 }
             }
@@ -350,7 +353,15 @@ public class TopLikesPanel extends CommonPanel
      */
     private void visitIsland(Island island)
     {
-        Island primaryIsland = this.addon.getIslands().getIsland(this.world, island.getOwner());
+        UUID ownerId = island.getOwner();
+
+        if (ownerId == null)
+        {
+            // Unowned islands cannot be visited.
+            return;
+        }
+
+        Island primaryIsland = this.addon.getIslands().getIsland(this.world, ownerId);
 
         if (primaryIsland != null && primaryIsland.getUniqueId().equals(island.getUniqueId()))
         {
@@ -366,7 +377,7 @@ public class TopLikesPanel extends CommonPanel
                     if (!mainCommand.isBlank())
                     {
                         this.user.closeInventory();
-                        this.user.performCommand(command.getTopLabel() + " " + mainCommand + " " + island.getOwner());
+                        this.user.performCommand(command.getTopLabel() + " " + mainCommand + " " + ownerId);
                     }
                 });
         }
@@ -496,8 +507,9 @@ public class TopLikesPanel extends CommonPanel
         ItemTemplateRecord template,
         Island island)
     {
-        User owner = island.getOwner() == null ? null : User.getInstance(island.getOwner());
-        
+        UUID ownerId = island.getOwner();
+        User owner = ownerId == null ? null : User.getInstance(ownerId);
+
         // Get permission or island icon
         String permissionIcon = Utils.getPermissionValue(owner, this.iconPermission, null);
 

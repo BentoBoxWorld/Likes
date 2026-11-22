@@ -176,7 +176,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testLoadFromDatabase() throws Exception
+    void testLoadFromDatabase()
     {
         this.stored.add(storedObject("a", GAME_MODE, 3, 0));
         this.stored.add(storedObject("b", GAME_MODE, 5, 1));
@@ -196,7 +196,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testReloadClearsCache() throws Exception
+    void testReloadClearsCache()
     {
         this.stored.add(storedObject("a", GAME_MODE, 3, 0));
         this.createManager(LikeMode.LIKES);
@@ -259,7 +259,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testAddLike() throws Exception
+    void testAddLike()
     {
         this.createManager(LikeMode.LIKES);
         User user = mockUser();
@@ -276,7 +276,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testAddLikeTwiceCountsOnce() throws Exception
+    void testAddLikeTwiceCountsOnce()
     {
         this.createManager(LikeMode.LIKES);
         User user = mockUser();
@@ -290,7 +290,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testRemoveLike() throws Exception
+    void testRemoveLike()
     {
         this.createManager(LikeMode.LIKES);
         User user = mockUser();
@@ -305,7 +305,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testRemoveLikeNotLiked() throws Exception
+    void testRemoveLikeNotLiked()
     {
         this.createManager(LikeMode.LIKES);
         User user = mockUser();
@@ -318,7 +318,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testAddLikeLogsHistory() throws Exception
+    void testAddLikeLogsHistory()
     {
         this.settings.setLogHistory(true);
         this.createManager(LikeMode.LIKES);
@@ -334,7 +334,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testAddLikeNoHistoryByDefault() throws Exception
+    void testAddLikeNoHistoryByDefault()
     {
         this.createManager(LikeMode.LIKES);
 
@@ -345,7 +345,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testAddLikeSpawnIslandUsesSpawnName() throws Exception
+    void testAddLikeSpawnIslandUsesSpawnName()
     {
         this.createManager(LikeMode.LIKES);
         when(this.island.isSpawn()).thenReturn(true);
@@ -358,7 +358,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testAddLikeNamedIslandDoesNotLookupOwner() throws Exception
+    void testAddLikeNamedIslandDoesNotLookupOwner()
     {
         this.createManager(LikeMode.LIKES);
         when(this.island.getName()).thenReturn("My Island");
@@ -370,7 +370,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testAddLikeInformsOnlyOnlineMembers() throws Exception
+    void testAddLikeInformsOnlyOnlineMembers()
     {
         this.settings.setInformPlayers(true);
         this.createManager(LikeMode.LIKES);
@@ -390,7 +390,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testAddDislike() throws Exception
+    void testAddDislike()
     {
         this.createManager(LikeMode.LIKES_DISLIKES);
         User user = mockUser();
@@ -405,7 +405,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testDislikeReplacesLike() throws Exception
+    void testDislikeReplacesLike()
     {
         this.createManager(LikeMode.LIKES_DISLIKES);
         User user = mockUser();
@@ -421,7 +421,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testRemoveDislike() throws Exception
+    void testRemoveDislike()
     {
         this.createManager(LikeMode.LIKES_DISLIKES);
         User user = mockUser();
@@ -443,7 +443,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testAddStars() throws Exception
+    void testAddStars()
     {
         this.createManager(LikeMode.STARS);
         User user = mockUser();
@@ -460,7 +460,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testRemoveStars() throws Exception
+    void testRemoveStars()
     {
         this.createManager(LikeMode.STARS);
         User user = mockUser();
@@ -483,7 +483,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testIslandsOfSameOwnerAreTrackedSeparately() throws Exception
+    void testIslandsOfSameOwnerAreTrackedSeparately()
     {
         this.createManager(LikeMode.LIKES);
         User user = mockUser();
@@ -503,7 +503,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testIslandsOfSameOwnerAreRankedSeparately() throws Exception
+    void testIslandsOfSameOwnerAreRankedSeparately()
     {
         this.createManager(LikeMode.LIKES);
 
@@ -522,7 +522,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testRemovingOneIslandKeepsTheOther() throws Exception
+    void testRemovingOneIslandKeepsTheOther()
     {
         this.createManager(LikeMode.LIKES);
         this.manager.addLike(mockUser(), this.island, this.world);
@@ -544,7 +544,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testRankingFollowsChanges() throws Exception
+    void testRankingFollowsChanges()
     {
         this.createManager(LikeMode.LIKES);
         User first = mockUser();
@@ -568,7 +568,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testLikesDislikesRanking() throws Exception
+    void testLikesDislikesRanking()
     {
         this.stored.add(storedObject("liked", GAME_MODE, 5, 1));
         this.stored.add(storedObject("disliked", GAME_MODE, 1, 6));
@@ -593,7 +593,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testStarsRanking() throws Exception
+    void testStarsRanking()
     {
         this.createManager(LikeMode.STARS);
 
@@ -613,7 +613,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testTopIsLimitedToTen() throws Exception
+    void testTopIsLimitedToTen()
     {
         for (int i = 0; i < 15; i++)
         {
@@ -630,7 +630,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testRankOfUnknownObject() throws Exception
+    void testRankOfUnknownObject()
     {
         this.createManager(LikeMode.LIKES);
 
@@ -644,7 +644,7 @@ class LikesManagerTest extends CommonTestSetup
 
 
     @Test
-    void testResetLikes() throws Exception
+    void testResetLikes()
     {
         this.settings.setLogHistory(true);
         this.createManager(LikeMode.LIKES_DISLIKES);
