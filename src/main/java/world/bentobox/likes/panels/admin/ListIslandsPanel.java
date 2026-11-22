@@ -90,7 +90,8 @@ public class ListIslandsPanel extends CommonPagedPanel<Island>
         switch (this.activeFilter)
         {
             case IS_ONLINE -> this.filterElements = Bukkit.getOnlinePlayers().stream().
-                map(player -> this.addon.getIslands().getIsland(this.world, player.getUniqueId())).
+                // Players can have multiple islands in the same world.
+                flatMap(player -> this.addon.getIslands().getIslands(this.world, player.getUniqueId()).stream()).
                 filter(Objects::nonNull).
                 distinct().
                 collect(Collectors.toList());

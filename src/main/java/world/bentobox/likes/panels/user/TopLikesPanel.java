@@ -6,6 +6,7 @@
 package world.bentobox.likes.panels.user;
 
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.event.inventory.ClickType;
@@ -268,14 +269,12 @@ public class TopLikesPanel extends CommonPanel
             switch (action.actionType().toUpperCase())
             {
                 case "WARP" -> {
-                    return island.getOwner() == null ||
-                        this.addon.getWarpHook() == null ||
-                        !this.addon.getWarpHook().getWarpSignsManager().hasWarp(this.world, island.getOwner());
+                    return !this.hasWarp(island);
                 }
                 case "VISIT" -> {
                     return island.getOwner() == null ||
                         this.addon.getVisitHook() == null ||
-                        !this.addon.getVisitHook().getAddonManager().preprocessTeleportation(this.user, island);
+                        !this.addon.getVisitHook().getAddonManager().preprocessTeleportation(this.user, island, true);
                 }
                 default -> {
                     return false;
@@ -296,24 +295,7 @@ public class TopLikesPanel extends CommonPanel
                             this.user.closeInventory();
                             this.addon.getWarpHook().getWarpSignsManager().warpPlayer(this.world, this.user, island.getOwner());
                         }
-                        case "VISIT" -> {
-                            // The command call implementation solves necessity to check for all visits options,
-                            // like cool down, confirmation and preprocess in single go. Would it be better to write
-                            // all logic here?
-
-                            this.addon.getPlugin().getIWM().getAddon(this.world).
-                                flatMap(GameModeAddon::getPlayerCommand).ifPresent(command ->
-                                {
-                                    String mainCommand =
-                                        this.addon.getVisitHook().getSettings().getPlayerMainCommand();
-
-                                    if (!mainCommand.isBlank())
-                                    {
-                                        this.user.closeInventory();
-                                        this.user.performCommand(command.getTopLabel() + " " + mainCommand + " " + island.getOwner());
-                                    }
-                                });
-                        }
+                        case "VISIT" -> this.visitIsland(island);
                     }
                 }
             }
@@ -337,6 +319,64 @@ public class TopLikesPanel extends CommonPanel
         }
 
         return builder.build();
+    }
+
+
+    /**
+     * This method checks if the given island has a warp sign. Warps are stored per player, but players can have
+     * multiple islands, so the warp belongs only to the island where the sign is located.
+     *
+     * @param island Island that must be checked.
+     * @return {@code true} if island owner has a warp sign on the given island, {@code false} otherwise.
+     */
+    private boolean hasWarp(Island island)
+    {
+        if (island.getOwner() == null || this.addon.getWarpHook() == null)
+        {
+            return false;
+        }
+
+        Location warpLocation =
+            this.addon.getWarpHook().getWarpSignsManager().getWarpLocation(this.world, island.getOwner());
+
+        return warpLocation != null && island.inIslandSpace(warpLocation);
+    }
+
+
+    /**
+     * This method sends user to the given island using the Visit addon.
+     *
+     * @param island Island that user wants to visit.
+     */
+    private void visitIsland(Island island)
+    {
+        Island primaryIsland = this.addon.getIslands().getIsland(this.world, island.getOwner());
+
+        if (primaryIsland != null && primaryIsland.getUniqueId().equals(island.getUniqueId()))
+        {
+            // The visit command always leads to the primary island of the owner. So it can be used
+            // for it, and it solves necessity to check for all visits options, like cool down and
+            // confirmation in single go.
+            this.addon.getPlugin().getIWM().getAddon(this.world).
+                flatMap(GameModeAddon::getPlayerCommand).ifPresent(command ->
+                {
+                    String mainCommand =
+                        this.addon.getVisitHook().getSettings().getPlayerMainCommand();
+
+                    if (!mainCommand.isBlank())
+                    {
+                        this.user.closeInventory();
+                        this.user.performCommand(command.getTopLabel() + " " + mainCommand + " " + island.getOwner());
+                    }
+                });
+        }
+        else if (this.addon.getVisitHook().getAddonManager().preprocessTeleportation(this.user, island))
+        {
+            // The visit command cannot target other islands of the same owner. Teleport to the
+            // exact island directly.
+            this.user.closeInventory();
+            this.addon.getVisitHook().getAddonManager().processTeleportation(this.user, island, this.world);
+        }
     }
 
 
@@ -686,7 +726,8 @@ public class TopLikesPanel extends CommonPanel
      */
     private PanelItem createViewerButton(ItemTemplateRecord template, TemplatedPanel.ItemSlot itemSlot)
     {
-        Island island = this.addon.getIslands().getIsland(this.world, this.user);
+        // Multi-island: island where player stands, or their primary island.
+        Island island = Utils.getIsland(this.addon.getIslands(), this.world, this.user);
 
         if (island == null || island.getOwner() == null)
         {
