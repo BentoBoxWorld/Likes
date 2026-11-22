@@ -9,9 +9,9 @@ import org.mockito.Mockito;
 import world.bentobox.bentobox.api.addons.Addon;
 
 /**
- * Tests for {@link LikesPladdon}.
+ * Tests for {@link LikesPladdon}. Creating an addon needs a server, so the common setup is required.
  */
-class LikesPladdonTest
+class LikesPladdonTest extends CommonTestSetup
 {
     @Test
     void testGetAddon()
