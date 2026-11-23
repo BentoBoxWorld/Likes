@@ -11,6 +11,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.eclipse.jdt.annotation.NonNull;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import lv.id.bonne.panelutils.PanelUtils;
@@ -45,7 +47,8 @@ public class AdminViewPanel extends CommonPanel
         this.island = island;
 
         // Create new object if it does not exist as admin is editing it.
-        this.likesObject = this.addon.getAddonManager().getIslandLikes(island.getUniqueId(), this.world);
+        this.likesObject = Objects.requireNonNull(this.addon, "addon").getAddonManager().
+            getIslandLikes(island.getUniqueId(), this.world);
 
         switch (this.getMode())
         {
@@ -93,17 +96,17 @@ public class AdminViewPanel extends CommonPanel
         switch (this.addon.getSettings().getMode())
         {
             case LIKES -> {
-                panelBuilder.name(this.user.getTranslation(Constants.TITLES + "edit-view",
+                panelBuilder.name(this.user.getTranslation(Constants.TITLES + EDIT_VIEW_KEY,
                     Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes")));
                 this.buildLikesPanel(panelBuilder);
             }
             case LIKES_DISLIKES -> {
-                panelBuilder.name(this.user.getTranslation(Constants.TITLES + "edit-view",
+                panelBuilder.name(this.user.getTranslation(Constants.TITLES + EDIT_VIEW_KEY,
                     Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes")));
                 this.buildLikesDislikesPanel(panelBuilder);
             }
             case STARS -> {
-                panelBuilder.name(this.user.getTranslation(Constants.TITLES + "edit-view",
+                panelBuilder.name(this.user.getTranslation(Constants.TITLES + EDIT_VIEW_KEY,
                     Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "stars")));
                 this.buildStarsPanel(panelBuilder);
             }
@@ -201,115 +204,85 @@ public class AdminViewPanel extends CommonPanel
      */
     private PanelItem createButton(Icon button)
     {
-        ItemStack icon;
         final String reference = Constants.BUTTONS + button.name().toLowerCase();
-        String name = this.user.getTranslation(reference + ".name");
+        final boolean noVotes = this.likesObject.getLikes() == 0 && this.likesObject.getDislikes() == 0;
 
-        List<String> description = new ArrayList<>(4);
-        description.add(this.user.getTranslationOrNothing(reference + ".description"));
+        Material icon;
+        String value;
 
         switch (button)
         {
-            case LIKE:
-            {
-                icon = new ItemStack(Material.GOLD_INGOT);
-                description.add(this.user.getTranslation(reference + ".likes",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getLikes())));
-                break;
+            case LIKE -> {
+                icon = Material.GOLD_INGOT;
+                value = this.user.getTranslation(reference + ".likes",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getLikes()));
             }
-            case LIKE_RANK:
-            {
-                icon = new ItemStack(Material.GOLD_BLOCK);
-
-                if (this.likesObject.getLikes() == 0 && this.likesObject.getDislikes() == 0)
-                {
-                    description.add(this.user.getTranslation(reference + ".not-ranked"));
-                }
-                else
-                {
-                    description.add(this.user.getTranslation(reference + ".rank",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.likeRank)));
-                }
-
-                break;
+            case LIKE_RANK -> {
+                icon = Material.GOLD_BLOCK;
+                value = this.getRankText(reference, noVotes, this.likeRank);
             }
-            case DISLIKE:
-            {
-                icon = new ItemStack(Material.IRON_INGOT);
-                description.add(this.user.getTranslation(reference + ".dislikes",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getDislikes())));
-                break;
+            case DISLIKE -> {
+                icon = Material.IRON_INGOT;
+                value = this.user.getTranslation(reference + ".dislikes",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getDislikes()));
             }
-            case DISLIKE_RANK:
-            {
-                icon = new ItemStack(Material.IRON_BLOCK);
-
-                if (this.likesObject.getLikes() == 0 && this.likesObject.getDislikes() == 0)
-                {
-                    description.add(this.user.getTranslation(reference + ".not-ranked"));
-                }
-                else
-                {
-                    description.add(this.user.getTranslation(reference + ".rank",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.dislikeRank)));
-                }
-                break;
+            case DISLIKE_RANK -> {
+                icon = Material.IRON_BLOCK;
+                value = this.getRankText(reference, noVotes, this.dislikeRank);
             }
-            case OVERALL:
-            {
-                icon = new ItemStack(Material.DIAMOND);
-                description.add(this.user.getTranslation(reference + ".value",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getRank())));
-                break;
+            case OVERALL -> {
+                icon = Material.DIAMOND;
+                value = this.user.getTranslation(reference + ".value",
+                    Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getRank()));
             }
-            case OVERALL_RANK:
-            {
-                icon = new ItemStack(Material.DIAMOND_BLOCK);
-
-                if (this.likesObject.getLikes() == 0 && this.likesObject.getDislikes() == 0)
-                {
-                    description.add(this.user.getTranslation(reference + ".not-ranked"));
-                }
-                else
-                {
-                    description.add(this.user.getTranslation(reference + ".rank",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.overallRank)));
-                }
-                break;
+            case OVERALL_RANK -> {
+                icon = Material.DIAMOND_BLOCK;
+                value = this.getRankText(reference, noVotes, this.overallRank);
             }
-            case STARS:
-            {
-                icon = new ItemStack(Material.NETHER_STAR);
-                description.add(this.user.getTranslation(reference + ".stars",
-                    Constants.PARAMETER_NUMBER, this.hundredsFormat.format(this.likesObject.getStarsValue())));
-                break;
+            case STARS -> {
+                icon = Material.NETHER_STAR;
+                value = this.user.getTranslation(reference + ".stars",
+                    Constants.PARAMETER_NUMBER, this.hundredsFormat.format(this.likesObject.getStarsValue()));
             }
-            case STARS_RANK:
-            {
-                icon = new ItemStack(Material.BEACON);
-
-                if (this.likesObject.getStars() == 0)
-                {
-                    description.add(this.user.getTranslation(reference + ".not-ranked"));
-                }
-                else
-                {
-                    description.add(this.user.getTranslation(reference + ".rank",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.likeRank)));
-                }
-
-                break;
+            case STARS_RANK -> {
+                icon = Material.BEACON;
+                value = this.getRankText(reference, this.likesObject.getStars() == 0, this.likeRank);
             }
-            default:
+            default -> {
                 return null;
+            }
         }
 
+        List<String> description = new ArrayList<>(4);
+        description.add(this.user.getTranslationOrNothing(reference + DESCRIPTION_KEY_SUFFIX));
+        description.add(value);
+
         return new PanelItemBuilder().
-            icon(icon).
-            name(name).
+            icon(new ItemStack(icon)).
+            name(this.user.getTranslation(reference + NAME_KEY_SUFFIX)).
             description(description).
             glow(false).
             build();
+    }
+
+
+    /**
+     * This method returns the text with island place in the top.
+     *
+     * @param reference Translation reference of the button.
+     * @param notRanked Indicates that island is not ranked.
+     * @param rank Place of the island.
+     * @return Text with the place, or text that island is not ranked.
+     */
+    private String getRankText(String reference, boolean notRanked, long rank)
+    {
+        if (notRanked)
+        {
+            return this.user.getTranslation(reference + NOT_RANKED_KEY_SUFFIX);
+        }
+
+        return this.user.getTranslation(reference + RANK_KEY_SUFFIX,
+            Constants.PARAMETER_NUMBER, String.valueOf(rank));
     }
 
 
@@ -326,7 +299,7 @@ public class AdminViewPanel extends CommonPanel
         PanelItem.ClickHandler clickHandler;
 
         final String reference = Constants.BUTTONS + button.name().toLowerCase();
-        String name = this.user.getTranslation(reference + ".name");
+        String name = this.user.getTranslation(reference + NAME_KEY_SUFFIX);
 
         List<String> description = new ArrayList<>(3);
         int count;
@@ -338,7 +311,7 @@ public class AdminViewPanel extends CommonPanel
                 count = byLike ? this.likeOffset + 2 : this.dislikeOffset + 2;
 
                 icon = new ItemStack(Material.TIPPED_ARROW);
-                description.add(this.user.getTranslationOrNothing(reference + ".description",
+                description.add(this.user.getTranslationOrNothing(reference + DESCRIPTION_KEY_SUFFIX,
                     Constants.PARAMETER_NUMBER, String.valueOf(count)));
                 description.add("");
                 description.add(this.user.getTranslation(Constants.TIPS + "click-to-next"));
@@ -364,7 +337,7 @@ public class AdminViewPanel extends CommonPanel
                 count = byLike ? this.likeOffset : this.dislikeOffset;
 
                 icon = new ItemStack(Material.TIPPED_ARROW);
-                description.add(this.user.getTranslationOrNothing(reference + ".description",
+                description.add(this.user.getTranslationOrNothing(reference + DESCRIPTION_KEY_SUFFIX,
                     Constants.PARAMETER_NUMBER, String.valueOf(count)));
                 description.add("");
                 description.add(this.user.getTranslation(Constants.TIPS + "click-to-previous"));
@@ -408,234 +381,163 @@ public class AdminViewPanel extends CommonPanel
      */
     private PanelItem createButton(Button button)
     {
-        ItemStack icon;
-        PanelItem.ClickHandler clickHandler;
-
         final String reference = Constants.BUTTONS + button.name().toLowerCase();
-        String name = this.user.getTranslation(reference + ".name");
 
-        List<String> description = new ArrayList<>(4);
-        description.add(this.user.getTranslationOrNothing(reference + ".description"));
-
-        switch (button)
+        return switch (button)
         {
-            case ADD_LIKE_USER:
-            {
-                description.add("");
-                description.add(this.user.getTranslation(Constants.TIPS + "click-to-add"));
-
-                icon = new ItemStack(Material.GOLD_NUGGET);
-
-                clickHandler = (panel, user, clickType, slot) ->
+            case ADD_LIKE_USER -> this.createAddButton(reference,
+                Material.GOLD_NUGGET,
+                this.likesObject::getLikedBy,
+                player ->
                 {
-                    PlayerSelector.open(user,
-                        this.getUserList(),
-                        this.convertToUserList(this.likesObject.getLikedBy()),
-                        (selected, player) ->
-                        {
-                            if (selected)
-                            {
-                                if (this.likesObject.hasDisliked(player.getUniqueId()))
-                                {
-                                    this.dislikedByUsers.remove(player.getName());
-                                }
-
-                                this.likesObject.addLike(player.getUniqueId());
-                                this.likedByUsers.add(player.getName());
-                            }
-
-                            this.build();
-                        });
-                    return true;
-                };
-
-                break;
-            }
-            case REMOVE_LIKE_USER:
-            {
-                final boolean canRemove = !this.likesObject.getLikedBy().isEmpty();
-
-                // Add tooltip
-                if (canRemove)
-                {
-                    description.add("");
-                    description.add(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
-
-                    icon = new ItemStack(Material.LAVA_BUCKET);
-                }
-                else
-                {
-                    icon = new ItemStack(Material.BARRIER);
-                }
-
-                clickHandler = (panel, user, clickType, slot) ->
-                {
-                    // Open GUI only if someone has liked this island
-                    if (canRemove)
+                    if (this.likesObject.hasDisliked(player.getUniqueId()))
                     {
-                        PlayerSelector.open(user,
-                            this.convertToUserList(this.likesObject.getLikedBy()),
-                            (selected, player) ->
-                            {
-                                if (selected)
-                                {
-                                    this.likesObject.removeLike(player.getUniqueId());
-                                    this.likedByUsers.remove(player.getName());
-                                }
-
-                                this.build();
-                            });
-                    }
-                    return true;
-                };
-
-                break;
-            }
-            case ADD_DISLIKE_USER:
-            {
-                description.add("");
-                description.add(this.user.getTranslation(Constants.TIPS + "click-to-add"));
-
-                icon = new ItemStack(Material.IRON_NUGGET);
-
-                clickHandler = (panel, user, clickType, slot) ->
-                {
-                    PlayerSelector.open(user,
-                        this.getUserList(),
-                        this.convertToUserList(this.likesObject.getDislikedBy()),
-                        (selected, player) ->
-                        {
-                            if (selected)
-                            {
-                                if (this.likesObject.hasLiked(player.getUniqueId()))
-                                {
-                                    this.likedByUsers.remove(player.getName());
-                                }
-
-                                this.likesObject.addDislike(player.getUniqueId());
-                                this.dislikedByUsers.add(player.getName());
-                            }
-
-                            this.build();
-                        });
-                    return true;
-                };
-
-                break;
-            }
-            case REMOVE_DISLIKE_USER:
-            {
-                final boolean canRemove = !this.likesObject.getDislikedBy().isEmpty();
-
-                // Add tooltip
-                if (canRemove)
-                {
-                    description.add("");
-                    description.add(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
-
-                    icon = new ItemStack(Material.LAVA_BUCKET);
-                }
-                else
-                {
-                    icon = new ItemStack(Material.BARRIER);
-                }
-
-                clickHandler = (panel, user, clickType, slot) ->
-                {
-                    if (canRemove)
-                    {
-                        PlayerSelector.open(user,
-                            this.convertToUserList(this.likesObject.getDislikedBy()),
-                            (selected, player) ->
-                            {
-                                if (selected)
-                                {
-                                    this.likesObject.removeDislike(player.getUniqueId());
-                                    this.dislikedByUsers.remove(player.getName());
-                                }
-
-                                this.build();
-                            });
+                        this.dislikedByUsers.remove(player.getName());
                     }
 
-                    return true;
-                };
-
-                break;
-            }
-            case ADD_STAR_USER:
-            {
-                description.add("");
-                description.add(this.user.getTranslation(Constants.TIPS + "click-to-add"));
-
-                icon = new ItemStack(Material.NETHER_STAR);
-
-                clickHandler = (panel, user, clickType, slot) ->
+                    this.likesObject.addLike(player.getUniqueId());
+                    this.likedByUsers.add(player.getName());
+                });
+            case REMOVE_LIKE_USER -> this.createRemoveButton(reference,
+                this.likesObject::getLikedBy,
+                player ->
                 {
-                    PlayerSelector.open(user,
-                        this.getUserList(),
-                        this.convertToUserList(this.likesObject.getStarredBy().keySet()),
-                        (selected, player) ->
-                        {
-                            if (selected)
-                            {
-                                LikesManagePanel.openPanel(this, player, this.island);
-                                this.likedByUsers.add(player.getName());
-                            }
-
-                            this.build();
-                        });
-                    return true;
-                };
-
-                break;
-            }
-            case REMOVE_STAR_USER:
-            {
-                final boolean canRemove = !this.likesObject.getStarredBy().isEmpty();
-
-                // Add tooltip
-                if (canRemove)
+                    this.likesObject.removeLike(player.getUniqueId());
+                    this.likedByUsers.remove(player.getName());
+                });
+            case ADD_DISLIKE_USER -> this.createAddButton(reference,
+                Material.IRON_NUGGET,
+                this.likesObject::getDislikedBy,
+                player ->
                 {
-                    description.add("");
-                    description.add(this.user.getTranslation(Constants.TIPS + "click-to-remove"));
-
-                    icon = new ItemStack(Material.LAVA_BUCKET);
-                }
-                else
-                {
-                    icon = new ItemStack(Material.BARRIER);
-                }
-
-                clickHandler = (panel, user, clickType, slot) ->
-                {
-                    if (canRemove)
+                    if (this.likesObject.hasLiked(player.getUniqueId()))
                     {
-                        PlayerSelector.open(user,
-                            this.convertToUserList(this.likesObject.getStarredBy().keySet()),
-                            (selected, player) ->
-                            {
-                                if (selected)
-                                {
-                                    this.likesObject.removeStars(player.getUniqueId());
-                                    this.likedByUsers.remove(player.getName());
-                                }
-
-                                this.build();
-                            });
+                        this.likedByUsers.remove(player.getName());
                     }
-                    return true;
-                };
 
-                break;
-            }
-            default:
-                return null;
-        }
+                    this.likesObject.addDislike(player.getUniqueId());
+                    this.dislikedByUsers.add(player.getName());
+                });
+            case REMOVE_DISLIKE_USER -> this.createRemoveButton(reference,
+                this.likesObject::getDislikedBy,
+                player ->
+                {
+                    this.likesObject.removeDislike(player.getUniqueId());
+                    this.dislikedByUsers.remove(player.getName());
+                });
+            case ADD_STAR_USER -> this.createAddButton(reference,
+                Material.NETHER_STAR,
+                () -> this.likesObject.getStarredBy().keySet(),
+                player ->
+                {
+                    LikesManagePanel.openPanel(this, player, this.island);
+                    this.likedByUsers.add(player.getName());
+                });
+            case REMOVE_STAR_USER -> this.createRemoveButton(reference,
+                () -> this.likesObject.getStarredBy().keySet(),
+                player ->
+                {
+                    this.likesObject.removeStars(player.getUniqueId());
+                    this.likedByUsers.remove(player.getName());
+                });
+        };
+    }
+
+
+    /**
+     * This method creates button that opens player selector to add a player to the given set.
+     *
+     * @param reference Translation reference of the button.
+     * @param material Icon of the button.
+     * @param current Supplier of players that are already added.
+     * @param onAdd Action that is performed with the selected player.
+     * @return PanelItem object that represents add button.
+     */
+    private PanelItem createAddButton(String reference,
+        Material material,
+        Supplier<Set<UUID>> current,
+        Consumer<User> onAdd)
+    {
+        List<String> description = new ArrayList<>(4);
+        description.add(this.user.getTranslationOrNothing(reference + DESCRIPTION_KEY_SUFFIX));
+        description.add("");
+        description.add(this.user.getTranslation(Constants.TIPS + CLICK_TO_ADD_TIP));
+
+        PanelItem.ClickHandler clickHandler = (panel, clicker, clickType, slot) ->
+        {
+            PlayerSelector.open(clicker,
+                this.getUserList(),
+                this.convertToUserList(current.get()),
+                (selected, player) ->
+                {
+                    if (Boolean.TRUE.equals(selected))
+                    {
+                        onAdd.accept(player);
+                    }
+
+                    this.build();
+                });
+            return true;
+        };
 
         return new PanelItemBuilder().
-            icon(icon).
-            name(name).
+            icon(new ItemStack(material)).
+            name(this.user.getTranslation(reference + NAME_KEY_SUFFIX)).
+            description(description).
+            glow(false).
+            clickHandler(clickHandler).
+            build();
+    }
+
+
+    /**
+     * This method creates button that opens player selector to remove a player from the given set.
+     *
+     * @param reference Translation reference of the button.
+     * @param current Supplier of players that can be removed.
+     * @param onRemove Action that is performed with the selected player.
+     * @return PanelItem object that represents remove button.
+     */
+    private PanelItem createRemoveButton(String reference,
+        Supplier<Set<UUID>> current,
+        Consumer<User> onRemove)
+    {
+        final boolean canRemove = !current.get().isEmpty();
+
+        List<String> description = new ArrayList<>(4);
+        description.add(this.user.getTranslationOrNothing(reference + DESCRIPTION_KEY_SUFFIX));
+
+        // Add tooltip
+        if (canRemove)
+        {
+            description.add("");
+            description.add(this.user.getTranslation(Constants.TIPS + CLICK_TO_REMOVE_TIP));
+        }
+
+        PanelItem.ClickHandler clickHandler = (panel, clicker, clickType, slot) ->
+        {
+            // Open GUI only if there is someone to remove.
+            if (canRemove)
+            {
+                PlayerSelector.open(clicker,
+                    this.convertToUserList(current.get()),
+                    (selected, player) ->
+                    {
+                        if (Boolean.TRUE.equals(selected))
+                        {
+                            onRemove.accept(player);
+                        }
+
+                        this.build();
+                    });
+            }
+
+            return true;
+        };
+
+        return new PanelItemBuilder().
+            icon(new ItemStack(canRemove ? Material.LAVA_BUCKET : Material.BARRIER)).
+            name(this.user.getTranslation(reference + NAME_KEY_SUFFIX)).
             description(description).
             glow(false).
             clickHandler(clickHandler).
@@ -798,6 +700,44 @@ public class AdminViewPanel extends CommonPanel
 
 
     // ---------------------------------------------------------------------
+    // Section: Constants
+    // ---------------------------------------------------------------------
+
+    /**
+     * String constant for "edit-view" title key.
+     */
+    private static final String EDIT_VIEW_KEY = "edit-view";
+
+    /**
+     * String constant for ".name" button key suffix.
+     */
+    private static final String NAME_KEY_SUFFIX = ".name";
+
+    /**
+     * String constant for ".description" button key suffix.
+     */
+    private static final String DESCRIPTION_KEY_SUFFIX = ".description";
+
+    /**
+     * String constant for ".not-ranked" button key suffix.
+     */
+    private static final String NOT_RANKED_KEY_SUFFIX = ".not-ranked";
+
+    /**
+     * String constant for ".rank" button key suffix.
+     */
+    private static final String RANK_KEY_SUFFIX = ".rank";
+
+    /**
+     * String constant for "click-to-add" tip key.
+     */
+    private static final String CLICK_TO_ADD_TIP = "click-to-add";
+
+    /**
+     * String constant for "click-to-remove" tip key.
+     */
+    private static final String CLICK_TO_REMOVE_TIP = "click-to-remove";
+
     // Section: Enums
     // ---------------------------------------------------------------------
 

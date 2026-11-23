@@ -13,6 +13,14 @@ package world.bentobox.likes.utils;
 public class Constants
 {
     /**
+     * Utility class. Not for instantiation.
+     */
+    private Constants()
+    {
+    }
+
+
+    /**
      * Reference string to ADDON_NAME in translations.
      */
     public static final String ADDON_NAME = "likes.";

@@ -91,7 +91,8 @@ class LikesAddonTest extends CommonTestSetup
         when(handler.saveObject(any())).thenReturn(CompletableFuture.completedFuture(true));
 
         // Managers
-        when(this.plugin.getCommandsManager()).thenReturn(mock(CommandsManager.class));
+        CommandsManager commandsManager = mock(CommandsManager.class);
+        when(this.plugin.getCommandsManager()).thenReturn(commandsManager);
         when(this.plugin.getAddonsManager()).thenReturn(this.am);
         when(this.plugin.getFlagsManager()).thenReturn(this.fm);
         when(this.fm.getFlags()).thenReturn(Collections.emptyList());

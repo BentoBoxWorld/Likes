@@ -45,11 +45,11 @@ public class ListIslandsPanel extends CommonPagedPanel<Island>
 
         this.activeFilter = Filter.IS_ONLINE;
 
-        this.filterElements = this.addon.getIslands().getIslands(this.world).stream().
+        this.filterElements = Objects.requireNonNull(this.addon, "addon").getIslands().getIslands(this.world).stream().
             filter(island -> island.isOwned() || island.isSpawn()).
             sorted(ISLAND_COMPARATOR).
             distinct().
-            collect(Collectors.toList());
+            collect(Collectors.toCollection(ArrayList::new));
 
         this.updateFilters();
 
@@ -157,7 +157,7 @@ public class ListIslandsPanel extends CommonPagedPanel<Island>
                 return false;
             }).
             distinct().
-            collect(Collectors.toList());
+            collect(Collectors.toCollection(ArrayList::new));
     }
 
 
@@ -179,228 +179,270 @@ public class ListIslandsPanel extends CommonPagedPanel<Island>
         LikesObject likesObject =
             this.addon.getAddonManager().getExistingIslandLikes(island.getUniqueId());
 
-        User owner = island.getOwner() == null ? null : User.getInstance(island.getOwner());
+        UUID ownerId = island.getOwner();
+        User owner = ownerId == null ? null : User.getInstance(ownerId);
 
-        final String reference = Constants.BUTTONS + "island.";
+        PanelItemBuilder itemBuilder = new PanelItemBuilder().
+            name(this.getNameText(island, owner)).
+            description(this.getDescription(island, owner, likesObject)).
+            clickHandler(this.getClickHandler(island));
 
-        // Get Island Name
+        Material material = this.getIconMaterial(island, owner, likesObject);
+
+        if (!Material.PLAYER_HEAD.equals(material))
+        {
+            itemBuilder.icon(material);
+        }
+        else if (owner == null)
+        {
+            itemBuilder.icon(Material.PAPER);
+        }
+        else
+        {
+            itemBuilder.icon(owner.getName());
+        }
+
+        // At last add item to the panel builder
+        return itemBuilder.build();
+    }
+
+
+    /**
+     * Returns the name of the owner, or "unknown" text if island does not have an owner.
+     */
+    private String getOwnerName(User owner)
+    {
+        return owner == null ? this.user.getTranslation(ISLAND_REFERENCE + "unknown") : owner.getName();
+    }
+
+
+    /**
+     * Returns the text for the island button name.
+     */
+    private String getNameText(Island island, User owner)
+    {
         String nameText;
 
         if (island.getName() == null || island.getName().isEmpty())
         {
-            nameText = this.user.getTranslation(reference + "owners-island",
+            nameText = this.user.getTranslation(ISLAND_REFERENCE + "owners-island",
                 Constants.PARAMETER_PLAYER,
-                owner == null ? this.user.getTranslation(reference + "unknown") : owner.getName());
+                this.getOwnerName(owner));
         }
         else
         {
             nameText = island.getName();
         }
 
-        nameText = this.user.getTranslation(reference + "name",
+        return this.user.getTranslation(ISLAND_REFERENCE + "name",
             Constants.PARAMETER_NAME, nameText);
+    }
 
-        // Get Owner Name
-        String ownerText = this.user.getTranslation(reference + "owner",
-            Constants.PARAMETER_PLAYER,
-            owner == null ? this.user.getTranslation(reference + "unknown") : owner.getName());
 
-        // Get Members Text
-        String memberText;
-
-        if (island.getMemberSet().size() > 1)
+    /**
+     * Returns the text with the list of island members.
+     */
+    private String getMemberText(Island island)
+    {
+        if (island.getMemberSet().size() <= 1)
         {
-            StringBuilder memberBuilder = new StringBuilder(
-                this.user.getTranslationOrNothing(Constants.BUTTONS + "island.members-title"));
+            return "";
+        }
 
-            for (UUID uuid : island.getMemberSet())
+        StringBuilder memberBuilder = new StringBuilder(
+            this.user.getTranslationOrNothing(Constants.BUTTONS + "island.members-title"));
+
+        for (UUID uuid : island.getMemberSet())
+        {
+            String name = this.addon.getPlayers().getName(uuid);
+
+            if (!memberBuilder.isEmpty())
             {
-                String name = this.addon.getPlayers().getName(uuid);
+                memberBuilder.append("\n");
+            }
 
-                if (memberBuilder.length() > 0)
+            memberBuilder.append(
+                this.user.getTranslationOrNothing(Constants.BUTTONS + "island.member",
+                    Constants.PARAMETER_PLAYER, name));
+        }
+
+        return memberBuilder.toString();
+    }
+
+
+    /**
+     * Returns the text for a single place in the top, or empty text if island is not ranked.
+     */
+    private String getPlaceLine(int rank, String type)
+    {
+        if (rank == -1)
+        {
+            return "";
+        }
+
+        return this.user.getTranslation(ISLAND_REFERENCE + PLACE_BUTTON_KEY,
+            Constants.PARAMETER_NUMBER, String.valueOf(rank),
+            Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + type));
+    }
+
+
+    /**
+     * Returns the text with island places in the tops.
+     */
+    private String getPlaceText(LikesObject likesObject)
+    {
+        if (likesObject == null)
+        {
+            return "";
+        }
+
+        return switch (this.addon.getSettings().getMode()) {
+            case LIKES -> this.getPlaceLine(
+                this.addon.getAddonManager().getIslandRankByLikes(this.world, likesObject), "likes");
+            case LIKES_DISLIKES -> {
+                int byLikes = this.addon.getAddonManager().getIslandRankByLikes(this.world, likesObject);
+                int byDislikes = this.addon.getAddonManager().getIslandRankByDislikes(this.world, likesObject);
+                int byRank = this.addon.getAddonManager().getIslandRankByRank(this.world, likesObject);
+
+                String placeText = this.getPlaceLine(byLikes, "likes");
+
+                if (byDislikes != -1)
                 {
-                    memberBuilder.append("\n");
+                    placeText += "\n" + this.getPlaceLine(byDislikes, "dislikes");
                 }
 
-                memberBuilder.append(
-                    this.user.getTranslationOrNothing(Constants.BUTTONS + "island.member",
-                        Constants.PARAMETER_PLAYER, name));
+                if (byRank != -1)
+                {
+                    placeText += "\n" + this.getPlaceLine(byRank, "rank");
+                }
+
+                yield placeText;
             }
-
-            memberText = memberBuilder.toString();
-        }
-        else
-        {
-            memberText = "";
-        }
-
-        // Get Place Text
-        String placeText = "";
-
-        if (likesObject != null)
-        {
-            switch (this.addon.getSettings().getMode())
-            {
-                case LIKES -> {
-                    int rank = this.addon.getAddonManager().getIslandRankByLikes(this.world, likesObject);
-
-                    if (rank != -1)
-                    {
-                        placeText = this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(rank),
-                            Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes"));
-                    }
-                }
-                case LIKES_DISLIKES -> {
-                    int byLikes = this.addon.getAddonManager().getIslandRankByLikes(this.world, likesObject);
-                    int byDislikes = this.addon.getAddonManager().getIslandRankByDislikes(this.world, likesObject);
-                    int byRank = this.addon.getAddonManager().getIslandRankByRank(this.world, likesObject);
-
-                    if (byLikes != -1)
-                    {
-                        placeText = this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(byLikes),
-                            Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "likes"));
-                    }
-
-                    if (byDislikes != -1)
-                    {
-                        placeText += "\n" + this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(byDislikes),
-                            Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "dislikes"));
-                    }
-
-                    if (byRank != -1)
-                    {
-                        placeText += "\n" + this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(byRank),
-                            Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "rank"));
-                    }
-                }
-                case STARS -> {
-                    int byStars = this.addon.getAddonManager().getIslandRankByStars(this.world, likesObject);
-
-                    if (byStars != -1)
-                    {
-                        placeText = this.user.getTranslation(reference + "place",
-                            Constants.PARAMETER_NUMBER, String.valueOf(byStars),
-                            Constants.PARAMETER_TYPE, this.user.getTranslation(Constants.TYPES + "stars"));
-                    }
-                }
-            }
-        }
-
-        // Get Numbers Text
-        String numbersText = switch (this.addon.getSettings().getMode()) {
-            case LIKES -> this.user.getTranslation(reference + "numbers_likes",
-                Constants.PARAMETER_LIKES, String.valueOf(likesObject == null ? 0 : likesObject.getLikes()));
-            case LIKES_DISLIKES -> this.user.getTranslation(reference + "numbers_likes_dislikes",
-                Constants.PARAMETER_LIKES, String.valueOf(likesObject == null ? 0 : likesObject.getLikes()),
-                Constants.PARAMETER_DISLIKES, String.valueOf(likesObject == null ? 0 : likesObject.getDislikes()),
-                Constants.PARAMETER_RANK, String.valueOf(likesObject == null ? 0 : likesObject.getRank()));
-            case STARS -> this.user.getTranslation(reference + "numbers_stars",
-                Constants.PARAMETER_STARS,
-                this.hundredsFormat.format(likesObject == null ? 0 : likesObject.getStarsValue()),
-                Constants.PARAMETER_NUMBER,
-                String.valueOf(likesObject == null ? 0 : likesObject.numberOfStars()));
+            case STARS -> this.getPlaceLine(
+                this.addon.getAddonManager().getIslandRankByStars(this.world, likesObject), "stars");
         };
+    }
+
+
+    /**
+     * Returns the text with island likes, dislikes and stars numbers.
+     */
+    private String getNumbersText(LikesObject likesObject)
+    {
+        // Island without data has zero in all numbers.
+        LikesObject numbers = likesObject == null ? new LikesObject() : likesObject;
+
+        return switch (this.addon.getSettings().getMode()) {
+            case LIKES -> this.user.getTranslation(ISLAND_REFERENCE + "numbers_likes",
+                Constants.PARAMETER_LIKES, String.valueOf(numbers.getLikes()));
+            case LIKES_DISLIKES -> this.user.getTranslation(ISLAND_REFERENCE + "numbers_likes_dislikes",
+                Constants.PARAMETER_LIKES, String.valueOf(numbers.getLikes()),
+                Constants.PARAMETER_DISLIKES, String.valueOf(numbers.getDislikes()),
+                Constants.PARAMETER_RANK, String.valueOf(numbers.getRank()));
+            case STARS -> this.user.getTranslation(ISLAND_REFERENCE + "numbers_stars",
+                Constants.PARAMETER_STARS,
+                this.hundredsFormat.format(numbers.getStarsValue()),
+                Constants.PARAMETER_NUMBER,
+                String.valueOf(numbers.numberOfStars()));
+        };
+    }
+
+
+    /**
+     * Returns the description lines for the island button.
+     */
+    private List<String> getDescription(Island island, User owner, LikesObject likesObject)
+    {
+        String ownerText = this.user.getTranslation(ISLAND_REFERENCE + "owner",
+            Constants.PARAMETER_PLAYER,
+            this.getOwnerName(owner));
 
         // Now combine everything.
-        String descriptionText = this.user.getTranslation(reference + "description",
+        String descriptionText = this.user.getTranslation(ISLAND_REFERENCE + "description",
             Constants.PARAMETER_OWNER, ownerText,
-            Constants.PARAMETER_MEMBERS, memberText,
-            Constants.PARAMETER_PLACE, placeText,
-            Constants.PARAMETER_NUMBERS, numbersText);
+            Constants.PARAMETER_MEMBERS, this.getMemberText(island),
+            Constants.PARAMETER_PLACE, this.getPlaceText(likesObject),
+            Constants.PARAMETER_NUMBERS, this.getNumbersText(likesObject));
         List<String> description = Arrays.stream(descriptionText.replaceAll("(?m)^[ \\t]*\\r?\\n", "").
             split("\n")).
-            collect(Collectors.toList());
+            collect(Collectors.toCollection(ArrayList::new));
 
         description.add("");
 
-        switch (this.type)
+        if (this.type == Type.MANAGE)
         {
-            case MANAGE -> {
-                description.add(this.user.getTranslation(Constants.TIPS + "click-to-open"));
-                if (this.addon.getAddonManager().getExistingIslandLikes(island.getUniqueId()) != null)
-                {
-                    description.add(this.user.getTranslation(Constants.TIPS + "shift-click-to-remove"));
-                }
+            description.add(this.user.getTranslation(Constants.TIPS + "click-to-open"));
+
+            if (this.addon.getAddonManager().getExistingIslandLikes(island.getUniqueId()) != null)
+            {
+                description.add(this.user.getTranslation(Constants.TIPS + "shift-click-to-remove"));
             }
-            case ICON -> description.add(this.user.getTranslation(Constants.TIPS + "click-to-change"));
+        }
+        else if (this.type == Type.ICON)
+        {
+            description.add(this.user.getTranslation(Constants.TIPS + "click-to-change"));
         }
 
-        PanelItem.ClickHandler clickHandler = (panel, user, clickType, slot) ->
-        {
-            switch (this.type)
-            {
-                case MANAGE -> {
-                    if (clickType.isShiftClick())
-                    {
-                        this.addon.getAddonManager().removeObject(island.getUniqueId());
-                        this.build();
-                    }
-                    else
-                    {
-                        AdminViewPanel.openPanel(this, island);
-                    }
-                }
-                case ICON -> {
-                    SingleBlockSelector.open(this.user,
-                        SingleBlockSelector.Mode.ANY,
-                        (status, block) ->
-                        {
-                            if (status)
-                            {
-                                island.putMetaData(Constants.METADATA_ICON,
-                                    new MetaDataValue(block.name()));
-                            }
+        return description;
+    }
 
-                            this.build();
-                        });
+
+    /**
+     * Returns the click handler for the island button.
+     */
+    private PanelItem.ClickHandler getClickHandler(Island island)
+    {
+        return (panel, clicker, clickType, slot) ->
+        {
+            if (this.type == Type.MANAGE)
+            {
+                if (clickType.isShiftClick())
+                {
+                    this.addon.getAddonManager().removeObject(island.getUniqueId());
+                    this.build();
                 }
+                else
+                {
+                    AdminViewPanel.openPanel(this, island);
+                }
+            }
+            else if (this.type == Type.ICON)
+            {
+                SingleBlockSelector.open(this.user,
+                    SingleBlockSelector.Mode.ANY,
+                    (status, block) ->
+                    {
+                        if (Boolean.TRUE.equals(status))
+                        {
+                            island.putMetaData(Constants.METADATA_ICON,
+                                new MetaDataValue(block.name()));
+                        }
+
+                        this.build();
+                    });
             }
 
             return true;
         };
+    }
 
-        Material material;
+
+    /**
+     * Returns the material that is used as the island icon.
+     */
+    private Material getIconMaterial(Island island, User owner, LikesObject likesObject)
+    {
         String permission = Utils.getPermissionValue(owner, this.iconPermission, null);
 
         if (permission != null && !permission.equals("*"))
         {
-            material = Material.matchMaterial(permission);
-        }
-        else
-        {
-            material = island.getMetaData().
-                map(map -> map.get(Constants.METADATA_ICON)).
-                map(metaDataValue -> Material.matchMaterial(metaDataValue.asString())).
-                orElseGet(() -> likesObject == null ? Material.PAPER : Material.WRITTEN_BOOK);
+            return Material.matchMaterial(permission);
         }
 
-        PanelItemBuilder itemBuilder = new PanelItemBuilder().
-            name(nameText).
-            description(description).
-            clickHandler(clickHandler);
-
-        if (Material.PLAYER_HEAD.equals(material))
-        {
-            if (owner == null)
-            {
-                itemBuilder.icon(Material.PAPER);
-            }
-            else
-            {
-                itemBuilder.icon(owner.getName());
-            }
-        }
-        else
-        {
-            itemBuilder.icon(material);
-        }
-
-        // At last add item to the panel builder
-        return itemBuilder.build();
+        return island.getMetaData().
+            map(map -> map.get(Constants.METADATA_ICON)).
+            map(metaDataValue -> Material.matchMaterial(metaDataValue.asString())).
+            orElseGet(() -> likesObject == null ? Material.PAPER : Material.WRITTEN_BOOK);
     }
 
 
@@ -499,6 +541,13 @@ public class ListIslandsPanel extends CommonPagedPanel<Island>
 // ---------------------------------------------------------------------
 
     /**
+     * String constant for "place" button key.
+     */
+    private static final String PLACE_BUTTON_KEY = "place";
+
+    private static final String ISLAND_REFERENCE = Constants.BUTTONS + "island.";
+
+    /**
      * This variable stores gui type.
      */
     private final Type type;
@@ -521,7 +570,7 @@ public class ListIslandsPanel extends CommonPagedPanel<Island>
     /**
      * This comparator orders island by their owner names.
      */
-    private final static Comparator<Island> ISLAND_COMPARATOR = (o1, o2) -> {
+    private static final Comparator<Island> ISLAND_COMPARATOR = (o1, o2) -> {
         if (o1.getOwner() == null && o2.getOwner() == null)
         {
             return 0;

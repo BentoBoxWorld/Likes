@@ -15,8 +15,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import java.io.File;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -93,9 +91,6 @@ public class LikesViewPanel extends CommonPanel
                 this.likeRank = this.addon.getAddonManager().getIslandRankByStars(world, likesObject);
             }
         }
-
-        this.hundredsFormat = (DecimalFormat) NumberFormat.getNumberInstance(this.user.getLocale());
-        this.hundredsFormat.applyPattern("###.##");
     }
 
 
@@ -154,49 +149,49 @@ public class LikesViewPanel extends CommonPanel
         {
             case LIKES -> {
                 panelBuilder.template("likes",
-                    "view_panels",
-                    new File(this.addon.getDataFolder(), "panels"));
+                    VIEW_PANELS,
+                    new File(this.addon.getDataFolder(), PANELS_FOLDER));
                 // Register Top Buttons
                 panelBuilder.registerTypeBuilder("LIKE",
-                    (record, itemSlot) -> this.createButton(record, Button.LIKE));
+                    (template, itemSlot) -> this.createButton(template, Button.LIKE));
                 panelBuilder.registerTypeBuilder("LIKE_RANK",
-                    (record, itemSlot) -> this.createButton(record, Button.LIKE_RANK));
+                    (template, itemSlot) -> this.createButton(template, Button.LIKE_RANK));
                 // Register Player Button
-                panelBuilder.registerTypeBuilder("LIKE_PLAYER", this::createLikePlayer);
+                panelBuilder.registerTypeBuilder(LIKE_PLAYER, this::createLikePlayer);
             }
             case LIKES_DISLIKES -> {
                 panelBuilder.template("likes_dislikes",
-                    "view_panels",
-                    new File(this.addon.getDataFolder(), "panels"));
+                    VIEW_PANELS,
+                    new File(this.addon.getDataFolder(), PANELS_FOLDER));
                 // Register Top Buttons
                 panelBuilder.registerTypeBuilder("LIKE",
-                    (record, itemSlot) -> this.createButton(record, Button.LIKE));
+                    (template, itemSlot) -> this.createButton(template, Button.LIKE));
                 panelBuilder.registerTypeBuilder("LIKE_RANK",
-                    (record, itemSlot) -> this.createButton(record, Button.LIKE_RANK));
+                    (template, itemSlot) -> this.createButton(template, Button.LIKE_RANK));
                 panelBuilder.registerTypeBuilder("OVERALL",
-                    (record, itemSlot) -> this.createButton(record, Button.OVERALL));
+                    (template, itemSlot) -> this.createButton(template, Button.OVERALL));
                 panelBuilder.registerTypeBuilder("OVERALL_RANK",
-                    (record, itemSlot) -> this.createButton(record, Button.OVERALL_RANK));
-                panelBuilder.registerTypeBuilder("DISLIKE",
-                    (record, itemSlot) -> this.createButton(record, Button.DISLIKE));
-                panelBuilder.registerTypeBuilder("DISLIKE_RANK",
-                    (record, itemSlot) -> this.createButton(record, Button.DISLIKE_RANK));
+                    (template, itemSlot) -> this.createButton(template, Button.OVERALL_RANK));
+                panelBuilder.registerTypeBuilder(DISLIKE,
+                    (template, itemSlot) -> this.createButton(template, Button.DISLIKE));
+                panelBuilder.registerTypeBuilder(DISLIKE_RANK,
+                    (template, itemSlot) -> this.createButton(template, Button.DISLIKE_RANK));
                 // Register Player Button
-                panelBuilder.registerTypeBuilder("LIKE_PLAYER", this::createLikePlayer);
-                panelBuilder.registerTypeBuilder("DISLIKE_PLAYER", this::createDislikePlayer);
+                panelBuilder.registerTypeBuilder(LIKE_PLAYER, this::createLikePlayer);
+                panelBuilder.registerTypeBuilder(DISLIKE_PLAYER, this::createDislikePlayer);
 
             }
             case STARS -> {
                 panelBuilder.template("stars",
-                    "view_panels",
-                    new File(this.addon.getDataFolder(), "panels"));
+                    VIEW_PANELS,
+                    new File(this.addon.getDataFolder(), PANELS_FOLDER));
                 // Register Top Button
-                panelBuilder.registerTypeBuilder("STARS",
-                    (record, itemSlot) -> this.createButton(record, Button.STARS));
+                panelBuilder.registerTypeBuilder(STARS,
+                    (template, itemSlot) -> this.createButton(template, Button.STARS));
                 panelBuilder.registerTypeBuilder("STARS_RANK",
-                    (record, itemSlot) -> this.createButton(record, Button.STARS_RANK));
+                    (template, itemSlot) -> this.createButton(template, Button.STARS_RANK));
                 // Register Player Button
-                panelBuilder.registerTypeBuilder("STARS_PLAYER", this::createStarsPlayer);
+                panelBuilder.registerTypeBuilder(STARS_PLAYER, this::createStarsPlayer);
             }
         }
 
@@ -218,7 +213,7 @@ public class LikesViewPanel extends CommonPanel
 
         String player;
 
-        int index = this.likeIndex * slot.amountMap().getOrDefault("LIKE_PLAYER", 1) + slot.slot();
+        int index = this.likeIndex * slot.amountMap().getOrDefault(LIKE_PLAYER, 1) + slot.slot();
 
         if (index >= this.likedByUsers.size())
         {
@@ -242,7 +237,7 @@ public class LikesViewPanel extends CommonPanel
 
         String player;
 
-        int index = this.dislikeIndex * slot.amountMap().getOrDefault("DISLIKE_PLAYER", 1) + slot.slot();
+        int index = this.dislikeIndex * slot.amountMap().getOrDefault(DISLIKE_PLAYER, 1) + slot.slot();
 
         if (index >= this.dislikedByUsers.size())
         {
@@ -266,7 +261,7 @@ public class LikesViewPanel extends CommonPanel
 
         String player;
 
-        int index = this.likeIndex * slot.amountMap().getOrDefault("STARS_PLAYER", 1) + slot.slot();
+        int index = this.likeIndex * slot.amountMap().getOrDefault(STARS_PLAYER, 1) + slot.slot();
 
         if (index >= this.likedByUsers.size())
         {
@@ -308,7 +303,18 @@ public class LikesViewPanel extends CommonPanel
         PanelItemBuilder builder = new PanelItemBuilder();
 
         // Template specification are always more important than dynamic content.
+        this.setUserIcon(builder, template, userName);
+        this.setUserName(builder, template, reference, userName);
+        this.setUserDescription(builder, template, reference);
 
+        builder.amount(amount);
+
+        return builder.build();
+    }
+
+    /** Set user button icon. */
+    private void setUserIcon(PanelItemBuilder builder, ItemTemplateRecord template, String userName)
+    {
         if (template.icon() == null)
         {
             builder.icon(userName);
@@ -317,24 +323,33 @@ public class LikesViewPanel extends CommonPanel
         {
             if (template.icon().getType().equals(Material.PLAYER_HEAD))
             {
-                SkullMeta meta = (SkullMeta) template.icon().getItemMeta();
-
-                if (meta != null && meta.hasOwner())
-                {
-                    builder.icon(template.icon().clone());
-                }
-                else
-                {
-                    builder.icon(userName);
-                }
+                this.setPlayerHeadIcon(builder, template, userName);
             }
             else
             {
                 builder.icon(template.icon().clone());
             }
         }
+    }
 
-        // Template specific title is always more important than biomesObject name.
+    /** Set player head icon if owner exists. */
+    private void setPlayerHeadIcon(PanelItemBuilder builder, ItemTemplateRecord template, String userName)
+    {
+        SkullMeta meta = (SkullMeta) template.icon().getItemMeta();
+
+        if (meta != null && meta.hasOwner())
+        {
+            builder.icon(template.icon().clone());
+        }
+        else
+        {
+            builder.icon(userName);
+        }
+    }
+
+    /** Set user button name. */
+    private void setUserName(PanelItemBuilder builder, ItemTemplateRecord template, String reference, String userName)
+    {
         if (template.title() != null && !template.title().isBlank())
         {
             builder.name(Util.translateColorCodes(
@@ -346,7 +361,11 @@ public class LikesViewPanel extends CommonPanel
             builder.name(this.user.getTranslation(this.world, reference + "name",
                 Constants.PARAMETER_NAME, userName));
         }
+    }
 
+    /** Set user button description. */
+    private void setUserDescription(PanelItemBuilder builder, ItemTemplateRecord template, String reference)
+    {
         if (template.description() != null && !template.description().isBlank())
         {
             String translation = this.user.getTranslationOrNothing(template.description());
@@ -360,10 +379,6 @@ public class LikesViewPanel extends CommonPanel
         {
             builder.description(this.user.getTranslationOrNothing(reference + "description"));
         }
-
-        builder.amount(amount);
-
-        return builder.build();
     }
 
 
@@ -416,61 +431,34 @@ public class LikesViewPanel extends CommonPanel
             builder.description(this.user.getTranslationOrNothing(reference + "description"));
         }
 
+        this.setButtonDescription(builder, button, reference);
+
+        return builder.build();
+    }
+
+    /** Set button-specific description. */
+    private void setButtonDescription(PanelItemBuilder builder, Button button, String reference)
+    {
         switch (button)
         {
-            case LIKE -> {
-                builder.description(this.user.getTranslation(reference + "likes",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getLikes())));
-            }
-            case LIKE_RANK -> {
-                if (this.likesObject.getLikes() == 0 && this.likesObject.getDislikes() == 0)
-                {
-                    builder.description(this.user.getTranslation(reference + "not-ranked"));
-                }
-                else
-                {
-                    builder.description(this.user.getTranslation(reference + "rank",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.likeRank)));
-                }
-            }
-            case DISLIKE -> {
-                builder.description(this.user.getTranslation(reference + "dislikes",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getDislikes())));
-            }
-            case DISLIKE_RANK -> {
-                if (this.likesObject.getLikes() == 0 && this.likesObject.getDislikes() == 0)
-                {
-                    builder.description(this.user.getTranslation(reference + "not-ranked"));
-                }
-                else
-                {
-                    builder.description(this.user.getTranslation(reference + "rank",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.dislikeRank)));
-                }
-            }
-            case OVERALL -> {
-                builder.description(this.user.getTranslation(reference + "value",
-                    Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getRank())));
-            }
-            case OVERALL_RANK -> {
-                if (this.likesObject.getLikes() == 0 && this.likesObject.getDislikes() == 0)
-                {
-                    builder.description(this.user.getTranslation(reference + "not-ranked"));
-                }
-                else
-                {
-                    builder.description(this.user.getTranslation(reference + "rank",
-                        Constants.PARAMETER_NUMBER, String.valueOf(this.overallRank)));
-                }
-            }
-            case STARS -> {
-                builder.description(this.user.getTranslation(reference + "stars",
-                    Constants.PARAMETER_NUMBER, this.hundredsFormat.format(this.likesObject.getStarsValue())));
-            }
+            case LIKE -> builder.description(this.user.getTranslation(reference + "likes",
+                Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getLikes())));
+            case LIKE_RANK -> this.setRankDescription(builder, reference, this.likesObject.getLikes(),
+                this.likesObject.getDislikes(), this.likeRank);
+            case DISLIKE -> builder.description(this.user.getTranslation(reference + "dislikes",
+                Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getDislikes())));
+            case DISLIKE_RANK -> this.setRankDescription(builder, reference, this.likesObject.getLikes(),
+                this.likesObject.getDislikes(), this.dislikeRank);
+            case OVERALL -> builder.description(this.user.getTranslation(reference + "value",
+                Constants.PARAMETER_NUMBER, String.valueOf(this.likesObject.getRank())));
+            case OVERALL_RANK -> this.setRankDescription(builder, reference, this.likesObject.getLikes(),
+                this.likesObject.getDislikes(), this.overallRank);
+            case STARS -> builder.description(this.user.getTranslation(reference + "stars",
+                Constants.PARAMETER_NUMBER, this.hundredsFormat.format(this.likesObject.getStarsValue())));
             case STARS_RANK -> {
                 if (this.likesObject.getStars() == 0)
                 {
-                    builder.description(this.user.getTranslation(reference + "not-ranked"));
+                    builder.description(this.user.getTranslation(reference + NOT_RANKED));
                 }
                 else
                 {
@@ -479,8 +467,20 @@ public class LikesViewPanel extends CommonPanel
                 }
             }
         }
+    }
 
-        return builder.build();
+    /** Set rank description. */
+    private void setRankDescription(PanelItemBuilder builder, String reference, long likes, long dislikes, long rank)
+    {
+        if (likes == 0 && dislikes == 0)
+        {
+            builder.description(this.user.getTranslation(reference + NOT_RANKED));
+        }
+        else
+        {
+            builder.description(this.user.getTranslation(reference + "rank",
+                Constants.PARAMETER_NUMBER, String.valueOf(rank)));
+        }
     }
 
 
@@ -496,8 +496,8 @@ public class LikesViewPanel extends CommonPanel
             case "LIKE" -> {
                 int size = this.likedByUsers.size();
 
-                if (size <= slot.amountMap().getOrDefault("LIKE_PLAYER", 1) ||
-                    1.0 * size / slot.amountMap().getOrDefault("LIKE_PLAYER", 1) <= this.likeIndex + 1)
+                if (size <= slot.amountMap().getOrDefault(LIKE_PLAYER, 1) ||
+                    1.0 * size / slot.amountMap().getOrDefault(LIKE_PLAYER, 1) <= this.likeIndex + 1)
                 {
                     // There are no next elements
                     return null;
@@ -505,11 +505,11 @@ public class LikesViewPanel extends CommonPanel
 
                 nextPageIndex = this.likeIndex + 2;
             }
-            case "STARS" -> {
+            case STARS -> {
                 int size = this.likedByUsers.size();
 
-                if (size <= slot.amountMap().getOrDefault("STARS_PLAYER", 1) ||
-                    1.0 * size / slot.amountMap().getOrDefault("STARS_PLAYER", 1) <= this.likeIndex + 1)
+                if (size <= slot.amountMap().getOrDefault(STARS_PLAYER, 1) ||
+                    1.0 * size / slot.amountMap().getOrDefault(STARS_PLAYER, 1) <= this.likeIndex + 1)
                 {
                     // There are no next elements
                     return null;
@@ -517,11 +517,11 @@ public class LikesViewPanel extends CommonPanel
 
                 nextPageIndex = this.likeIndex + 2;
             }
-            case "DISLIKE" -> {
+            case DISLIKE -> {
                 int size = this.dislikedByUsers.size();
 
-                if (size <= slot.amountMap().getOrDefault("DISLIKE_PLAYER", 1) ||
-                    1.0 * size / slot.amountMap().getOrDefault("DISLIKE_PLAYER", 1) <= this.dislikeIndex + 1)
+                if (size <= slot.amountMap().getOrDefault(DISLIKE_PLAYER, 1) ||
+                    1.0 * size / slot.amountMap().getOrDefault(DISLIKE_PLAYER, 1) <= this.dislikeIndex + 1)
                 {
                     // There are no next elements
                     return null;
@@ -541,7 +541,7 @@ public class LikesViewPanel extends CommonPanel
         {
             ItemStack clone = template.icon().clone();
 
-            if ((Boolean) template.dataMap().getOrDefault("indexing", false))
+            if (Boolean.TRUE.equals(template.dataMap().getOrDefault("indexing", false)))
             {
                 clone.setAmount(nextPageIndex);
             }
@@ -561,26 +561,7 @@ public class LikesViewPanel extends CommonPanel
         }
 
         // Add ClickHandler
-        builder.clickHandler((panel, user, clickType, i) ->
-        {
-            for (ItemTemplateRecord.ActionRecords action : template.actions())
-            {
-                if (clickType == action.clickType() || ClickType.UNKNOWN.equals(action.clickType()))
-                {
-                    // Next button ignores click type currently.
-                    switch (target)
-                    {
-                        case "LIKE", "STARS" -> this.likeIndex++;
-                        case "DISLIKE" -> this.dislikeIndex++;
-                    }
-
-                    this.build();
-                }
-            }
-
-            // Always return true.
-            return true;
-        });
+        builder.clickHandler(this.createNextPageHandler(target, template));
 
         // Collect tooltips.
         List<String> tooltips = template.actions().stream().
@@ -601,6 +582,31 @@ public class LikesViewPanel extends CommonPanel
     }
 
 
+    /** Create next page click handler. */
+    private PanelItem.ClickHandler createNextPageHandler(String target, ItemTemplateRecord template)
+    {
+        return (panel, user, clickType, i) ->
+        {
+            for (ItemTemplateRecord.ActionRecords action : template.actions())
+            {
+                if (clickType == action.clickType() || ClickType.UNKNOWN.equals(action.clickType()))
+                {
+                    // Next button ignores click type currently.
+                    switch (target)
+                    {
+                        case "LIKE", STARS -> this.likeIndex++;
+                        case DISLIKE -> this.dislikeIndex++;
+                    }
+
+                    this.build();
+                }
+            }
+
+            // Always return true.
+            return true;
+        };
+    }
+
     @Nullable
     private PanelItem createPreviousButton(@NonNull ItemTemplateRecord template, TemplatedPanel.ItemSlot slot)
     {
@@ -608,7 +614,7 @@ public class LikesViewPanel extends CommonPanel
 
         int previousPageIndex;
 
-        if ("LIKE".equals(target) || "STARS".equals(target))
+        if ("LIKE".equals(target) || STARS.equals(target))
         {
             if (this.likeIndex == 0)
             {
@@ -618,7 +624,7 @@ public class LikesViewPanel extends CommonPanel
 
             previousPageIndex = this.likeIndex;
         }
-        else if ("DISLIKE".equals(target))
+        else if (DISLIKE.equals(target))
         {
             if (this.dislikeIndex == 0)
             {
@@ -640,7 +646,7 @@ public class LikesViewPanel extends CommonPanel
         {
             ItemStack clone = template.icon().clone();
 
-            if ((Boolean) template.dataMap().getOrDefault("indexing", false))
+            if (Boolean.TRUE.equals(template.dataMap().getOrDefault("indexing", false)))
             {
                 clone.setAmount(previousPageIndex);
             }
@@ -660,26 +666,7 @@ public class LikesViewPanel extends CommonPanel
         }
 
         // Add ClickHandler
-        builder.clickHandler((panel, user, clickType, i) ->
-        {
-            for (ItemTemplateRecord.ActionRecords action : template.actions())
-            {
-                if (clickType == action.clickType() || ClickType.UNKNOWN.equals(action.clickType()))
-                {
-                    // Next button ignores click type currently.
-                    switch (target)
-                    {
-                        case "LIKE", "STARS" -> this.likeIndex--;
-                        case "DISLIKE" -> this.dislikeIndex--;
-                    }
-
-                    this.build();
-                }
-            }
-
-            // Always return true.
-            return true;
-        });
+        builder.clickHandler(this.createPreviousPageHandler(target, template));
 
         // Collect tooltips.
         List<String> tooltips = template.actions().stream().
@@ -697,6 +684,31 @@ public class LikesViewPanel extends CommonPanel
         }
 
         return builder.build();
+    }
+
+    /** Create previous page click handler. */
+    private PanelItem.ClickHandler createPreviousPageHandler(String target, ItemTemplateRecord template)
+    {
+        return (panel, user, clickType, i) ->
+        {
+            for (ItemTemplateRecord.ActionRecords action : template.actions())
+            {
+                if (clickType == action.clickType() || ClickType.UNKNOWN.equals(action.clickType()))
+                {
+                    // Previous button ignores click type currently.
+                    switch (target)
+                    {
+                        case "LIKE", STARS -> this.likeIndex--;
+                        case DISLIKE -> this.dislikeIndex--;
+                    }
+
+                    this.build();
+                }
+            }
+
+            // Always return true.
+            return true;
+        };
     }
 
 
@@ -746,6 +758,22 @@ public class LikesViewPanel extends CommonPanel
 
 
 // ---------------------------------------------------------------------
+// Section: Constants
+// ---------------------------------------------------------------------
+
+
+    private static final String VIEW_PANELS = "view_panels";
+    private static final String PANELS_FOLDER = "panels";
+    private static final String LIKE_PLAYER = "LIKE_PLAYER";
+    private static final String DISLIKE = "DISLIKE";
+    private static final String DISLIKE_RANK = "DISLIKE_RANK";
+    private static final String DISLIKE_PLAYER = "DISLIKE_PLAYER";
+    private static final String STARS = "STARS";
+    private static final String STARS_PLAYER = "STARS_PLAYER";
+    private static final String NOT_RANKED = "not-ranked";
+
+
+// ---------------------------------------------------------------------
 // Section: Variables
 // ---------------------------------------------------------------------
 
@@ -789,9 +817,4 @@ public class LikesViewPanel extends CommonPanel
      * This variable holds island rank by rank.
      */
     private long overallRank;
-
-    /**
-     * Stores decimal format object for two digit after separator.
-     */
-    private final DecimalFormat hundredsFormat;
 }

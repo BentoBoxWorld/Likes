@@ -14,7 +14,6 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.eclipse.jdt.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
@@ -26,6 +25,14 @@ import world.bentobox.bentobox.managers.IslandsManager;
 
 public class Utils
 {
+    /**
+     * Utility class. Not for instantiation.
+     */
+    private Utils()
+    {
+    }
+
+
     /**
      * This method gets string value of given permission prefix. If user does not have given permission or it have all
      * (*), then return default value.
@@ -49,7 +56,7 @@ public class Utils
             List<String> permissions = user.getEffectivePermissions().stream().
                 map(PermissionAttachmentInfo::getPermission).
                 filter(permission -> permission.startsWith(permPrefix)).
-                collect(Collectors.toList());
+                toList();
 
             for (String permission : permissions)
             {

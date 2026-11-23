@@ -105,7 +105,8 @@ class UtilsTest extends CommonTestSetup
     @Test
     void testGetIslandIgnoresIslandInOtherGameMode()
     {
-        when(this.secondIsland.getWorld()).thenReturn(mock(World.class));
+        World otherWorld = mock(World.class);
+        when(this.secondIsland.getWorld()).thenReturn(otherWorld);
         when(this.im.getIslandAt(this.location)).thenReturn(Optional.of(this.secondIsland));
 
         assertSame(this.island, Utils.getIsland(this.im, this.world, this.user));

@@ -55,9 +55,9 @@ public class TopTenRequestHandler extends AddonRequestHandler
 
         if (map == null ||
             map.isEmpty() ||
-            map.get("world-name") == null ||
-            !(map.get("world-name") instanceof String) ||
-            Bukkit.getWorld((String) map.get("world-name")) == null)
+            map.get(WORLD_NAME) == null ||
+            !(map.get(WORLD_NAME) instanceof String) ||
+            Bukkit.getWorld((String) map.get(WORLD_NAME)) == null)
         {
             return Collections.emptyMap();
         }
@@ -71,19 +71,19 @@ public class TopTenRequestHandler extends AddonRequestHandler
         switch (VIEW_MODE.getMode((String) map.getOrDefault("type", defaultValue)))
         {
             case LIKES:
-                this.addon.getAddonManager().getTopByLikes(Bukkit.getWorld((String) map.get("world-name"))).
+                this.addon.getAddonManager().getTopByLikes(Bukkit.getWorld((String) map.get(WORLD_NAME))).
                     forEach(likesObject -> returnMap.put(likesObject.getUniqueId(), likesObject.getLikes()));
                 break;
             case DISLIKES:
-                this.addon.getAddonManager().getTopByDislikes(Bukkit.getWorld((String) map.get("world-name"))).
+                this.addon.getAddonManager().getTopByDislikes(Bukkit.getWorld((String) map.get(WORLD_NAME))).
                     forEach(likesObject -> returnMap.put(likesObject.getUniqueId(), likesObject.getDislikes()));
                 break;
             case RANK:
-                this.addon.getAddonManager().getTopByRank(Bukkit.getWorld((String) map.get("world-name"))).
+                this.addon.getAddonManager().getTopByRank(Bukkit.getWorld((String) map.get(WORLD_NAME))).
                     forEach(likesObject -> returnMap.put(likesObject.getUniqueId(), likesObject.getRank()));
                 break;
             case STARS:
-                this.addon.getAddonManager().getTopByStars(Bukkit.getWorld((String) map.get("world-name"))).
+                this.addon.getAddonManager().getTopByStars(Bukkit.getWorld((String) map.get(WORLD_NAME))).
                     forEach(likesObject -> returnMap.put(likesObject.getUniqueId(), likesObject.getStarsValue()));
                 break;
         }
@@ -101,4 +101,9 @@ public class TopTenRequestHandler extends AddonRequestHandler
      * Likes addon instance.
      */
     private final LikesAddon addon;
+
+    /**
+     * Key of the world name in the request.
+     */
+    private static final String WORLD_NAME = "world-name";
 }
