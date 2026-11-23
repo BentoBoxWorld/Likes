@@ -179,7 +179,8 @@ public class ListIslandsPanel extends CommonPagedPanel<Island>
         LikesObject likesObject =
             this.addon.getAddonManager().getExistingIslandLikes(island.getUniqueId());
 
-        User owner = island.getOwner() == null ? null : User.getInstance(island.getOwner());
+        UUID ownerId = island.getOwner();
+        User owner = ownerId == null ? null : User.getInstance(ownerId);
 
         PanelItemBuilder itemBuilder = new PanelItemBuilder().
             name(this.getNameText(island, owner)).

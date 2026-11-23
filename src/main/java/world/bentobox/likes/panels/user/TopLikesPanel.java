@@ -13,8 +13,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import java.io.File;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -116,7 +114,7 @@ public class TopLikesPanel extends CommonPanel
         final String reference = Constants.BUTTONS + "view_mode.";
         PanelItemBuilder builder = new PanelItemBuilder();
 
-        this.setViewModeIcon(builder, template, reference);
+        this.setViewModeIcon(builder, template);
         this.setViewModeTitle(builder, template, reference);
         this.setViewModeDescription(builder, template, reference);
 
@@ -159,9 +157,8 @@ public class TopLikesPanel extends CommonPanel
      *
      * @param builder the builder
      * @param template the template
-     * @param reference the reference key
      */
-    private void setViewModeIcon(PanelItemBuilder builder, ItemTemplateRecord template, String reference)
+    private void setViewModeIcon(PanelItemBuilder builder, ItemTemplateRecord template)
     {
         // Template specification are always more important than dynamic content.
         if (template.icon() != null)
@@ -175,8 +172,9 @@ public class TopLikesPanel extends CommonPanel
                 case LIKES -> builder.icon(Material.DIAMOND);
                 case DISLIKES -> builder.icon(Material.IRON_INGOT);
                 case RANK -> builder.icon(Material.GOLD_INGOT);
-                case STARS -> builder.icon(Material.NETHER_STAR);
-                default -> {} // All enum values handled
+                default -> {
+                    // Stars are not shown with view mode button.
+                }
             }
         }
     }
@@ -371,12 +369,11 @@ public class TopLikesPanel extends CommonPanel
             {
                 switch (action.actionType().toUpperCase())
                 {
-                    case "WARP" -> {
-                        this.user.closeInventory();
-                        this.addon.getWarpHook().getWarpSignsManager().warpPlayer(this.world, this.user, island.getOwner());
-                    }
+                    case "WARP" -> this.warpToIsland(island);
                     case "VISIT" -> this.visitIsland(island);
-                    default -> {} // Other actions do nothing.
+                    default -> {
+                        // Other actions do nothing.
+                    }
                 }
             }
         }
@@ -427,6 +424,23 @@ public class TopLikesPanel extends CommonPanel
             this.addon.getWarpHook().getWarpSignsManager().getWarpLocation(this.world, island.getOwner());
 
         return warpLocation != null && island.inIslandSpace(warpLocation);
+    }
+
+
+    /**
+     * This method sends user to the warp sign of the given island owner.
+     *
+     * @param island Island which warp user wants to use.
+     */
+    private void warpToIsland(Island island)
+    {
+        UUID ownerId = island.getOwner();
+
+        if (ownerId != null)
+        {
+            this.user.closeInventory();
+            this.addon.getWarpHook().getWarpSignsManager().warpPlayer(this.world, this.user, ownerId);
+        }
     }
 
 

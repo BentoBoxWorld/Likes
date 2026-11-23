@@ -15,8 +15,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import java.io.File;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -498,8 +496,8 @@ public class LikesViewPanel extends CommonPanel
             case "LIKE" -> {
                 int size = this.likedByUsers.size();
 
-                if (size <= slot.amountMap().getOrDefault("LIKE_PLAYER", 1) ||
-                    1.0 * size / slot.amountMap().getOrDefault("LIKE_PLAYER", 1) <= this.likeIndex + 1)
+                if (size <= slot.amountMap().getOrDefault(LIKE_PLAYER, 1) ||
+                    1.0 * size / slot.amountMap().getOrDefault(LIKE_PLAYER, 1) <= this.likeIndex + 1)
                 {
                     // There are no next elements
                     return null;
@@ -507,11 +505,11 @@ public class LikesViewPanel extends CommonPanel
 
                 nextPageIndex = this.likeIndex + 2;
             }
-            case "STARS" -> {
+            case STARS -> {
                 int size = this.likedByUsers.size();
 
-                if (size <= slot.amountMap().getOrDefault("STARS_PLAYER", 1) ||
-                    1.0 * size / slot.amountMap().getOrDefault("STARS_PLAYER", 1) <= this.likeIndex + 1)
+                if (size <= slot.amountMap().getOrDefault(STARS_PLAYER, 1) ||
+                    1.0 * size / slot.amountMap().getOrDefault(STARS_PLAYER, 1) <= this.likeIndex + 1)
                 {
                     // There are no next elements
                     return null;
@@ -519,11 +517,11 @@ public class LikesViewPanel extends CommonPanel
 
                 nextPageIndex = this.likeIndex + 2;
             }
-            case "DISLIKE" -> {
+            case DISLIKE -> {
                 int size = this.dislikedByUsers.size();
 
-                if (size <= slot.amountMap().getOrDefault("DISLIKE_PLAYER", 1) ||
-                    1.0 * size / slot.amountMap().getOrDefault("DISLIKE_PLAYER", 1) <= this.dislikeIndex + 1)
+                if (size <= slot.amountMap().getOrDefault(DISLIKE_PLAYER, 1) ||
+                    1.0 * size / slot.amountMap().getOrDefault(DISLIKE_PLAYER, 1) <= this.dislikeIndex + 1)
                 {
                     // There are no next elements
                     return null;
@@ -596,8 +594,8 @@ public class LikesViewPanel extends CommonPanel
                     // Next button ignores click type currently.
                     switch (target)
                     {
-                        case "LIKE", "STARS" -> this.likeIndex++;
-                        case "DISLIKE" -> this.dislikeIndex++;
+                        case "LIKE", STARS -> this.likeIndex++;
+                        case DISLIKE -> this.dislikeIndex++;
                     }
 
                     this.build();
@@ -616,7 +614,7 @@ public class LikesViewPanel extends CommonPanel
 
         int previousPageIndex;
 
-        if ("LIKE".equals(target) || "STARS".equals(target))
+        if ("LIKE".equals(target) || STARS.equals(target))
         {
             if (this.likeIndex == 0)
             {
@@ -626,7 +624,7 @@ public class LikesViewPanel extends CommonPanel
 
             previousPageIndex = this.likeIndex;
         }
-        else if ("DISLIKE".equals(target))
+        else if (DISLIKE.equals(target))
         {
             if (this.dislikeIndex == 0)
             {
@@ -700,8 +698,8 @@ public class LikesViewPanel extends CommonPanel
                     // Previous button ignores click type currently.
                     switch (target)
                     {
-                        case "LIKE", "STARS" -> this.likeIndex--;
-                        case "DISLIKE" -> this.dislikeIndex--;
+                        case "LIKE", STARS -> this.likeIndex--;
+                        case DISLIKE -> this.dislikeIndex--;
                     }
 
                     this.build();

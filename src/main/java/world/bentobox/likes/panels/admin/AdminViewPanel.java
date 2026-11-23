@@ -299,7 +299,7 @@ public class AdminViewPanel extends CommonPanel
         PanelItem.ClickHandler clickHandler;
 
         final String reference = Constants.BUTTONS + button.name().toLowerCase();
-        String name = this.user.getTranslation(reference + ".name");
+        String name = this.user.getTranslation(reference + NAME_KEY_SUFFIX);
 
         List<String> description = new ArrayList<>(3);
         int count;
@@ -311,7 +311,7 @@ public class AdminViewPanel extends CommonPanel
                 count = byLike ? this.likeOffset + 2 : this.dislikeOffset + 2;
 
                 icon = new ItemStack(Material.TIPPED_ARROW);
-                description.add(this.user.getTranslationOrNothing(reference + ".description",
+                description.add(this.user.getTranslationOrNothing(reference + DESCRIPTION_KEY_SUFFIX,
                     Constants.PARAMETER_NUMBER, String.valueOf(count)));
                 description.add("");
                 description.add(this.user.getTranslation(Constants.TIPS + "click-to-next"));
@@ -337,7 +337,7 @@ public class AdminViewPanel extends CommonPanel
                 count = byLike ? this.likeOffset : this.dislikeOffset;
 
                 icon = new ItemStack(Material.TIPPED_ARROW);
-                description.add(this.user.getTranslationOrNothing(reference + ".description",
+                description.add(this.user.getTranslationOrNothing(reference + DESCRIPTION_KEY_SUFFIX,
                     Constants.PARAMETER_NUMBER, String.valueOf(count)));
                 description.add("");
                 description.add(this.user.getTranslation(Constants.TIPS + "click-to-previous"));
