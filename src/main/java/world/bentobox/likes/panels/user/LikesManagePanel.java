@@ -180,24 +180,8 @@ public class LikesManagePanel extends CommonPanel
     {
         PanelItemBuilder builder = new PanelItemBuilder();
 
-        if (template.icon() != null)
-        {
-            builder.icon(template.icon().clone());
-        }
-        else
-        {
-            builder.icon(defaultIcon);
-        }
-
-        if (template.title() != null)
-        {
-            builder.name(this.user.getTranslation(this.world, template.title()));
-        }
-        else
-        {
-            builder.name(this.user.getTranslation(reference + "name"));
-        }
-
+        this.addIcon(builder, template, defaultIcon);
+        this.addName(builder, template, reference);
         this.addDescription(builder, template, reference);
         this.addCost(builder, reference, hasVoted ? remove.cost().getAsDouble() : add.cost().getAsDouble());
 
@@ -205,26 +189,15 @@ public class LikesManagePanel extends CommonPanel
             this.getActiveActions(template, add.type(), remove.type(), hasVoted);
 
         // Add ClickHandler
-        builder.clickHandler((panel, clicker, clickType, i) ->
+        final VoteAction vote = hasVoted ? remove : add;
+
+        builder.clickHandler(this.createClickHandler(activeActions, () ->
         {
-            for (ItemTemplateRecord.ActionRecords action : activeActions)
+            if (this.hasPaid(vote.cost().getAsDouble()))
             {
-                if (clickType == action.clickType() || action.clickType() == ClickType.UNKNOWN)
-                {
-                    VoteAction vote = hasVoted ? remove : add;
-
-                    if (this.hasPaid(vote.cost().getAsDouble()))
-                    {
-                        vote.action().run();
-                    }
-
-                    this.returnToParent(clicker);
-                }
+                vote.action().run();
             }
-
-            // Always return true.
-            return true;
-        });
+        }));
 
         builder.glow(hasVoted);
 
@@ -249,26 +222,14 @@ public class LikesManagePanel extends CommonPanel
 
         int starsValue = (int) template.dataMap().getOrDefault("value", 1);
 
-        if (template.icon() != null)
+        this.addIcon(builder, template, Material.NETHER_STAR);
+
+        if (template.icon() == null)
         {
-            builder.icon(template.icon().clone());
-        }
-        else
-        {
-            builder.icon(Material.NETHER_STAR);
             builder.amount(starsValue);
         }
 
-        if (template.title() != null)
-        {
-            builder.name(this.user.getTranslation(this.world, template.title(),
-                Constants.PARAMETER_NUMBER, String.valueOf(starsValue)));
-        }
-        else
-        {
-            builder.name(this.user.getTranslation(reference + "name",
-                Constants.PARAMETER_NUMBER, String.valueOf(starsValue)));
-        }
+        this.addName(builder, template, reference, Constants.PARAMETER_NUMBER, String.valueOf(starsValue));
 
         this.addDescription(builder, template, reference);
         // Displayed costs are kept as they always were: add cost for starred islands, remove cost otherwise.
@@ -283,20 +244,16 @@ public class LikesManagePanel extends CommonPanel
         final boolean canClick = !hasStarred || value == starsValue;
 
         // Add ClickHandler
-        builder.clickHandler((panel, clicker, clickType, i) ->
+        if (canClick)
         {
-            for (ItemTemplateRecord.ActionRecords action : activeActions)
-            {
-                if (canClick && (clickType == action.clickType() || action.clickType() == ClickType.UNKNOWN))
-                {
-                    this.changeStars(hasStarred, starsValue);
-                    this.returnToParent(clicker);
-                }
-            }
-
-            // Always return true.
-            return true;
-        });
+            builder.clickHandler(this.createClickHandler(activeActions,
+                () -> this.changeStars(hasStarred, starsValue)));
+        }
+        else
+        {
+            // Click does nothing, but it still must be consumed.
+            builder.clickHandler((panel, clicker, clickType, i) -> true);
+        }
 
         builder.glow(hasStarred && value >= starsValue);
 
@@ -329,6 +286,65 @@ public class LikesManagePanel extends CommonPanel
         else if (this.hasPaid(this.settings.getLikeAddCost()))
         {
             this.addon.getAddonManager().addStars(this.target, starsValue, this.island, this.world);
+        }
+    }
+
+
+    /**
+     * This method creates click handler that runs given action for every active action that matches the click, and
+     * then returns to the parent panel.
+     */
+    private PanelItem.ClickHandler createClickHandler(List<ItemTemplateRecord.ActionRecords> activeActions,
+        Runnable onClick)
+    {
+        return (panel, clicker, clickType, i) ->
+        {
+            for (ItemTemplateRecord.ActionRecords action : activeActions)
+            {
+                if (clickType == action.clickType() || action.clickType() == ClickType.UNKNOWN)
+                {
+                    onClick.run();
+                    this.returnToParent(clicker);
+                }
+            }
+
+            // Always return true.
+            return true;
+        };
+    }
+
+
+    /**
+     * This method adds icon from the template or the default one.
+     */
+    private void addIcon(PanelItemBuilder builder, ItemTemplateRecord template, Material defaultIcon)
+    {
+        if (template.icon() != null)
+        {
+            builder.icon(template.icon().clone());
+        }
+        else
+        {
+            builder.icon(defaultIcon);
+        }
+    }
+
+
+    /**
+     * This method adds name from the template or from the default translation.
+     */
+    private void addName(PanelItemBuilder builder,
+        ItemTemplateRecord template,
+        String reference,
+        String... parameters)
+    {
+        if (template.title() != null)
+        {
+            builder.name(this.user.getTranslation(this.world, template.title(), parameters));
+        }
+        else
+        {
+            builder.name(this.user.getTranslation(reference + "name", parameters));
         }
     }
 
